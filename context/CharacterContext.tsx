@@ -37,9 +37,9 @@ export interface CharacterState {
     backstory?: string;
     traits?: string;
     speech?: string;
-    initialMessage?: string;
     scenario?: string;
     bio?: string;
+    mainPrompt?: string;
   };
   isComplete: boolean;
 }
@@ -168,7 +168,8 @@ export function CharacterProvider({ children }: { children: React.ReactNode }) {
           id: 'temp',
           basics: { name: "", age: "", gender: "Female", setting: "", relationship: "" },
           personality: { warmth: 50, confidence: 50, calmness: 50, reserve: 50 },
-          isComplete: false
+          isComplete: false,
+          generatedContent: { mainPrompt: "" }
         }
       }}
     >

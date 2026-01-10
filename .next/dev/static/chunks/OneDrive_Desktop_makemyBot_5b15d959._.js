@@ -173,7 +173,10 @@ function CharacterProvider({ children }) {
                     calmness: 50,
                     reserve: 50
                 },
-                isComplete: false
+                isComplete: false,
+                generatedContent: {
+                    mainPrompt: ""
+                }
             }
         },
         children: children
