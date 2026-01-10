@@ -1,0 +1,13 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/auth/callback/route": "/auth/callback",
+  "/auth/signin/page": "/auth/signin",
+  "/character/[id]/page": "/character/[id]",
+  "/characters/results/page": "/characters/results",
+  "/create/page": "/create",
+  "/generator/page": "/generator",
+  "/page": "/",
+  "/profile/page": "/profile",
+  "/wizard/page": "/wizard"
+}
