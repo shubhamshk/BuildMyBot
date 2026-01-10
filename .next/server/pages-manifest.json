@@ -1,10 +1,4 @@
 {
-  "/CharacterProfile": "pages/CharacterProfile.js",
-  "/LandingPage": "pages/LandingPage.js",
-  "/PromptGenerator": "pages/PromptGenerator.js",
-  "/WizardBasicInfo": "pages/WizardBasicInfo.js",
-  "/WizardPersonality": "pages/WizardPersonality.js",
-  "/_app": "pages/_app.js",
-  "/_document": "pages/_document.js",
-  "/_error": "pages/_error.js"
+  "/404": "pages/404.html",
+  "/500": "pages/500.html"
 }

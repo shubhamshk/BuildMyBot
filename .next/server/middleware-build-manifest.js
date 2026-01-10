@@ -1,46 +1,6 @@
 globalThis.__BUILD_MANIFEST = {
   "pages": {
-    "/CharacterProfile": [
-      "static/chunks/42c21e5f0783091d.js",
-      "static/chunks/74549f88ee37287c.js",
-      "static/chunks/27024d5451189307.js",
-      "static/chunks/turbopack-21df4b93e0a5ed32.js"
-    ],
-    "/LandingPage": [
-      "static/chunks/610810dda7d6f517.js",
-      "static/chunks/74549f88ee37287c.js",
-      "static/chunks/27024d5451189307.js",
-      "static/chunks/turbopack-a2d83d8e2b59b550.js"
-    ],
-    "/PromptGenerator": [
-      "static/chunks/11d6fb0cc748472f.js",
-      "static/chunks/74549f88ee37287c.js",
-      "static/chunks/27024d5451189307.js",
-      "static/chunks/turbopack-242b68fbd49f9a9a.js"
-    ],
-    "/WizardBasicInfo": [
-      "static/chunks/358ff5347bbe3589.js",
-      "static/chunks/74549f88ee37287c.js",
-      "static/chunks/27024d5451189307.js",
-      "static/chunks/turbopack-88577cb0b1dff281.js"
-    ],
-    "/WizardPersonality": [
-      "static/chunks/37540087228ec965.js",
-      "static/chunks/27024d5451189307.js",
-      "static/chunks/bdcaa1cbb8afd951.js",
-      "static/chunks/74549f88ee37287c.js",
-      "static/chunks/turbopack-9a6c250da27880e5.js"
-    ],
-    "/_app": [
-      "static/chunks/5504ba85e80a297d.js",
-      "static/chunks/74549f88ee37287c.js",
-      "static/chunks/turbopack-1335510825cd31d0.js"
-    ],
-    "/_error": [
-      "static/chunks/62537dfe5d6d0c01.js",
-      "static/chunks/74549f88ee37287c.js",
-      "static/chunks/turbopack-b1f12fa648013973.js"
-    ]
+    "/_app": []
   },
   "devFiles": [],
   "polyfillFiles": [

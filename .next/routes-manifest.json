@@ -1,7 +1,7 @@
 {
   "version": 3,
   "pages404": true,
-  "appType": "hybrid",
+  "appType": "app",
   "caseSensitive": false,
   "basePath": "",
   "redirects": [
@@ -38,6 +38,12 @@
       "namedRegex": "^/(?:/)?$"
     },
     {
+      "page": "/_global-error",
+      "regex": "^/_global\\-error(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_global\\-error(?:/)?$"
+    },
+    {
       "page": "/_not-found",
       "regex": "^/_not\\-found(?:/)?$",
       "routeKeys": {},
@@ -54,12 +60,6 @@
       "regex": "^/auth/signin(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/auth/signin(?:/)?$"
-    },
-    {
-      "page": "/CharacterProfile",
-      "regex": "^/CharacterProfile(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/CharacterProfile(?:/)?$"
     },
     {
       "page": "/characters/results",
@@ -80,40 +80,16 @@
       "namedRegex": "^/generator(?:/)?$"
     },
     {
-      "page": "/LandingPage",
-      "regex": "^/LandingPage(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/LandingPage(?:/)?$"
-    },
-    {
       "page": "/profile",
       "regex": "^/profile(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/profile(?:/)?$"
     },
     {
-      "page": "/PromptGenerator",
-      "regex": "^/PromptGenerator(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/PromptGenerator(?:/)?$"
-    },
-    {
       "page": "/wizard",
       "regex": "^/wizard(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/wizard(?:/)?$"
-    },
-    {
-      "page": "/WizardBasicInfo",
-      "regex": "^/WizardBasicInfo(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/WizardBasicInfo(?:/)?$"
-    },
-    {
-      "page": "/WizardPersonality",
-      "regex": "^/WizardPersonality(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/WizardPersonality(?:/)?$"
     }
   ],
   "dataRoutes": [],

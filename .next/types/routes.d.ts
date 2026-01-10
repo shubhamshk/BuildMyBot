@@ -3,7 +3,7 @@
 
 type AppRoutes = "/" | "/auth/signin" | "/character/[id]" | "/characters/results" | "/create" | "/generator" | "/profile" | "/wizard"
 type AppRouteHandlerRoutes = "/auth/callback"
-type PageRoutes = "/CharacterProfile" | "/LandingPage" | "/PromptGenerator" | "/WizardBasicInfo" | "/WizardPersonality"
+type PageRoutes = never
 type LayoutRoutes = "/"
 type RedirectRoutes = never
 type RewriteRoutes = never
@@ -15,16 +15,11 @@ interface ParamMap {
   "/auth/callback": {}
   "/auth/signin": {}
   "/character/[id]": { "id": string; }
-  "/CharacterProfile": {}
   "/characters/results": {}
   "/create": {}
   "/generator": {}
-  "/LandingPage": {}
   "/profile": {}
-  "/PromptGenerator": {}
   "/wizard": {}
-  "/WizardBasicInfo": {}
-  "/WizardPersonality": {}
 }
 
 
