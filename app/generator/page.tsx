@@ -40,7 +40,7 @@ export default function PromptGenerator() {
   }, [character, settings]);
 
   const updatePrompt = () => {
-    if (!character.name) {
+    if (!character.basics.name) {
       setPrompt("");
       return;
     }
@@ -48,7 +48,7 @@ export default function PromptGenerator() {
     const envText = settings.environment
       ? `, ${settings.environment}`
       : ", detailed background";
-    const promptText = `Highly detailed ${settings.composition.toLowerCase()} of ${character.name}, ${character.generatedProfile?.title || "character"}, ${settings.artStyle.toLowerCase()} style, ${settings.lighting.toLowerCase()}, ${settings.lens}${envText}, 8k resolution, photorealistic --ar 3:4 --v 6.0`;
+    const promptText = `Highly detailed ${settings.composition.toLowerCase()} of ${character.basics.name}, ${character.generatedContent?.bio || "character"}, ${settings.artStyle.toLowerCase()} style, ${settings.lighting.toLowerCase()}, ${settings.lens}${envText}, 8k resolution, photorealistic --ar 3:4 --v 6.0`;
 
     setPrompt(promptText);
   };
@@ -103,10 +103,10 @@ export default function PromptGenerator() {
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-foreground truncate">
-                {character.name || "Cyberpunk Mercenary"}
+                {character.basics.name || "Cyberpunk Mercenary"}
               </h3>
               <p className="text-xs text-muted-foreground truncate">
-                {character.generatedProfile?.title || "Cybernetic eyes, Streetwea..."}
+                {character.generatedContent?.bio || "Cybernetic eyes, Streetwea..."}
               </p>
               <div className="flex gap-2 mt-2">
                 <span className="px-2 py-1 rounded-lg bg-violet-500/20 text-violet-400 text-xs font-medium">
@@ -132,11 +132,10 @@ export default function PromptGenerator() {
                 <button
                   key={comp}
                   onClick={() => setSettings({ ...settings, composition: comp })}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${
-                    settings.composition === comp
+                  className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all ${settings.composition === comp
                       ? "bg-violet-500 text-white"
                       : "glass border border-border hover:bg-white/5"
-                  }`}
+                    }`}
                 >
                   {comp}
                 </button>
@@ -156,14 +155,12 @@ export default function PromptGenerator() {
               </div>
               <button
                 onClick={() => setSettings({ ...settings, isSfw: !settings.isSfw })}
-                className={`w-12 h-6 rounded-full relative transition-all ${
-                  settings.isSfw ? "bg-violet-500" : "bg-muted"
-                }`}
+                className={`w-12 h-6 rounded-full relative transition-all ${settings.isSfw ? "bg-violet-500" : "bg-muted"
+                  }`}
               >
                 <div
-                  className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${
-                    settings.isSfw ? "right-1" : "left-1"
-                  }`}
+                  className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all ${settings.isSfw ? "right-1" : "left-1"
+                    }`}
                 />
               </button>
             </div>
@@ -269,9 +266,8 @@ export default function PromptGenerator() {
 
 const NavItem = ({ icon, label, active }: { icon: React.ReactNode; label: string; active?: boolean }) => (
   <button
-    className={`flex flex-col items-center gap-1 transition-colors ${
-      active ? "text-violet-400" : "text-muted-foreground"
-    }`}
+    className={`flex flex-col items-center gap-1 transition-colors ${active ? "text-violet-400" : "text-muted-foreground"
+      }`}
   >
     {icon}
     <span className="text-xs font-medium">{label}</span>

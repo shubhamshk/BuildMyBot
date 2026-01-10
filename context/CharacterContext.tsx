@@ -54,6 +54,7 @@ interface CharacterContextType {
   isMultiMode: boolean;
   setIsMultiMode: (isMulti: boolean) => void;
   initializeCharacters: (count: number) => void;
+  character: CharacterState;
 }
 
 const initialCharacter: Omit<CharacterState, "id"> = {
@@ -163,6 +164,12 @@ export function CharacterProvider({ children }: { children: React.ReactNode }) {
         isMultiMode,
         setIsMultiMode,
         initializeCharacters,
+        character: characters[activeCharacterIndex] || {
+          id: 'temp',
+          basics: { name: "", age: "", gender: "Female", setting: "", relationship: "" },
+          personality: { warmth: 50, confidence: 50, calmness: 50, reserve: 50 },
+          isComplete: false
+        }
       }}
     >
       {children}

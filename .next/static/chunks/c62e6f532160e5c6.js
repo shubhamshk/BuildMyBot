@@ -1,0 +1,6 @@
+__turbopack_load_page_chunks__("/WizardBasicInfo", [
+  "static/chunks/358ff5347bbe3589.js",
+  "static/chunks/74549f88ee37287c.js",
+  "static/chunks/27024d5451189307.js",
+  "static/chunks/turbopack-88577cb0b1dff281.js"
+])

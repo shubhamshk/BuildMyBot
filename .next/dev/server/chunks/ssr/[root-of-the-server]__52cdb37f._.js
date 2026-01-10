@@ -129,12 +129,29 @@ function CharacterProvider({ children }) {
             resetCharacters,
             isMultiMode,
             setIsMultiMode,
-            initializeCharacters
+            initializeCharacters,
+            character: characters[activeCharacterIndex] || {
+                id: 'temp',
+                basics: {
+                    name: "",
+                    age: "",
+                    gender: "Female",
+                    setting: "",
+                    relationship: ""
+                },
+                personality: {
+                    warmth: 50,
+                    confidence: 50,
+                    calmness: 50,
+                    reserve: 50
+                },
+                isComplete: false
+            }
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/OneDrive/Desktop/makemyBot/context/CharacterContext.tsx",
-        lineNumber: 155,
+        lineNumber: 156,
         columnNumber: 5
     }, this);
 }
