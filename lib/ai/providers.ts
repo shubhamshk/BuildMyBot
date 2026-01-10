@@ -45,12 +45,12 @@ export class GeminiProvider implements AIProvider {
 
     const data = await response.json();
     const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    
+
     // Fail loudly on empty response
     if (!text || text.trim() === "") {
       throw new Error("Gemini API returned empty response. Please check your API key and model access.");
     }
-    
+
     return text.trim();
   }
 }
@@ -62,13 +62,13 @@ export class OpenAIProvider implements AIProvider {
   async generate(prompt: string, apiKey: string, model: string, maxTokens: number = 1800): Promise<string> {
     // Handle system/user message split if prompt contains system instructions
     let messages: Array<{ role: string; content: string }> = [];
-    
+
     if (prompt.includes("CRITICAL RULES:") || prompt.includes("You are an expert")) {
       // Split system and user prompts
-      const systemMatch = prompt.match(/^(.+?)(?=\n\nCHARACTER|CHARACTER BASICS|User-provided|Generate|Write|Create)/s);
+      const systemMatch = prompt.match(/^([\s\S]+?)(?=\n\nCHARACTER|CHARACTER BASICS|User-provided|Generate|Write|Create)/);
       const systemPrompt = systemMatch ? systemMatch[1].trim() : "";
       const userPrompt = systemMatch ? prompt.replace(systemMatch[1], "").trim() : prompt;
-      
+
       if (systemPrompt) {
         messages.push({ role: "system", content: systemPrompt });
       }
@@ -113,12 +113,12 @@ export class OpenAIProvider implements AIProvider {
 
     const data = await response.json();
     const text = data.choices?.[0]?.message?.content;
-    
+
     // Fail loudly on empty response
     if (!text || text.trim() === "") {
       throw new Error("API returned empty response. Please check your API key and model access.");
     }
-    
+
     return text.trim();
   }
 }
@@ -153,12 +153,60 @@ export class HuggingFaceProvider implements AIProvider {
 
     const data = await response.json();
     const text = Array.isArray(data) ? data[0]?.generated_text : data.generated_text;
-    
+
     // Fail loudly on empty response
     if (!text || text.trim() === "") {
       throw new Error("HuggingFace API returned empty response.");
     }
-    
+
+    return text.trim();
+  }
+}
+
+
+/**
+ * LM Studio Provider (OpenAI compatible, local only)
+ */
+export class LMStudioProvider implements AIProvider {
+  async generate(prompt: string, apiKey: string, model: string, maxTokens: number = 1800): Promise<string> {
+    const apiUrl = "http://localhost:1234/v1/chat/completions";
+    let messages: Array<{ role: string; content: string }> = [];
+
+    const marker = "\n\nCHARACTER";
+    if (prompt.includes(marker)) {
+      const parts = prompt.split(marker);
+      messages.push({ role: "system", content: parts[0].trim() });
+      messages.push({ role: "user", content: "CHARACTER" + parts.slice(1).join(marker).trim() });
+    } else {
+      messages.push({ role: "user", content: prompt });
+    }
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": apiKey ? `Bearer ${apiKey}` : "Bearer unused",
+      },
+      body: JSON.stringify({
+        model: model || "local-model",
+        messages,
+        temperature: 0.7,
+        max_tokens: maxTokens,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`LM Studio error (${response.status}): ${errorText || "Is LM Studio running?"}`);
+    }
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content;
+
+    if (!text || text.trim() === "") {
+      throw new Error("LM Studio returned empty response.");
+    }
+
     return text.trim();
   }
 }
@@ -166,7 +214,7 @@ export class HuggingFaceProvider implements AIProvider {
 /**
  * Get AI provider instance
  */
-export function getAIProvider(provider: "openai" | "gemini" | "openrouter" | "huggingface"): AIProvider {
+export function getAIProvider(provider: "openai" | "gemini" | "openrouter" | "huggingface" | "lmstudio"): AIProvider {
   if (provider === "openai" || provider === "openrouter") {
     return new OpenAIProvider();
   }
@@ -175,6 +223,9 @@ export function getAIProvider(provider: "openai" | "gemini" | "openrouter" | "hu
   }
   if (provider === "huggingface") {
     return new HuggingFaceProvider();
+  }
+  if (provider === "lmstudio") {
+    return new LMStudioProvider();
   }
   throw new Error(`Unknown provider: ${provider}`);
 }

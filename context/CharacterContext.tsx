@@ -1,7 +1,5 @@
 "use client";
 
-"use client";
-
 import React, { createContext, useContext, useState, useEffect } from "react";
 
 export interface CharacterBasics {
@@ -41,6 +39,7 @@ export interface CharacterState {
     speech?: string;
     initialMessage?: string;
     scenario?: string;
+    bio?: string;
   };
   isComplete: boolean;
 }
@@ -82,6 +81,8 @@ export function CharacterProvider({ children }: { children: React.ReactNode }) {
   const [isMultiMode, setIsMultiMode] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
     const saved = localStorage.getItem("characters");
     const savedIndex = localStorage.getItem("activeCharacterIndex");
     const savedMultiMode = localStorage.getItem("isMultiMode");
@@ -104,15 +105,21 @@ export function CharacterProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    localStorage.setItem("characters", JSON.stringify(characters));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("characters", JSON.stringify(characters));
+    }
   }, [characters]);
 
   useEffect(() => {
-    localStorage.setItem("activeCharacterIndex", activeCharacterIndex.toString());
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("activeCharacterIndex", activeCharacterIndex.toString());
+    }
   }, [activeCharacterIndex]);
 
   useEffect(() => {
-    localStorage.setItem("isMultiMode", isMultiMode.toString());
+    if (typeof window !== 'undefined') {
+      localStorage.setItem("isMultiMode", isMultiMode.toString());
+    }
   }, [isMultiMode]);
 
   const updateCharacter = (index: number, updates: Partial<CharacterState>) => {
@@ -127,9 +134,11 @@ export function CharacterProvider({ children }: { children: React.ReactNode }) {
     setCharacters([]);
     setActiveCharacterIndex(0);
     setIsMultiMode(false);
-    localStorage.removeItem("characters");
-    localStorage.removeItem("activeCharacterIndex");
-    localStorage.removeItem("isMultiMode");
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("characters");
+      localStorage.removeItem("activeCharacterIndex");
+      localStorage.removeItem("isMultiMode");
+    }
   };
 
   const initializeCharacters = (count: number) => {

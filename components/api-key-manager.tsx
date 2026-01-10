@@ -19,35 +19,42 @@ const PROVIDERS: Array<{
   description: string;
   icon: string;
 }> = [
-  {
-    value: "openai",
-    label: "OpenAI",
-    placeholder: "sk-...",
-    description: "GPT-4, GPT-3.5, and other OpenAI models",
-    icon: "🤖",
-  },
-  {
-    value: "gemini",
-    label: "Google Gemini",
-    placeholder: "AIza...",
-    description: "Gemini Pro and other Google AI models",
-    icon: "💎",
-  },
-  {
-    value: "openrouter",
-    label: "OpenRouter",
-    placeholder: "sk-or-...",
-    description: "Access to multiple models (Claude, DeepSeek, etc.)",
-    icon: "🌐",
-  },
-  {
-    value: "huggingface",
-    label: "HuggingFace",
-    placeholder: "hf_...",
-    description: "Open-source models from HuggingFace",
-    icon: "🤗",
-  },
-];
+    {
+      value: "openai",
+      label: "OpenAI",
+      placeholder: "sk-...",
+      description: "GPT-4, GPT-3.5, and other OpenAI models",
+      icon: "🤖",
+    },
+    {
+      value: "gemini",
+      label: "Google Gemini",
+      placeholder: "AIza...",
+      description: "Gemini Pro and other Google AI models",
+      icon: "💎",
+    },
+    {
+      value: "openrouter",
+      label: "OpenRouter",
+      placeholder: "sk-or-...",
+      description: "Access to multiple models (Claude, DeepSeek, etc.)",
+      icon: "🌐",
+    },
+    {
+      value: "huggingface",
+      label: "HuggingFace",
+      placeholder: "hf_...",
+      description: "Open-source models from HuggingFace",
+      icon: "🤗",
+    },
+    {
+      value: "lmstudio",
+      label: "LM Studio",
+      placeholder: "unused-key",
+      description: "Local model running via LM Studio (OpenAI compatible)",
+      icon: "🏠",
+    },
+  ];
 
 export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
   const [activeTab, setActiveTab] = useState<APIProvider>("openai");
@@ -56,12 +63,14 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     gemini: "",
     openrouter: "",
     huggingface: "",
+    lmstudio: "",
   });
   const [showKeys, setShowKeys] = useState<Record<APIProvider, boolean>>({
     openai: false,
     gemini: false,
     openrouter: false,
     huggingface: false,
+    lmstudio: false,
   });
   const [selectedProvider, setSelectedProvider] = useState<APIProvider | null>(null);
   const [copiedKey, setCopiedKey] = useState<APIProvider | null>(null);
@@ -74,6 +83,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
         gemini: "",
         openrouter: "",
         huggingface: "",
+        lmstudio: "",
       };
 
       PROVIDERS.forEach((provider) => {
@@ -85,7 +95,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
 
       setApiKeys(keys);
       setSelectedProvider(getSelectedProvider());
-      
+
       // Set active tab to selected provider or first provider
       const savedProvider = getSelectedProvider();
       if (savedProvider) {
@@ -117,10 +127,10 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
 
     setAPIKey(provider, key);
     setSelectedProvider(provider);
-    
+
     // Update local state
     setApiKeys((prev) => ({ ...prev, [provider]: key }));
-    
+
     // Show success feedback
     setTimeout(() => {
       onSave();
@@ -131,14 +141,14 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     if (confirm(`Are you sure you want to remove the ${PROVIDERS.find(p => p.value === provider)?.label} API key?`)) {
       // Clear this specific key
       localStorage.removeItem(`api_key_${provider}`);
-      
+
       // If this was the selected provider, clear selection
       if (selectedProvider === provider) {
         localStorage.removeItem("api_key_provider");
         localStorage.removeItem("api_key_connected");
         setSelectedProvider(null);
       }
-      
+
       setApiKeys((prev) => ({ ...prev, [provider]: "" }));
     }
   };
@@ -151,6 +161,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
         gemini: "",
         openrouter: "",
         huggingface: "",
+        lmstudio: "",
       });
       setSelectedProvider(null);
     }
@@ -180,6 +191,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
       gemini: "",
       openrouter: "",
       huggingface: "",
+      lmstudio: "",
     });
     onClose();
   };
@@ -244,23 +256,21 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                   {PROVIDERS.map((provider) => {
                     const hasKeyForProvider = hasKey(provider.value);
                     const isSelected = selectedProvider === provider.value;
-                    
+
                     return (
                       <button
                         key={provider.value}
                         onClick={() => setActiveTab(provider.value)}
-                        className={`px-4 py-2.5 rounded-xl transition-all whitespace-nowrap flex items-center gap-2 relative ${
-                          activeTab === provider.value
-                            ? "bg-violet-500/20 border-2 border-violet-500 text-violet-400"
-                            : "glass border border-border hover:bg-white/5 text-muted-foreground"
-                        }`}
+                        className={`px-4 py-2.5 rounded-xl transition-all whitespace-nowrap flex items-center gap-2 relative ${activeTab === provider.value
+                          ? "bg-violet-500/20 border-2 border-violet-500 text-violet-400"
+                          : "glass border border-border hover:bg-white/5 text-muted-foreground"
+                          }`}
                       >
                         <span className="text-lg">{provider.icon}</span>
                         <span className="font-medium">{provider.label}</span>
                         {hasKeyForProvider && (
-                          <div className={`w-2 h-2 rounded-full ${
-                            isSelected ? "bg-violet-400" : "bg-green-400"
-                          }`} />
+                          <div className={`w-2 h-2 rounded-full ${isSelected ? "bg-violet-400" : "bg-green-400"
+                            }`} />
                         )}
                         {isSelected && (
                           <CheckCircle2 className="w-4 h-4 text-violet-400" />

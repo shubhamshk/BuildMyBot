@@ -12,6 +12,7 @@ import {
   buildScenarioPrompt,
   buildInitialMessagePrompt,
   buildCombinedScenarioPrompt,
+  buildBioPrompt,
 } from "@/lib/prompts/janitor-ai";
 import {
   detectProviderFromKey,
@@ -37,6 +38,8 @@ function getMaxTokensForType(generationType: GenerationType): number {
       return 1200; // Increased for combined scenario + greeting
     case "initialMessage":
       return 550;
+    case "bio":
+      return 800;
     default:
       return 1800;
   }
@@ -54,7 +57,7 @@ async function generateWithFallback(
   const model = getModelForGeneration(provider, generationType);
   const aiProvider = getAIProvider(provider);
   const maxTokens = getMaxTokensForType(generationType);
-  
+
   try {
     const result = await aiProvider.generate(prompt, apiKey, model, maxTokens);
     return result;
@@ -84,13 +87,13 @@ export async function generatePersonality(
 ): Promise<string> {
   const systemPrompt = getPersonalitySystemPrompt();
   const userPrompt = buildJanitorPersonalityPrompt(character);
-  
+
   // For OpenAI/OpenRouter, use system/user messages
   if (provider === "openai" || provider === "openrouter") {
     const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
     return await generateWithFallback(provider, apiKey, fullPrompt, "personality");
   }
-  
+
   // For Gemini/HuggingFace, combine into single prompt
   const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
   return await generateWithFallback(provider, apiKey, fullPrompt, "personality");
@@ -137,6 +140,19 @@ export async function generateCombinedScenario(
 }
 
 /**
+ * Generate bio for character
+ */
+export async function generateBio(
+  character: CharacterState,
+  scenario: string,
+  apiKey: string,
+  provider: APIProvider
+): Promise<string> {
+  const prompt = buildBioPrompt(character, scenario);
+  return await generateWithFallback(provider, apiKey, prompt, "bio");
+}
+
+/**
  * Validate API key and auto-detect provider
  */
 export function validateAPIKey(): { valid: boolean; apiKey: string | null; provider: APIProvider | null; error?: string } {
@@ -144,16 +160,16 @@ export function validateAPIKey(): { valid: boolean; apiKey: string | null; provi
   const selectedProvider = getSelectedProvider();
   let apiKey: string | null = null;
   let provider: APIProvider | null = selectedProvider;
-  
+
   if (selectedProvider) {
     apiKey = getAPIKey(selectedProvider);
     if (apiKey && apiKey.trim() !== "" && apiKey.length >= 10) {
       return { valid: true, apiKey, provider: selectedProvider };
     }
   }
-  
+
   // Auto-detect from all stored keys
-  const providers: APIProvider[] = ["openai", "gemini", "openrouter", "huggingface"];
+  const providers: APIProvider[] = ["openai", "gemini", "openrouter", "huggingface", "lmstudio"];
   for (const p of providers) {
     const key = getAPIKey(p);
     if (key && key.trim() !== "" && key.length >= 10) {
@@ -166,7 +182,7 @@ export function validateAPIKey(): { valid: boolean; apiKey: string | null; provi
       }
     }
   }
-  
+
   return {
     valid: false,
     apiKey: null,

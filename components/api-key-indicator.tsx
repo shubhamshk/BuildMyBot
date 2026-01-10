@@ -10,6 +10,7 @@ const PROVIDER_LABELS: Record<APIProvider, string> = {
   gemini: "Gemini",
   openrouter: "OpenRouter",
   huggingface: "HuggingFace",
+  lmstudio: "LM Studio",
 };
 
 export function APIKeyIndicator() {
@@ -23,16 +24,16 @@ export function APIKeyIndicator() {
     const checkConnection = () => {
       const connected = isAPIKeyConnected();
       setConnected(connected);
-      
+
       if (connected) {
         const provider = getSelectedProvider();
         setActiveProvider(provider);
-        
+
         if (provider) {
           const key = getAPIKey(provider);
           if (key) {
             // Show first 4 and last 4 characters
-            const masked = key.length > 12 
+            const masked = key.length > 12
               ? `${key.slice(0, 6)}...${key.slice(-4)}`
               : "••••••••";
             setMaskedKey(masked);
@@ -43,18 +44,18 @@ export function APIKeyIndicator() {
         setMaskedKey("");
       }
     };
-    
+
     checkConnection();
-    
+
     // Listen for storage changes (from other tabs)
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key?.startsWith("api_key_") || e.key === "api_key_provider" || e.key === "api_key_connected") {
         checkConnection();
       }
     };
-    
+
     window.addEventListener("storage", handleStorageChange);
-    
+
     // Also check periodically (in case of same-tab updates)
     const interval = setInterval(checkConnection, 1000);
 
@@ -65,7 +66,7 @@ export function APIKeyIndicator() {
         setShowDropdown(false);
       }
     };
-    
+
     document.addEventListener('click', handleClickOutside);
 
     return () => {
@@ -92,7 +93,7 @@ export function APIKeyIndicator() {
             </span>
             <ChevronDown className={`w-3 h-3 text-green-400 transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
           </button>
-          
+
           {/* Dropdown Menu */}
           {showDropdown && (
             <div className="absolute right-0 top-full mt-2 w-64 rounded-xl glass border border-border shadow-xl z-50 overflow-hidden">

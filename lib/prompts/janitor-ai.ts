@@ -72,7 +72,7 @@ MANDATORY TEMPLATE STRUCTURE:
 You MUST output EXACTLY this format with ALL sections filled:
 
 <npcs>
-(50–100 word descriptions for NPCs if relevant, or leave empty if none)
+(50–100 word descriptions for characters , dont leave empty)
 </npcs>
 
 <character_name>
@@ -252,6 +252,51 @@ Generate the initial message using **bold** for dialogue and *italics* for descr
  */
 export function getPersonalitySystemPrompt(): string {
   return buildPersonalitySystemPrompt();
+}
+
+/**
+ * Build prompt for bio generation
+ */
+export function buildBioPrompt(character: CharacterState, scenario: string): string {
+  const systemPrompt = `You are an expert Janitor AI bot creator. Create a well-formatted, human-readable bio for this character that will help users understand and interact with the bot.
+
+The bio should be:
+- Warm, inviting, and easy to read
+- Formatted nicely with clear sections
+- Written in a natural, human way
+- Engaging and descriptive
+
+FORMAT REQUIREMENTS:
+1. Start with a ONE-LINE basic description of the bot (who they are in a nutshell)
+2. Then provide a brief explanation of the scenario and story
+3. Include the initial message/greeting from the scenario
+4. End with a brief "How to Proceed" section explaining how users should interact
+
+The bio should flow naturally and be formatted with line breaks for readability. Use a friendly, conversational tone.`;
+
+  const userPrompt = `Create a bio for this character:
+
+CHARACTER BASICS:
+- Name: ${character.basics.name}
+- Age: ${character.basics.age}
+- Gender: ${character.basics.gender}
+- Setting: ${character.basics.setting}
+- Relationship to user: ${character.basics.relationship}
+
+PERSONALITY: ${normalizePersonality(character.personality)}
+
+SCENARIO & STORY:
+${scenario}
+
+Generate a nicely formatted bio that includes:
+1. A one-line basic description
+2. Brief explanation of the scenario and story
+3. The initial message/greeting
+4. How to proceed with the conversation
+
+Format it in a human-friendly way with clear sections and natural flow.`;
+
+  return `${systemPrompt}\n\n${userPrompt}`;
 }
 
 /**

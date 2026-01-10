@@ -8,11 +8,11 @@ import { useCharacter } from "@/context/CharacterContext";
 import Link from "next/link";
 import { APIKeyManager } from "@/components/api-key-manager";
 import { TerminalOutput } from "@/components/terminal-output";
-import { validateAPIKey, generatePersonality, generateScenario } from "@/lib/generation/service";
+import { validateAPIKey, generatePersonality, generateScenario, generateBio } from "@/lib/generation/service";
 import { isAPIKeyConnected, APIProvider } from "@/lib/api-key";
 import { saveCharacter, getCurrentUser } from "@/lib/supabase/characters";
 
-type SectionId = "personality" | "scenarioGreeting";
+type SectionId = "personality" | "scenarioGreeting" | "bio";
 
 interface SectionState {
   loading: boolean;
@@ -33,7 +33,7 @@ export default function CharacterResultPage() {
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const character = characters.find((char) => char.id === params.id);
+  const character = characters.find((char) => char.id === params?.id);
 
   // Check if user is logged in
   useEffect(() => {
@@ -55,6 +55,11 @@ export default function CharacterResultPage() {
       error: null,
       content: character?.generatedContent?.scenario || "",
     },
+    bio: {
+      loading: false,
+      error: null,
+      content: character?.generatedContent?.bio || "",
+    },
   });
 
   // Check API key and generate on mount
@@ -62,8 +67,8 @@ export default function CharacterResultPage() {
     if (!character) return;
 
     // Check if already fully generated
-    if (character.generatedContent?.personality && 
-        character.generatedContent?.scenario) {
+    if (character.generatedContent?.personality &&
+      character.generatedContent?.scenario) {
       setSections({
         personality: {
           loading: false,
@@ -74,6 +79,11 @@ export default function CharacterResultPage() {
           loading: false,
           error: null,
           content: character.generatedContent.scenario || "",
+        },
+        bio: {
+          loading: false,
+          error: null,
+          content: character.generatedContent.bio || "",
         },
       });
       return;
@@ -96,7 +106,7 @@ export default function CharacterResultPage() {
         handleGenerateAll();
       }
     };
-    
+
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, [character?.id]);
@@ -112,7 +122,14 @@ export default function CharacterResultPage() {
     const charIndex = characters.findIndex((c) => c.id === character?.id);
     if (charIndex !== -1) {
       const currentContent = character?.generatedContent || {};
-      const key = sectionId === "personality" ? "personality" : "scenario";
+      let key: string;
+      if (sectionId === "personality") {
+        key = "personality";
+      } else if (sectionId === "scenarioGreeting") {
+        key = "scenario";
+      } else {
+        key = "bio";
+      }
       updateCharacter(charIndex, {
         generatedContent: {
           ...currentContent,
@@ -145,6 +162,12 @@ export default function CharacterResultPage() {
       } else if (sectionId === "scenarioGreeting") {
         const userScenario = scenarioInput.trim() || undefined;
         content = await generateScenario(character, userScenario, keyCheck.apiKey, keyCheck.provider);
+      } else if (sectionId === "bio") {
+        const scenario = sections.scenarioGreeting.content || character?.generatedContent?.scenario || "";
+        if (!scenario) {
+          throw new Error("Scenario must be generated before bio");
+        }
+        content = await generateBio(character, scenario, keyCheck.apiKey, keyCheck.provider);
       }
 
       // Validate content is not empty
@@ -200,8 +223,10 @@ export default function CharacterResultPage() {
     try {
       // Generate combined scenario + greeting
       await handleGenerateSection("scenarioGreeting", keyCheck.apiKey, keyCheck.provider);
+      // Generate bio after scenario
+      await handleGenerateSection("bio", keyCheck.apiKey, keyCheck.provider);
     } catch (error) {
-      console.error("Scenario/Greeting generation failed:", error);
+      console.error("Scenario/Greeting/Bio generation failed:", error);
     } finally {
       setIsGenerating(false);
     }
@@ -220,6 +245,8 @@ export default function CharacterResultPage() {
     try {
       // Generate combined scenario + greeting without user input
       await handleGenerateSection("scenarioGreeting", keyCheck.apiKey, keyCheck.provider);
+      // Generate bio after scenario
+      await handleGenerateSection("bio", keyCheck.apiKey, keyCheck.provider);
     } catch (error) {
       console.error("Generation failed:", error);
     } finally {
@@ -233,7 +260,7 @@ export default function CharacterResultPage() {
 
   const handleSaveToProfile = async () => {
     if (!character || isSaving || isSaved) return;
-    
+
     // Check if logged in
     const { user } = await getCurrentUser();
     if (!user) {
@@ -339,6 +366,22 @@ export default function CharacterResultPage() {
               isGenerating={isGenerating}
             />
           </motion.div>
+
+          {/* Bio Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            <TerminalOutput
+              title="Character Bio"
+              content={sections.bio.content}
+              loading={sections.bio.loading}
+              error={sections.bio.error}
+              onRewrite={() => handleRewrite("bio")}
+              isGenerating={isGenerating}
+            />
+          </motion.div>
         </div>
 
         {/* Actions */}
@@ -366,11 +409,10 @@ export default function CharacterResultPage() {
             <button
               onClick={handleSaveToProfile}
               disabled={isSaving || isSaved || !sections.personality.content}
-              className={`flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold transition-colors ${
-                isSaved
+              className={`flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold transition-colors ${isSaved
                   ? "bg-emerald-500 text-white"
                   : "bg-violet-500 hover:bg-violet-600 text-white"
-              } disabled:opacity-50`}
+                } disabled:opacity-50`}
             >
               {isSaving ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -403,7 +445,7 @@ export default function CharacterResultPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="fixed inset-0 bg-black/50 backdrop-blur-sm"
-            onClick={() => {}}
+            onClick={() => { }}
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}

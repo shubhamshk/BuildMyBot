@@ -5,7 +5,7 @@
 
 import { APIProvider } from "@/lib/api-key";
 
-export type GenerationType = "personality" | "scenario" | "initialMessage";
+export type GenerationType = "personality" | "scenario" | "initialMessage" | "bio";
 
 export interface ModelConfig {
   default: string;
@@ -33,6 +33,10 @@ export const MODEL_CONFIGS: Record<APIProvider, ModelConfig> = {
     default: "meta-llama/Llama-3.1-8B-Instruct",
     fallback: "mistralai/Mistral-7B-Instruct-v0.2",
   },
+  lmstudio: {
+    default: "local-model",
+    long: "local-model",
+  },
 };
 
 /**
@@ -40,7 +44,7 @@ export const MODEL_CONFIGS: Record<APIProvider, ModelConfig> = {
  */
 export function detectProviderFromKey(apiKey: string): APIProvider | null {
   const trimmed = apiKey.trim();
-  
+
   if (trimmed.startsWith("sk-or-")) {
     return "openrouter";
   }
@@ -53,7 +57,7 @@ export function detectProviderFromKey(apiKey: string): APIProvider | null {
   if (trimmed.startsWith("hf_")) {
     return "huggingface";
   }
-  
+
   return null;
 }
 
@@ -65,11 +69,11 @@ export function getModelForGeneration(
   generationType: GenerationType
 ): string {
   const config = MODEL_CONFIGS[provider];
-  
+
   if (generationType === "personality" && config.long) {
     return config.long;
   }
-  
+
   return config.default;
 }
 
