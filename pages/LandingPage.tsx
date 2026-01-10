@@ -9,7 +9,7 @@ const LandingPage: React.FC = () => {
   const { scrollY } = useScroll();
   const yBg = useTransform(scrollY, [0, 1000], [0, 300]);
 
-  const fadeInUp = {
+  const fadeInUp: any = {
     initial: { opacity: 0, y: 30 },
     whileInView: { opacity: 1, y: 0 },
     viewport: { once: true, margin: "-100px" },
@@ -20,13 +20,13 @@ const LandingPage: React.FC = () => {
     <Layout>
       {/* Hero Section */}
       <section className="relative px-4 sm:px-6 lg:px-8 py-12 md:py-24 text-center overflow-hidden">
-        <motion.div 
+        <motion.div
           style={{ y: yBg }}
           className="absolute -top-40 left-1/2 -translate-x-1/2 w-full max-w-6xl aspect-square bg-primary/20 blur-[180px] rounded-full -z-10 pointer-events-none"
         />
 
         <div className="max-w-7xl mx-auto">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass border-primary/20 mb-8 sm:mb-12 shadow-xl"
@@ -35,7 +35,7 @@ const LandingPage: React.FC = () => {
             <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-pink-500">AniSoul Engine V3.5 Active</span>
           </motion.div>
 
-          <motion.h1 
+          <motion.h1
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
@@ -45,7 +45,7 @@ const LandingPage: React.FC = () => {
             <span className="bg-gradient-to-r from-pink-500 via-primary to-purple-600 bg-clip-text text-transparent italic px-2">ULTIMATE</span> SOUL
           </motion.h1>
 
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}
@@ -54,13 +54,13 @@ const LandingPage: React.FC = () => {
             High-fidelity anime persona generation for elite creators. Craft legendary heroes and sophisticated waifus with professional precision.
           </motion.p>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
             className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-4 sm:gap-6 px-4"
           >
-            <button 
+            <button
               onClick={() => navigate('/wizard/basics')}
               className="group relative bg-primary hover:bg-primary-600 text-white font-black py-5 px-10 rounded-2xl transition-all shadow-2xl shadow-primary/30 overflow-hidden flex items-center justify-center gap-3 active:scale-95"
             >
@@ -74,7 +74,7 @@ const LandingPage: React.FC = () => {
         </div>
 
         {/* Hero Interactive Element */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 100 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 1 }}
@@ -82,16 +82,16 @@ const LandingPage: React.FC = () => {
         >
           <div className="relative group rounded-[2rem] sm:rounded-[3rem] overflow-hidden glass p-3 sm:p-5 border-white/5 shadow-[0_40px_100px_-20px_rgba(0,0,0,0.5)]">
             <div className="aspect-[16/10] sm:aspect-video rounded-[1.5rem] sm:rounded-[2.5rem] bg-slate-900 overflow-hidden relative">
-              <img 
-                src="https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=1600" 
+              <img
+                src="https://images.unsplash.com/photo-1541562232579-512a21360020?auto=format&fit=crop&q=80&w=1600"
                 className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-[2s]"
                 alt="Sensei Elite Unit"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-              
+
               <div className="absolute top-6 right-6 flex flex-col items-end gap-2">
-                 <div className="px-3 py-1 bg-primary text-white text-[10px] font-black rounded-lg uppercase tracking-widest">Stable Diffusion XL</div>
-                 <div className="px-3 py-1 glass-light dark:glass text-[10px] font-black rounded-lg uppercase tracking-widest text-slate-900 dark:text-white">Unit ID: ELARA_V4</div>
+                <div className="px-3 py-1 bg-primary text-white text-[10px] font-black rounded-lg uppercase tracking-widest">Stable Diffusion XL</div>
+                <div className="px-3 py-1 glass-light dark:glass text-[10px] font-black rounded-lg uppercase tracking-widest text-slate-900 dark:text-white">Unit ID: ELARA_V4</div>
               </div>
 
               <div className="absolute bottom-8 sm:bottom-12 left-8 sm:left-12 max-w-md text-left">
@@ -122,7 +122,7 @@ const LandingPage: React.FC = () => {
                 <StatCard value="99.8%" label="Trope Accuracy" />
               </div>
             </motion.div>
-            <motion.div 
+            <motion.div
               {...fadeInUp}
               transition={{ delay: 0.2 }}
               className="relative aspect-square glass rounded-[3rem] p-8 flex items-center justify-center overflow-hidden group"
@@ -146,19 +146,19 @@ const LandingPage: React.FC = () => {
 
       {/* CTA Section */}
       <section className="py-24 md:py-32 px-4 sm:px-6 lg:px-8">
-        <motion.div 
+        <motion.div
           {...fadeInUp}
           className="max-w-6xl mx-auto bg-slate-900 rounded-[3rem] sm:rounded-[4rem] p-12 sm:p-24 text-center relative overflow-hidden shadow-2xl shadow-primary/20"
         >
           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 blur-[150px] rounded-full -mr-80 -mt-80" />
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-pink-500/10 blur-[150px] rounded-full -ml-80 -mb-80" />
-          
+
           <h2 className="text-5xl sm:text-8xl font-black text-white mb-8 relative z-10 italic tracking-tighter">FORGE THE FUTURE.</h2>
           <p className="text-slate-400 text-lg sm:text-2xl max-w-2xl mx-auto mb-16 relative z-10 leading-relaxed">
             Ready to give life to your masterpiece? The engine is warm.
           </p>
-          
-          <button 
+
+          <button
             onClick={() => navigate('/wizard/basics')}
             className="relative z-10 bg-white text-slate-900 hover:bg-slate-50 font-black py-8 px-16 rounded-[2rem] text-2xl transition-all hover:scale-105 active:scale-95 shadow-2xl uppercase tracking-widest"
           >
@@ -176,9 +176,9 @@ const LandingPage: React.FC = () => {
         </div>
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-4">Masterpiece Generation Labs © 2024</p>
         <div className="flex justify-center gap-8 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-           <a href="#" className="hover:text-primary transition-colors">Discord</a>
-           <a href="#" className="hover:text-primary transition-colors">Terms</a>
-           <a href="#" className="hover:text-primary transition-colors">Privacy</a>
+          <a href="#" className="hover:text-primary transition-colors">Discord</a>
+          <a href="#" className="hover:text-primary transition-colors">Terms</a>
+          <a href="#" className="hover:text-primary transition-colors">Privacy</a>
         </div>
       </footer>
     </Layout>
@@ -194,7 +194,7 @@ const StatCard = ({ value, label }: { value: string, label: string }) => (
 
 // Explicitly define FeatureCard as a React.FC to correctly handle the reserved 'key' prop from list iterations
 const FeatureCard: React.FC<{ icon: string, title: string, desc: string, index: number }> = ({ icon, title, desc, index }) => (
-  <motion.div 
+  <motion.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
