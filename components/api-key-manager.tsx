@@ -47,13 +47,13 @@ const PROVIDERS: Array<{
       description: "Open-source models from HuggingFace",
       icon: "🤗",
     },
-    {
-      value: "lmstudio",
-      label: "LM Studio",
-      placeholder: "unused-key",
-      description: "Local model running via LM Studio (OpenAI compatible)",
-      icon: "🏠",
-    },
+    // {
+    //   value: "lmstudio",
+    //   label: "LM Studio",
+    //   placeholder: "unused-key",
+    //   description: "Local model running via LM Studio (OpenAI compatible)",
+    //   icon: "🏠",
+    // },
   ];
 
 export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
