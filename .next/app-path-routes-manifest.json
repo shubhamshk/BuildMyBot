@@ -1,13 +1,21 @@
 {
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
+  "/api/auto-fill-wizard/route": "/api/auto-fill-wizard",
+  "/api/enhance-idea/route": "/api/enhance-idea",
+  "/api/paypal/create-subscription/route": "/api/paypal/create-subscription",
+  "/api/paypal/verify-subscription/route": "/api/paypal/verify-subscription",
+  "/api/paypal/webhook/route": "/api/paypal/webhook",
+  "/api/process-characters/route": "/api/process-characters",
   "/auth/callback/route": "/auth/callback",
   "/auth/signin/page": "/auth/signin",
   "/character/[id]/page": "/character/[id]",
   "/characters/results/page": "/characters/results",
   "/create/page": "/create",
   "/generator/page": "/generator",
+  "/idea/page": "/idea",
   "/page": "/",
+  "/pricing/page": "/pricing",
   "/profile/page": "/profile",
   "/wizard/page": "/wizard"
 }

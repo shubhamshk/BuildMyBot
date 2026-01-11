@@ -1,6 +1,8 @@
-"use client";
 
-import { useState, useEffect } from "react";
+"use client";
+export const dynamic = "force-dynamic";
+
+import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
 import { Check, Sparkles, Zap, Crown, Loader2, ArrowRight } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -63,7 +65,8 @@ const PLANS = [
   },
 ];
 
-export default function PricingPage() {
+
+function PricingContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [currentPlan, setCurrentPlan] = useState<string | null>(null);
@@ -80,13 +83,10 @@ export default function PricingPage() {
 
   useEffect(() => {
     loadUserData();
-    
     // Check for success/cancel from PayPal
     const success = searchParams.get("success");
     const canceled = searchParams.get("canceled");
-    
     if (success) {
-      // Start polling for subscription update (webhook may take a moment)
       setIsPolling(true);
       pollForSubscriptionUpdate();
     }
@@ -95,28 +95,19 @@ export default function PricingPage() {
     }
   }, [searchParams]);
 
-  // Verify subscription directly with PayPal and update database
   const pollForSubscriptionUpdate = async () => {
     const maxAttempts = 5;
-    const pollInterval = 2000; // 2 seconds
-    
+    const pollInterval = 2000;
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      // Give PayPal a moment to process
       await new Promise(resolve => setTimeout(resolve, pollInterval));
-      
       try {
-        // Call our verification endpoint that checks PayPal directly
         const verifyResponse = await fetch("/api/paypal/verify-subscription", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
-        
         if (verifyResponse.ok) {
           const verifyData = await verifyResponse.json();
-          console.log("[Pricing] Verify response:", verifyData);
-          
           if (verifyData.success && (verifyData.plan_type === "PRO_MONTHLY" || verifyData.plan_type === "PRO_YEARLY")) {
-            // Subscription verified and activated!
             setCurrentPlan(verifyData.plan_type);
             setUsageInfo({
               currentCount: 0,
@@ -125,10 +116,7 @@ export default function PricingPage() {
             });
             setIsPolling(false);
             setShowSuccessModal(true);
-            
-            // Dispatch event to notify other components about the upgrade
             window.dispatchEvent(new CustomEvent("subscription-updated"));
-            
             router.replace("/pricing");
             return;
           }
@@ -137,8 +125,6 @@ export default function PricingPage() {
         console.error("[Pricing] Verification attempt failed:", err);
       }
     }
-    
-    // If verification times out, load data anyway
     setIsPolling(false);
     await loadUserData();
     setError("Payment processing. Please refresh the page in a moment.");
@@ -149,21 +135,17 @@ export default function PricingPage() {
     try {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
-
       if (!user) {
         router.push("/auth/signin?redirect=/pricing");
         return;
       }
-
       const [subscriptionResult, usageResult] = await Promise.all([
         getUserSubscription(),
         checkUsageLimit(),
       ]);
-
       if (subscriptionResult.data) {
         setCurrentPlan(subscriptionResult.data.plan_type);
       }
-
       if (usageResult.allowed !== undefined) {
         setUsageInfo({
           currentCount: usageResult.currentCount,
@@ -182,25 +164,19 @@ export default function PricingPage() {
     if (planId === "FREE" || planId === currentPlan) {
       return;
     }
-
     setProcessing(planId);
     setError(null);
-
     try {
       const response = await fetch("/api/paypal/create-subscription", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ planType: planId }),
       });
-
       if (!response.ok) {
         const data = await response.json();
         throw new Error(data.error || "Failed to create subscription");
       }
-
       const data = await response.json();
-
-      // Redirect to PayPal approval URL
       if (data.approvalUrl) {
         window.location.href = data.approvalUrl;
       } else {
@@ -261,7 +237,6 @@ export default function PricingPage() {
           </motion.div>
         </div>
       )}
-
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <motion.div
@@ -276,8 +251,6 @@ export default function PricingPage() {
             Unlock the full potential of AI character creation with our flexible plans
           </p>
         </motion.div>
-
-        {/* Usage Info */}
         {usageInfo && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -311,8 +284,6 @@ export default function PricingPage() {
             </div>
           </motion.div>
         )}
-
-        {/* Error Message */}
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -324,14 +295,11 @@ export default function PricingPage() {
             </div>
           </motion.div>
         )}
-
-        {/* Plans */}
         <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {PLANS.map((plan, index) => {
             const Icon = plan.icon;
             const isCurrentPlan = plan.id === currentPlan;
             const isProcessing = processing === plan.id;
-
             return (
               <motion.div
                 key={plan.id}
@@ -351,7 +319,6 @@ export default function PricingPage() {
                     </span>
                   </div>
                 )}
-
                 <div className="text-center mb-6">
                   <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 ${
                     plan.popular ? "bg-violet-500/20" : "bg-slate-800"
@@ -377,7 +344,6 @@ export default function PricingPage() {
                   )}
                   <p className="text-sm text-muted-foreground">{plan.description}</p>
                 </div>
-
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
@@ -386,7 +352,6 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
-
                 <button
                   onClick={() => handleSubscribe(plan.id)}
                   disabled={isCurrentPlan || isProcessing}
@@ -419,8 +384,6 @@ export default function PricingPage() {
             );
           })}
         </div>
-
-        {/* FAQ Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -462,5 +425,13 @@ export default function PricingPage() {
         </motion.div>
       </div>
     </div>
+  );
+}
+
+export default function PricingPage() {
+  return (
+    <Suspense>
+      <PricingContent />
+    </Suspense>
   );
 }

@@ -50,6 +50,42 @@
       "namedRegex": "^/_not\\-found(?:/)?$"
     },
     {
+      "page": "/api/auto-fill-wizard",
+      "regex": "^/api/auto\\-fill\\-wizard(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/auto\\-fill\\-wizard(?:/)?$"
+    },
+    {
+      "page": "/api/enhance-idea",
+      "regex": "^/api/enhance\\-idea(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/enhance\\-idea(?:/)?$"
+    },
+    {
+      "page": "/api/paypal/create-subscription",
+      "regex": "^/api/paypal/create\\-subscription(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/paypal/create\\-subscription(?:/)?$"
+    },
+    {
+      "page": "/api/paypal/verify-subscription",
+      "regex": "^/api/paypal/verify\\-subscription(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/paypal/verify\\-subscription(?:/)?$"
+    },
+    {
+      "page": "/api/paypal/webhook",
+      "regex": "^/api/paypal/webhook(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/paypal/webhook(?:/)?$"
+    },
+    {
+      "page": "/api/process-characters",
+      "regex": "^/api/process\\-characters(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/api/process\\-characters(?:/)?$"
+    },
+    {
       "page": "/auth/callback",
       "regex": "^/auth/callback(?:/)?$",
       "routeKeys": {},
@@ -78,6 +114,18 @@
       "regex": "^/generator(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/generator(?:/)?$"
+    },
+    {
+      "page": "/idea",
+      "regex": "^/idea(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/idea(?:/)?$"
+    },
+    {
+      "page": "/pricing",
+      "regex": "^/pricing(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/pricing(?:/)?$"
     },
     {
       "page": "/profile",

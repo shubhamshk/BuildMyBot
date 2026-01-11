@@ -92,10 +92,28 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../app/idea/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/idea">> = Specific
+  const handler = {} as typeof import("../../app/idea/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/">> = Specific
   const handler = {} as typeof import("../../app/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/pricing/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/pricing">> = Specific
+  const handler = {} as typeof import("../../app/pricing/page.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
@@ -114,6 +132,60 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends AppPageConfig<"/wizard">> = Specific
   const handler = {} as typeof import("../../app/wizard/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/auto-fill-wizard/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/auto-fill-wizard">> = Specific
+  const handler = {} as typeof import("../../app/api/auto-fill-wizard/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/enhance-idea/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/enhance-idea">> = Specific
+  const handler = {} as typeof import("../../app/api/enhance-idea/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/paypal/create-subscription/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/create-subscription">> = Specific
+  const handler = {} as typeof import("../../app/api/paypal/create-subscription/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/paypal/verify-subscription/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/verify-subscription">> = Specific
+  const handler = {} as typeof import("../../app/api/paypal/verify-subscription/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/paypal/webhook/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/webhook">> = Specific
+  const handler = {} as typeof import("../../app/api/paypal/webhook/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/process-characters/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/process-characters">> = Specific
+  const handler = {} as typeof import("../../app/api/process-characters/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
