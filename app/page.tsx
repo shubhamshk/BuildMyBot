@@ -6,6 +6,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthButton } from "@/components/auth-button";
 import { APIKeyIndicator } from "@/components/api-key-indicator";
 import { SubscriptionStatusCard } from "@/components/subscription-status-card";
+import { ResponsiveNavbar } from "@/components/responsive-navbar";
 import Link from "next/link";
 import { useState, useRef } from "react";
 
@@ -32,44 +33,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 py-4 px-6 transition-all duration-300 ${
-          scrolled ? "glass border-b border-border" : "bg-transparent"
-        }`}
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg glass flex items-center justify-center">
-              <Sparkles className="w-4 h-4 text-foreground" />
-            </div>
-            <span className="text-lg font-semibold text-foreground">Characteria</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block">
-              How It Works
-            </Link>
-            <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block">
-              Features
-            </Link>
-            <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block">
-              Pricing
-            </Link>
-            <ThemeToggle />
-            <APIKeyIndicator />
-            <AuthButton />
-            <Link
-              href="/idea"
-              className="px-4 py-2 rounded-lg glass hover:bg-white/5 transition-colors text-sm font-medium"
-            >
-              Start Creating
-            </Link>
-          </div>
-        </div>
-      </motion.nav>
+      {/* Responsive Navigation */}
+      <ResponsiveNavbar scrolled={scrolled} />
 
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center px-6 pt-24 pb-16 overflow-hidden">
