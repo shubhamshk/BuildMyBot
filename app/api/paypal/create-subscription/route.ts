@@ -205,8 +205,8 @@ export async function POST(request: NextRequest) {
             payer_selected: "PAYPAL",
             payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED",
           },
-          return_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/pricing?success=true`,
-          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/pricing?canceled=true`,
+          return_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://characteria.me"}/pricing?success=true`,
+          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://characteria.me"}/pricing?canceled=true`,
         },
       }),
     });
