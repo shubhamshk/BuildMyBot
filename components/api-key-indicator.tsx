@@ -6,9 +6,9 @@ import { isAPIKeyConnected, getSelectedProvider, getAPIKey, APIProvider } from "
 import { APIKeyManager } from "./api-key-manager";
 
 const PROVIDER_LABELS: Record<APIProvider, string> = {
+  openrouter: "OpenRouter",
   openai: "OpenAI",
   gemini: "Gemini",
-  openrouter: "OpenRouter",
   huggingface: "HuggingFace",
   lmstudio: "LM Studio",
 };
@@ -85,25 +85,25 @@ export function APIKeyIndicator() {
               e.stopPropagation();
               setShowDropdown(!showDropdown);
             }}
-            className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass border border-green-500/30 bg-green-500/10 hover:bg-green-500/20 transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900 border border-green-500/40 hover:border-green-500/60 hover:bg-slate-800 transition-all cursor-pointer shadow-lg"
           >
-            <CheckCircle2 className="w-4 h-4 text-green-400" />
-            <span className="text-xs font-medium text-green-400 hidden sm:inline">
+            <CheckCircle2 className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+            <span className="text-xs font-medium text-green-400 hidden sm:inline whitespace-nowrap">
               {PROVIDER_LABELS[activeProvider]}
             </span>
-            <ChevronDown className={`w-3 h-3 text-green-400 transition-transform ${showDropdown ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-3 h-3 text-green-400 transition-transform flex-shrink-0 ${showDropdown ? 'rotate-180' : ''}`} />
           </button>
 
           {/* Dropdown Menu */}
           {showDropdown && (
-            <div className="absolute right-0 top-full mt-2 w-64 rounded-xl glass border border-border shadow-xl z-50 overflow-hidden">
-              <div className="p-3 border-b border-border">
-                <p className="text-xs text-muted-foreground mb-1">Active Provider</p>
-                <p className="text-sm font-medium text-foreground">{PROVIDER_LABELS[activeProvider]}</p>
+            <div className="absolute right-0 top-full mt-1.5 w-56 rounded-lg bg-slate-900 border border-slate-700 shadow-2xl z-50 overflow-hidden">
+              <div className="p-2.5 border-b border-slate-700">
+                <p className="text-[10px] text-slate-400 mb-0.5 uppercase tracking-wide">Active Provider</p>
+                <p className="text-xs font-semibold text-green-400">{PROVIDER_LABELS[activeProvider]}</p>
               </div>
-              <div className="p-3 border-b border-border">
-                <p className="text-xs text-muted-foreground mb-1">API Key</p>
-                <code className="text-xs font-mono text-foreground bg-muted/50 px-2 py-1 rounded">
+              <div className="p-2.5 border-b border-slate-700">
+                <p className="text-[10px] text-slate-400 mb-1 uppercase tracking-wide">API Key</p>
+                <code className="text-[10px] font-mono text-slate-300 bg-slate-800 px-2 py-1 rounded border border-slate-700 block truncate">
                   {maskedKey}
                 </code>
               </div>
@@ -113,10 +113,10 @@ export function APIKeyIndicator() {
                     setShowDropdown(false);
                     setShowModal(true);
                   }}
-                  className="w-full flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-white/5 transition-colors text-left"
+                  className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md hover:bg-slate-800 transition-colors text-left border border-transparent hover:border-slate-700"
                 >
-                  <Settings2 className="w-4 h-4 text-muted-foreground" />
-                  <span className="text-sm text-foreground">Manage API Keys</span>
+                  <Settings2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+                  <span className="text-xs text-slate-200 font-medium">Manage API Keys</span>
                 </button>
               </div>
             </div>
@@ -138,10 +138,10 @@ export function APIKeyIndicator() {
     <>
       <button
         onClick={() => setShowModal(true)}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-lg glass border border-border hover:bg-white/5 transition-colors"
+        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 transition-all shadow-lg"
       >
-        <Key className="w-4 h-4 text-muted-foreground" />
-        <span className="text-xs font-medium text-muted-foreground hidden sm:inline">
+        <Key className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
+        <span className="text-xs font-medium text-slate-300 hidden sm:inline whitespace-nowrap">
           Connect API Key
         </span>
       </button>

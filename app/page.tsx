@@ -58,7 +58,7 @@ export default function Home() {
             <APIKeyIndicator />
             <AuthButton />
             <Link
-              href="/create"
+              href="/idea"
               className="px-4 py-2 rounded-lg glass hover:bg-white/5 transition-colors text-sm font-medium"
             >
               Start Creating
@@ -116,7 +116,7 @@ export default function Home() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
-              href="/create"
+              href="/idea"
               className="px-8 py-4 rounded-xl glass hover:bg-white/5 transition-all font-medium flex items-center gap-2 group"
             >
               Start Creating
@@ -568,7 +568,7 @@ export default function Home() {
               Start building characters that actually make sense.
             </h2>
             <Link
-              href="/create"
+              href="/idea"
               className="inline-flex items-center gap-2 px-8 py-4 rounded-xl glass hover:bg-white/5 transition-all font-medium mb-4"
             >
               Create Your First Character

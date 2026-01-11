@@ -3,6 +3,7 @@
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useCharacter } from "@/context/CharacterContext";
 import { motion } from "framer-motion";
+import { AIAutoFillButton } from "@/components/ai-auto-fill-button";
 
 interface PersonalityStepProps {
   characterIndex: number;
@@ -65,9 +66,33 @@ export default function PersonalityStep({ characterIndex, onNext, onBack }: Pers
     return "Neutral";
   };
 
+  const handleAutoFill = (data: any) => {
+    updateCharacter(characterIndex, {
+      personality: {
+        warmth: data.warmth ?? character.personality.warmth,
+        confidence: data.confidence ?? character.personality.confidence,
+        calmness: data.calmness ?? character.personality.calmness,
+        reserve: data.reserve ?? character.personality.reserve,
+      },
+    });
+  };
+
+  const storyIdea = typeof window !== "undefined" ? localStorage.getItem("storyIdea") : null;
+
   return (
     <div className="max-w-4xl mx-auto">
-      <h2 className="text-4xl font-bold text-foreground mb-3">Personality Profile</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-4xl font-bold text-foreground">Personality Profile</h2>
+        {storyIdea && (
+          <AIAutoFillButton
+            onAutoFill={handleAutoFill}
+            step="personality"
+            characterIndex={characterIndex}
+            existingData={character}
+            storyIdea={storyIdea}
+          />
+        )}
+      </div>
       <p className="text-muted-foreground mb-8">
         Define the core temperament and behavioral nuances of your AI character.
       </p>

@@ -68,7 +68,8 @@ export default function CharacterResultPage() {
 
     // Check if already fully generated
     if (character.generatedContent?.personality &&
-      character.generatedContent?.scenario) {
+      character.generatedContent?.scenario &&
+      character.generatedContent?.bio) {
       setSections({
         personality: {
           loading: false,
@@ -89,13 +90,33 @@ export default function CharacterResultPage() {
       return;
     }
 
+    // Check if background processing is enabled
+    const shouldProcess = localStorage.getItem("backgroundProcessing") === "true";
+    if (shouldProcess) {
+      const apiKey = localStorage.getItem("processingApiKey");
+      const provider = localStorage.getItem("processingProvider") as APIProvider;
+      const storyIdea = localStorage.getItem("processingStoryIdea");
+
+      if (apiKey && provider) {
+        // Set sections to loading state immediately
+        setSections({
+          personality: { loading: true, error: null, content: "" },
+          scenarioGreeting: { loading: true, error: null, content: "" },
+          bio: { loading: true, error: null, content: "" },
+        });
+        // Start background processing
+        handleBackgroundProcessing(apiKey, provider, storyIdea || undefined);
+        return;
+      }
+    }
+
     // Check API key - HARD BLOCK
     if (!isAPIKeyConnected()) {
       setShowAPIKeyModal(true);
       return;
     }
 
-    // Start generation
+    // Start generation normally
     handleGenerateAll();
   }, [character?.id]);
 
@@ -184,6 +205,90 @@ export default function CharacterResultPage() {
         content: sections[sectionId].content,
       });
       throw error;
+    }
+  };
+
+  const handleBackgroundProcessing = async (apiKey: string, provider: APIProvider, storyIdea?: string) => {
+    if (!character) return;
+
+    setIsGenerating(true);
+    setSections({
+      personality: { loading: true, error: null, content: "" },
+      scenarioGreeting: { loading: true, error: null, content: "" },
+      bio: { loading: true, error: null, content: "" },
+    });
+
+    try {
+      // Process in background - don't block UI
+      const response = await fetch("/api/process-characters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          characters: [character],
+          apiKey,
+          provider,
+          storyIdea,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Background processing failed");
+      }
+
+      const data = await response.json();
+      const result = data.results?.[0];
+
+      if (result) {
+        if (result.error) {
+          throw new Error(result.error);
+        }
+
+        // Update all sections
+        setSections({
+          personality: {
+            loading: false,
+            error: null,
+            content: result.personality || "",
+          },
+          scenarioGreeting: {
+            loading: false,
+            error: null,
+            content: result.scenario || "",
+          },
+          bio: {
+            loading: false,
+            error: null,
+            content: result.bio || "",
+          },
+        });
+
+        // Update character
+        const charIndex = characters.findIndex((c) => c.id === character.id);
+        if (charIndex !== -1) {
+          updateCharacter(charIndex, {
+            generatedContent: {
+              personality: result.personality,
+              scenario: result.scenario,
+              bio: result.bio,
+            },
+          });
+        }
+      }
+
+      // Clear background processing flag
+      localStorage.removeItem("backgroundProcessing");
+      localStorage.removeItem("processingApiKey");
+      localStorage.removeItem("processingProvider");
+      localStorage.removeItem("processingStoryIdea");
+    } catch (error: any) {
+      console.error("Background processing error:", error);
+      setSections({
+        personality: { loading: false, error: error.message, content: "" },
+        scenarioGreeting: { loading: false, error: error.message, content: "" },
+        bio: { loading: false, error: error.message, content: "" },
+      });
+    } finally {
+      setIsGenerating(false);
     }
   };
 

@@ -12,7 +12,8 @@ import BackstoryStep from "@/components/wizard-steps/backstory";
 import SpeechStep from "@/components/wizard-steps/speech";
 import BoundariesStep from "@/components/wizard-steps/boundaries";
 import { APIKeyModal } from "@/components/api-key-modal";
-import { isAPIKeyConnected } from "@/lib/api-key";
+import { isAPIKeyConnected, APIProvider } from "@/lib/api-key";
+import { validateAPIKey } from "@/lib/generation/service";
 
 const STEPS = [
   { id: "basics", label: "Basics" },
@@ -151,13 +152,132 @@ export default function WizardPage() {
     setCurrentStep(step);
   };
 
-  const handleGenerate = () => {
+  const handleAIAutoFillAll = async (storyIdea: string, apiKey: string, provider: APIProvider) => {
+    // Auto-fill all characters in background - don't wait
+    const autoFillPromises = characters.map(async (char, charIndex) => {
+      try {
+        // Auto-fill basics
+        const basicsResponse = await fetch("/api/auto-fill-wizard", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            storyIdea,
+            step: "basics",
+            characterIndex: charIndex,
+            apiKey,
+            provider,
+          }),
+        });
+        const basicsData = await basicsResponse.json();
+
+        // Auto-fill personality
+        const personalityResponse = await fetch("/api/auto-fill-wizard", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            storyIdea,
+            step: "personality",
+            characterIndex: charIndex,
+            existingData: { basics: basicsData.data },
+            apiKey,
+            provider,
+          }),
+        });
+        const personalityData = await personalityResponse.json();
+
+        // Auto-fill backstory
+        const backstoryResponse = await fetch("/api/auto-fill-wizard", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            storyIdea,
+            step: "backstory",
+            characterIndex: charIndex,
+            existingData: { basics: basicsData.data },
+            apiKey,
+            provider,
+          }),
+        });
+        const backstoryData = await backstoryResponse.json();
+
+        // Auto-fill speech
+        const speechResponse = await fetch("/api/auto-fill-wizard", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            storyIdea,
+            step: "speech",
+            characterIndex: charIndex,
+            existingData: { basics: basicsData.data },
+            apiKey,
+            provider,
+          }),
+        });
+        const speechData = await speechResponse.json();
+
+        // Auto-fill boundaries
+        const boundariesResponse = await fetch("/api/auto-fill-wizard", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            storyIdea,
+            step: "boundaries",
+            characterIndex: charIndex,
+            existingData: { basics: basicsData.data },
+            apiKey,
+            provider,
+          }),
+        });
+        const boundariesData = await boundariesResponse.json();
+
+        // Update character with all data
+        updateCharacter(charIndex, {
+          basics: basicsData.data,
+          personality: personalityData.data,
+          backstoryStyle: backstoryData.data,
+          speechRules: speechData.data,
+          boundaries: boundariesData.data,
+        });
+      } catch (error) {
+        console.error(`Auto-fill error for character ${charIndex}:`, error);
+      }
+    });
+
+    // Process in background - don't wait
+    Promise.all(autoFillPromises).catch(err => {
+      console.error("Background auto-fill error:", err);
+    });
+
+    // Clear the flag
+    localStorage.removeItem("aiAutoFill");
+    localStorage.removeItem("aiAutoFillStoryIdea");
+    localStorage.removeItem("aiAutoFillApiKey");
+    localStorage.removeItem("aiAutoFillProvider");
+  };
+
+  const handleGenerate = async () => {
     if (!isAPIKeyConnected()) {
       setShowAPIKeyModal(true);
       return;
     }
 
-    // Navigate to results
+    const keyCheck = validateAPIKey();
+    if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
+      setShowAPIKeyModal(true);
+      return;
+    }
+
+    const storyIdea = typeof window !== "undefined" ? localStorage.getItem("storyIdea") : null;
+
+    // Mark that background processing should start
+    localStorage.setItem("backgroundProcessing", "true");
+    localStorage.setItem("processingApiKey", keyCheck.apiKey);
+    localStorage.setItem("processingProvider", keyCheck.provider);
+    if (storyIdea) {
+      localStorage.setItem("processingStoryIdea", storyIdea);
+    }
+
+    // Navigate to results immediately - processing will happen in background
     if (isMultiMode) {
       router.push("/characters/results");
     } else {

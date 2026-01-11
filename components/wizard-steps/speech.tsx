@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { useCharacter } from "@/context/CharacterContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { AIAutoFillButton } from "@/components/ai-auto-fill-button";
 
 interface SpeechStepProps {
   characterIndex: number;
@@ -58,9 +59,32 @@ export default function SpeechStep({ characterIndex, onNext, onBack }: SpeechSte
   const isCustomTone = speechRules.tone && !TONE_OPTIONS.includes(speechRules.tone);
   const isCustomVocab = speechRules.vocabulary && !VOCABULARY_OPTIONS.includes(speechRules.vocabulary);
 
+  const handleAutoFill = (data: any) => {
+    updateCharacter(characterIndex, {
+      speechRules: {
+        tone: data.tone || speechRules.tone,
+        vocabulary: data.vocabulary || speechRules.vocabulary,
+        patterns: data.patterns || speechRules.patterns,
+      },
+    });
+  };
+
+  const storyIdea = typeof window !== "undefined" ? localStorage.getItem("storyIdea") : null;
+
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-4xl font-bold text-foreground mb-3">Speech & Behavior</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-4xl font-bold text-foreground">Speech & Behavior</h2>
+        {storyIdea && (
+          <AIAutoFillButton
+            onAutoFill={handleAutoFill}
+            step="speech"
+            characterIndex={characterIndex}
+            existingData={character}
+            storyIdea={storyIdea}
+          />
+        )}
+      </div>
       <p className="text-muted-foreground mb-8">
         Define how your character speaks and behaves.
       </p>

@@ -3,6 +3,7 @@
 import { ArrowLeft, Sparkles } from "lucide-react";
 import { useCharacter } from "@/context/CharacterContext";
 import { motion } from "framer-motion";
+import { AIAutoFillButton } from "@/components/ai-auto-fill-button";
 
 interface BoundariesStepProps {
   characterIndex: number;
@@ -18,9 +19,32 @@ export default function BoundariesStep({ characterIndex, onNext, onBack }: Bound
 
   const boundaries = character.boundaries || {};
 
+  const handleAutoFill = (data: any) => {
+    updateCharacter(characterIndex, {
+      boundaries: {
+        contentRating: data.contentRating || boundaries.contentRating,
+        topics: data.topics || boundaries.topics,
+        tone: data.tone || boundaries.tone,
+      },
+    });
+  };
+
+  const storyIdea = typeof window !== "undefined" ? localStorage.getItem("storyIdea") : null;
+
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-4xl font-bold text-foreground mb-3">Boundaries & Tone</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-4xl font-bold text-foreground">Boundaries & Tone</h2>
+        {storyIdea && (
+          <AIAutoFillButton
+            onAutoFill={handleAutoFill}
+            step="boundaries"
+            characterIndex={characterIndex}
+            existingData={character}
+            storyIdea={storyIdea}
+          />
+        )}
+      </div>
       <p className="text-muted-foreground mb-8">
         Set the content boundaries and overall tone for your character.
       </p>

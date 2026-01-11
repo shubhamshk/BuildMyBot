@@ -4,6 +4,7 @@ import { ArrowLeft, ArrowRight, Plus } from "lucide-react";
 import { useCharacter } from "@/context/CharacterContext";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { AIAutoFillButton } from "@/components/ai-auto-fill-button";
 
 interface BackstoryStepProps {
   characterIndex: number;
@@ -44,9 +45,31 @@ export default function BackstoryStep({ characterIndex, onNext, onBack }: Backst
 
   const isCustomSelected = character.backstoryStyle && !BACKSTORY_STYLES.includes(character.backstoryStyle);
 
+  const handleAutoFill = (data: string) => {
+    if (BACKSTORY_STYLES.includes(data)) {
+      handleStyleSelect(data);
+    } else {
+      setCustomStyle(data);
+      handleCustomSubmit();
+    }
+  };
+
+  const storyIdea = typeof window !== "undefined" ? localStorage.getItem("storyIdea") : null;
+
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-4xl font-bold text-foreground mb-3">Backstory Style</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-4xl font-bold text-foreground">Backstory Style</h2>
+        {storyIdea && (
+          <AIAutoFillButton
+            onAutoFill={handleAutoFill}
+            step="backstory"
+            characterIndex={characterIndex}
+            existingData={character}
+            storyIdea={storyIdea}
+          />
+        )}
+      </div>
       <p className="text-muted-foreground mb-8">
         Choose the narrative style for your character&apos;s backstory.
       </p>

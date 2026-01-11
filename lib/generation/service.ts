@@ -29,19 +29,21 @@ export interface GenerationState {
 
 /**
  * Get max tokens based on generation type
+ * Total output (personality + scenario + initial message + bio) should stay within 800-1200 tokens
+ * Individual limits are set to ensure combined output fits within range
  */
 function getMaxTokensForType(generationType: GenerationType): number {
   switch (generationType) {
     case "personality":
-      return 1800;
+      return 800; // ~400-500 tokens target (reduced from 1800 to fit total budget)
     case "scenario":
-      return 1200; // Increased for combined scenario + greeting
+      return 300; // ~300-400 tokens target (scenario section only, initial message separate)
     case "initialMessage":
-      return 550;
+      return 500; // ~200-300 tokens target
     case "bio":
-      return 800;
+      return 300; // ~200-300 tokens target
     default:
-      return 1800;
+      return 500;
   }
 }
 
@@ -169,7 +171,7 @@ export function validateAPIKey(): { valid: boolean; apiKey: string | null; provi
   }
 
   // Auto-detect from all stored keys
-  const providers: APIProvider[] = ["openai", "gemini", "openrouter", "huggingface", "lmstudio"];
+  const providers: APIProvider[] = ["openrouter","openai", "gemini", "huggingface", "lmstudio"];
   for (const p of providers) {
     const key = getAPIKey(p);
     if (key && key.trim() !== "" && key.length >= 10) {

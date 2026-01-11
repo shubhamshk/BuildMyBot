@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useCharacter } from "@/context/CharacterContext";
 import { motion } from "framer-motion";
+import { AIAutoFillButton } from "@/components/ai-auto-fill-button";
 
 interface BasicsStepProps {
   characterIndex: number;
@@ -30,9 +31,34 @@ export default function BasicsStep({ characterIndex, onNext }: BasicsStepProps) 
     }
   };
 
+  const handleAutoFill = (data: any) => {
+    updateCharacter(characterIndex, {
+      basics: {
+        name: data.name || character.basics.name,
+        age: data.age || character.basics.age,
+        gender: data.gender || character.basics.gender,
+        setting: data.setting || character.basics.setting,
+        relationship: data.relationship || character.basics.relationship,
+      },
+    });
+  };
+
+  const storyIdea = typeof window !== "undefined" ? localStorage.getItem("storyIdea") : null;
+
   return (
     <div className="max-w-2xl mx-auto">
-      <h2 className="text-4xl font-bold text-foreground mb-3">Basic Info</h2>
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-4xl font-bold text-foreground">Basic Info</h2>
+        {storyIdea && (
+          <AIAutoFillButton
+            onAutoFill={handleAutoFill}
+            step="basics"
+            characterIndex={characterIndex}
+            existingData={character}
+            storyIdea={storyIdea}
+          />
+        )}
+      </div>
       <p className="text-muted-foreground mb-8">
         Let&apos;s start with the fundamentals of your character.
       </p>
@@ -62,16 +88,22 @@ export default function BasicsStep({ characterIndex, onNext }: BasicsStepProps) 
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-sm font-medium text-foreground mb-2 block">Age</label>
+            <label className="text-sm font-medium text-foreground mb-2 block">Age (must be 18+)</label>
             <input
               type="number"
               placeholder="24"
+              min="18"
               value={character.basics.age}
-              onChange={(e) =>
+              onChange={(e) => {
+                const ageValue = e.target.value;
+                // Enforce minimum age of 18
+                if (ageValue && parseInt(ageValue) < 18) {
+                  return; // Don't update if below 18
+                }
                 updateCharacter(characterIndex, {
-                  basics: { ...character.basics, age: e.target.value },
-                })
-              }
+                  basics: { ...character.basics, age: ageValue },
+                });
+              }}
               className={`w-full h-12 px-4 rounded-xl glass border transition-all outline-none ${
                 errors.age
                   ? "border-red-500/50 focus:border-red-500"
@@ -79,6 +111,9 @@ export default function BasicsStep({ characterIndex, onNext }: BasicsStepProps) 
               }`}
             />
             {errors.age && <p className="text-sm text-red-400 mt-1">{errors.age}</p>}
+            {character.basics.age && parseInt(character.basics.age) < 18 && (
+              <p className="text-sm text-red-400 mt-1">Age must be 18 or above</p>
+            )}
           </div>
           <div>
             <label className="text-sm font-medium text-foreground mb-2 block">Gender</label>

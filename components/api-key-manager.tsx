@@ -19,6 +19,13 @@ const PROVIDERS: Array<{
   description: string;
   icon: string;
 }> = [
+  {
+    value: "openrouter",
+    label: "OpenRouter",
+    placeholder: "sk-or-...",
+    description: "Access to multiple models (Claude, DeepSeek, etc.)",
+    icon: "🌐",
+  },
     {
       value: "openai",
       label: "OpenAI",
@@ -32,13 +39,6 @@ const PROVIDERS: Array<{
       placeholder: "AIza...",
       description: "Gemini Pro and other Google AI models",
       icon: "💎",
-    },
-    {
-      value: "openrouter",
-      label: "OpenRouter",
-      placeholder: "sk-or-...",
-      description: "Access to multiple models (Claude, DeepSeek, etc.)",
-      icon: "🌐",
     },
     {
       value: "huggingface",
@@ -223,36 +223,36 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="glass rounded-3xl p-0 max-w-3xl w-full border border-border pointer-events-auto overflow-hidden"
+              className="bg-slate-900 rounded-2xl p-0 max-w-2xl w-full border border-slate-700 pointer-events-auto overflow-hidden shadow-2xl"
             >
               {/* Header */}
-              <div className="p-6 border-b border-border">
+              <div className="p-5 border-b border-slate-700">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center">
-                      <Key className="w-6 h-6 text-violet-400" />
+                    <div className="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center border border-violet-500/30">
+                      <Key className="w-5 h-5 text-violet-400" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-semibold text-foreground">
+                      <h2 className="text-xl font-semibold text-slate-100">
                         API Key Manager
                       </h2>
-                      <p className="text-sm text-muted-foreground">
+                      <p className="text-xs text-slate-400">
                         Manage your AI provider API keys securely
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={handleClose}
-                    className="w-10 h-10 rounded-lg glass border border-border hover:bg-white/5 transition-colors flex items-center justify-center"
+                    className="w-9 h-9 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 transition-colors flex items-center justify-center"
                   >
-                    <X className="w-5 h-5 text-foreground" />
+                    <X className="w-4 h-4 text-slate-300" />
                   </button>
                 </div>
               </div>
 
               {/* Tabs */}
-              <div className="px-6 pt-6 border-b border-border">
-                <div className="flex gap-2 overflow-x-auto pb-2">
+              <div className="px-5 pt-4 border-b border-slate-700">
+                <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
                   {PROVIDERS.map((provider) => {
                     const hasKeyForProvider = hasKey(provider.value);
                     const isSelected = selectedProvider === provider.value;
@@ -261,19 +261,19 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                       <button
                         key={provider.value}
                         onClick={() => setActiveTab(provider.value)}
-                        className={`px-4 py-2.5 rounded-xl transition-all whitespace-nowrap flex items-center gap-2 relative ${activeTab === provider.value
-                          ? "bg-violet-500/20 border-2 border-violet-500 text-violet-400"
-                          : "glass border border-border hover:bg-white/5 text-muted-foreground"
+                        className={`px-3 py-2 rounded-lg transition-all whitespace-nowrap flex items-center gap-1.5 relative flex-shrink-0 ${activeTab === provider.value
+                          ? "bg-violet-500/20 border border-violet-500/50 text-violet-400"
+                          : "bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 text-slate-300"
                           }`}
                       >
-                        <span className="text-lg">{provider.icon}</span>
-                        <span className="font-medium">{provider.label}</span>
+                        <span className="text-base">{provider.icon}</span>
+                        <span className="text-sm font-medium">{provider.label}</span>
                         {hasKeyForProvider && (
-                          <div className={`w-2 h-2 rounded-full ${isSelected ? "bg-violet-400" : "bg-green-400"
+                          <div className={`w-1.5 h-1.5 rounded-full ${isSelected ? "bg-violet-400" : "bg-green-400"
                             }`} />
                         )}
                         {isSelected && (
-                          <CheckCircle2 className="w-4 h-4 text-violet-400" />
+                          <CheckCircle2 className="w-3.5 h-3.5 text-violet-400" />
                         )}
                       </button>
                     );
@@ -282,18 +282,18 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
               </div>
 
               {/* Content */}
-              <div className="p-6">
+              <div className="p-5 max-h-[60vh] overflow-y-auto">
                 {activeProvider && (
-                  <div className="space-y-6">
+                  <div className="space-y-4">
                     {/* Provider Info */}
                     <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-3xl">{activeProvider.icon}</span>
+                      <div className="flex items-center gap-2.5 mb-2">
+                        <span className="text-2xl">{activeProvider.icon}</span>
                         <div>
-                          <h3 className="text-xl font-semibold text-foreground">
+                          <h3 className="text-lg font-semibold text-slate-100">
                             {activeProvider.label}
                           </h3>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs text-slate-400">
                             {activeProvider.description}
                           </p>
                         </div>
@@ -302,7 +302,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
 
                     {/* API Key Input */}
                     <div>
-                      <label className="text-sm font-medium text-foreground mb-2 block">
+                      <label className="text-xs font-medium text-slate-300 mb-1.5 block">
                         API Key
                       </label>
                       <div className="relative">
@@ -316,7 +316,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                             }))
                           }
                           placeholder={activeProvider.placeholder}
-                          className="w-full h-12 px-4 pr-12 rounded-xl glass border border-border focus:border-violet-500 transition-all outline-none font-mono text-sm"
+                          className="w-full h-10 px-3 pr-10 rounded-lg bg-slate-800 border border-slate-700 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all outline-none font-mono text-sm text-slate-100 placeholder:text-slate-500"
                           autoFocus
                         />
                         <button
@@ -327,30 +327,30 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                               [activeTab]: !prev[activeTab],
                             }))
                           }
-                          className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg hover:bg-white/5 transition-colors flex items-center justify-center"
+                          className="absolute right-2 top-1/2 -translate-y-1/2 w-7 h-7 rounded-md hover:bg-slate-700 transition-colors flex items-center justify-center"
                         >
                           {showKeys[activeTab] ? (
-                            <EyeOff className="w-4 h-4 text-muted-foreground" />
+                            <EyeOff className="w-3.5 h-3.5 text-slate-400" />
                           ) : (
-                            <Eye className="w-4 h-4 text-muted-foreground" />
+                            <Eye className="w-3.5 h-3.5 text-slate-400" />
                           )}
                         </button>
                       </div>
-                      <p className="text-xs text-muted-foreground mt-2">
+                      <p className="text-[10px] text-slate-500 mt-1.5">
                         Your API key is stored locally in your browser and never sent to our servers.
                       </p>
                     </div>
 
                     {/* Status */}
                     {hasKey(activeTab) && (
-                      <div className="p-4 rounded-xl glass border border-green-500/30 bg-green-500/10">
+                      <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
                         <div className="flex items-center gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-green-400" />
+                          <CheckCircle2 className="w-4 h-4 text-green-400 flex-shrink-0" />
                           <div>
-                            <p className="text-sm font-medium text-green-400">
+                            <p className="text-xs font-medium text-green-400">
                               API Key Configured
                             </p>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-[10px] text-slate-400">
                               {selectedProvider === activeTab
                                 ? "Currently active for generation"
                                 : "Click 'Save & Activate' to use this key"}
@@ -361,26 +361,26 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                     )}
 
                     {/* Actions */}
-                    <div className="flex gap-3">
+                    <div className="flex gap-2">
                       {hasKey(activeTab) && (
                         <>
                           <button
                             onClick={() => handleCopyKey(activeTab)}
-                            className="px-4 py-2.5 rounded-xl glass border border-border hover:bg-white/5 transition-colors flex items-center gap-2 text-muted-foreground"
+                            className="px-3 py-2 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 transition-colors flex items-center gap-1.5 text-slate-300 text-xs font-medium"
                             title="Copy API Key"
                           >
                             {copiedKey === activeTab ? (
-                              <Check className="w-4 h-4 text-green-400" />
+                              <Check className="w-3.5 h-3.5 text-green-400" />
                             ) : (
-                              <Copy className="w-4 h-4" />
+                              <Copy className="w-3.5 h-3.5" />
                             )}
                             {copiedKey === activeTab ? "Copied!" : "Copy"}
                           </button>
                           <button
                             onClick={() => handleDeleteKey(activeTab)}
-                            className="px-4 py-2.5 rounded-xl glass border border-red-500/30 hover:bg-red-500/10 transition-colors flex items-center gap-2 text-red-400"
+                            className="px-3 py-2 rounded-lg bg-slate-800 border border-red-500/30 hover:bg-red-500/10 hover:border-red-500/50 transition-colors flex items-center gap-1.5 text-red-400 text-xs font-medium"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                             Remove
                           </button>
                         </>
@@ -388,23 +388,23 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                       <button
                         onClick={() => handleSaveKey(activeTab)}
                         disabled={!apiKeys[activeTab].trim()}
-                        className="flex-1 py-2.5 rounded-xl bg-violet-500 hover:bg-violet-600 text-white font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                        className="flex-1 py-2 rounded-lg bg-violet-500 hover:bg-violet-600 text-white text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5"
                       >
-                        <CheckCircle2 className="w-4 h-4" />
+                        <CheckCircle2 className="w-3.5 h-3.5" />
                         {hasKey(activeTab) ? "Update & Activate" : "Save & Activate"}
                       </button>
                     </div>
 
                     {/* Help Links */}
-                    <div className="pt-4 border-t border-border">
-                      <p className="text-xs text-muted-foreground mb-2">Need help getting an API key?</p>
+                    <div className="pt-3 border-t border-slate-700">
+                      <p className="text-[10px] text-slate-500 mb-1.5">Need help getting an API key?</p>
                       <div className="flex flex-wrap gap-2">
                         {activeTab === "openai" && (
                           <a
                             href="https://platform.openai.com/api-keys"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-violet-400 hover:text-violet-300 underline"
+                            className="text-[10px] text-violet-400 hover:text-violet-300 underline"
                           >
                             Get OpenAI API Key →
                           </a>
@@ -414,7 +414,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                             href="https://makersuite.google.com/app/apikey"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-violet-400 hover:text-violet-300 underline"
+                            className="text-[10px] text-violet-400 hover:text-violet-300 underline"
                           >
                             Get Gemini API Key →
                           </a>
@@ -424,7 +424,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                             href="https://openrouter.ai/keys"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-violet-400 hover:text-violet-300 underline"
+                            className="text-[10px] text-violet-400 hover:text-violet-300 underline"
                           >
                             Get OpenRouter API Key →
                           </a>
@@ -434,7 +434,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                             href="https://huggingface.co/settings/tokens"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-xs text-violet-400 hover:text-violet-300 underline"
+                            className="text-[10px] text-violet-400 hover:text-violet-300 underline"
                           >
                             Get HuggingFace Token →
                           </a>
@@ -446,16 +446,16 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
               </div>
 
               {/* Footer */}
-              <div className="p-6 border-t border-border bg-muted/30">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <p className="text-xs text-muted-foreground">
+              <div className="p-4 border-t border-slate-700 bg-slate-800/50">
+                <div className="flex items-center justify-between flex-wrap gap-2">
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <p className="text-[10px] text-slate-400">
                       {Object.values(apiKeys).filter((k) => k).length} of {PROVIDERS.length} providers configured
                     </p>
                     {Object.values(apiKeys).some((k) => k) && (
                       <button
                         onClick={handleClearAll}
-                        className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1"
+                        className="text-[10px] text-red-400 hover:text-red-300 flex items-center gap-1 transition-colors"
                       >
                         <Trash2 className="w-3 h-3" />
                         Clear All Keys
@@ -464,7 +464,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                   </div>
                   <button
                     onClick={handleClose}
-                    className="px-4 py-2 rounded-xl glass border border-border hover:bg-white/5 transition-colors text-sm font-medium"
+                    className="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 hover:bg-slate-700 hover:border-slate-600 transition-colors text-xs font-medium text-slate-300"
                   >
                     Close
                   </button>

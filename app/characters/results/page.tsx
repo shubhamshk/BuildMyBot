@@ -50,6 +50,7 @@ export default function MultipleCharactersResultPage() {
   const [isSaved, setIsSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   // Check if user is logged in
   useEffect(() => {
@@ -59,6 +60,26 @@ export default function MultipleCharactersResultPage() {
     };
     checkUser();
   }, []);
+
+  // Check if background processing is needed
+  useEffect(() => {
+    const shouldProcess = localStorage.getItem("backgroundProcessing") === "true";
+    if (shouldProcess && characters.length > 0) {
+      const apiKey = localStorage.getItem("processingApiKey");
+      const provider = localStorage.getItem("processingProvider") as APIProvider;
+      const storyIdea = localStorage.getItem("processingStoryIdea");
+
+      if (apiKey && provider) {
+        setIsProcessing(true);
+        // Set all characters to loading state immediately
+        characters.forEach((char) => {
+          updateGenerationState(char.id, "personality", { loading: true, error: null, content: "" });
+        });
+        setCombinedScenario({ loading: true, error: null, content: "" });
+        handleBackgroundProcessing(apiKey, provider, storyIdea || undefined);
+      }
+    }
+  }, [characters.length]);
 
   // Initialize generation states from character data
   useEffect(() => {
@@ -195,6 +216,81 @@ export default function MultipleCharactersResultPage() {
         next.delete(characterId);
         return next;
       });
+    }
+  };
+
+  const handleBackgroundProcessing = async (apiKey: string, provider: APIProvider, storyIdea?: string) => {
+    setIsProcessing(true);
+    
+    // Set all states to loading
+    characters.forEach((char) => {
+      updateGenerationState(char.id, "personality", { loading: true, error: null, content: "" });
+    });
+    setCombinedScenario({ loading: true, error: null, content: "" });
+
+    try {
+      // Process all characters in background
+      const response = await fetch("/api/process-characters", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          characters,
+          apiKey,
+          provider,
+          storyIdea,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Background processing failed");
+      }
+
+      const data = await response.json();
+      
+      // Update all characters with results
+      data.results?.forEach((result: any) => {
+        if (result.error) {
+          updateGenerationState(result.characterId, "personality", {
+            loading: false,
+            error: result.error,
+            content: "",
+          });
+        } else {
+          updateGenerationState(result.characterId, "personality", {
+            loading: false,
+            error: null,
+            content: result.personality || "",
+          });
+          updateCharacterContent(result.characterId, result.personality || "", "personality");
+        }
+      });
+
+      // Use first character's scenario for combined scenario
+      const firstResult = data.results?.[0];
+      if (firstResult?.scenario) {
+        setCombinedScenario({ loading: false, error: null, content: firstResult.scenario });
+        characters.forEach((char) => {
+          updateCharacterContent(char.id, firstResult.scenario, "scenario");
+        });
+      }
+
+      // Clear background processing flag
+      localStorage.removeItem("backgroundProcessing");
+      localStorage.removeItem("processingApiKey");
+      localStorage.removeItem("processingProvider");
+      localStorage.removeItem("processingStoryIdea");
+    } catch (error: any) {
+      console.error("Background processing error:", error);
+      characters.forEach((char) => {
+        updateGenerationState(char.id, "personality", {
+          loading: false,
+          error: error.message,
+          content: "",
+        });
+      });
+      setCombinedScenario({ loading: false, error: error.message, content: "" });
+    } finally {
+      setIsProcessing(false);
     }
   };
 

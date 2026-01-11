@@ -1,16 +1,21 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Sparkles, User, Users, ArrowRight, CheckCircle2 } from "lucide-react";
+import { Sparkles, User, Users, ArrowRight, CheckCircle2, Wand2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useCharacter } from "@/context/CharacterContext";
+import { validateAPIKey } from "@/lib/generation/service";
+import { isAPIKeyConnected } from "@/lib/api-key";
+import { APIKeyManager } from "@/components/api-key-manager";
 
 export default function CreatePage() {
   const router = useRouter();
-  const { initializeCharacters } = useCharacter();
+  const { initializeCharacters, updateCharacter, characters } = useCharacter();
   const [mode, setMode] = useState<"single" | "multiple" | null>(null);
   const [characterCount, setCharacterCount] = useState(2);
+  const [isAutoFilling, setIsAutoFilling] = useState(false);
+  const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
 
   const handleContinue = () => {
     if (mode === "single") {
@@ -19,6 +24,50 @@ export default function CreatePage() {
     } else if (mode === "multiple") {
       initializeCharacters(characterCount);
       router.push("/wizard");
+    }
+  };
+
+  const handleAIAutoFill = async () => {
+    if (!mode) {
+      alert("Please select single or multiple characters first");
+      return;
+    }
+
+    const storyIdea = localStorage.getItem("storyIdea");
+    if (!storyIdea) {
+      alert("Please provide a story idea first. Go to the idea page.");
+      return;
+    }
+
+    if (!isAPIKeyConnected()) {
+      setShowAPIKeyModal(true);
+      return;
+    }
+
+    const keyCheck = validateAPIKey();
+    if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
+      setShowAPIKeyModal(true);
+      return;
+    }
+
+    setIsAutoFilling(true);
+    try {
+      const characterCountToUse = mode === "single" ? 1 : characterCount;
+      initializeCharacters(characterCountToUse);
+
+      // Mark that AI auto-fill should happen in wizard
+      localStorage.setItem("aiAutoFill", "true");
+      localStorage.setItem("aiAutoFillStoryIdea", storyIdea);
+      localStorage.setItem("aiAutoFillApiKey", keyCheck.apiKey);
+      localStorage.setItem("aiAutoFillProvider", keyCheck.provider);
+
+      // Navigate immediately - AI will fill in wizard steps
+      router.push("/wizard");
+    } catch (error) {
+      console.error("Auto-fill setup error:", error);
+      handleContinue();
+    } finally {
+      setIsAutoFilling(false);
     }
   };
 
@@ -38,10 +87,10 @@ export default function CreatePage() {
             <h1 className="text-3xl font-bold text-foreground">AI Character Builder</h1>
           </div>
           <h2 className="text-4xl font-bold text-foreground mb-4">
-            How many characters do you want to create?
+            How many characters Story do you want to create?
           </h2>
           <p className="text-muted-foreground">
-            Choose to create a single character or multiple characters at once
+            Choose to create a single character or multiple characters Story  at once
           </p>
         </motion.div>
 
@@ -185,21 +234,55 @@ export default function CreatePage() {
           </motion.div>
         )}
 
-        {/* Continue Button */}
+        {/* Action Buttons */}
         {mode && (
-          <motion.button
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            onClick={handleContinue}
-            className="w-full py-4 rounded-xl bg-violet-500 hover:bg-violet-600 text-white font-semibold flex items-center justify-center gap-2 transition-colors"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            Continue to Builder
-            <ArrowRight className="w-5 h-5" />
-          </motion.button>
+          <div className="space-y-3">
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={handleAIAutoFill}
+              disabled={isAutoFilling}
+              className="w-full py-4 rounded-xl bg-violet-500/20 border border-violet-500/50 hover:bg-violet-500/30 text-violet-400 font-semibold flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              {isAutoFilling ? (
+                <>
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                  AI Auto-Filling All Steps...
+                </>
+              ) : (
+                <>
+                  <Wand2 className="w-5 h-5" />
+                  Let AI Fill Everything & Continue
+                </>
+              )}
+            </motion.button>
+            <motion.button
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              onClick={handleContinue}
+              className="w-full py-4 rounded-xl bg-violet-500 hover:bg-violet-600 text-white font-semibold flex items-center justify-center gap-2 transition-colors"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Continue to Builder
+              <ArrowRight className="w-5 h-5" />
+            </motion.button>
+          </div>
         )}
       </div>
+
+      <APIKeyManager
+        isOpen={showAPIKeyModal}
+        onClose={() => setShowAPIKeyModal(false)}
+        onSave={() => {
+          setShowAPIKeyModal(false);
+          if (mode) {
+            handleAIAutoFill();
+          }
+        }}
+      />
     </div>
   );
 }
