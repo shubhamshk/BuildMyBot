@@ -90,7 +90,7 @@ export class OpenAIProvider implements AIProvider {
     if (isOpenRouter) {
       headers["Authorization"] = `Bearer ${apiKey}`;
       headers["HTTP-Referer"] = typeof window !== "undefined" ? window.location.origin : "";
-      headers["X-Title"] = "AI Character Builder";
+      headers["X-Title"] = "Characteria";
     } else {
       headers["Authorization"] = `Bearer ${apiKey}`;
     }

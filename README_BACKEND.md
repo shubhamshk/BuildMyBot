@@ -1,6 +1,6 @@
 # Backend Implementation Guide
 
-This document describes the backend implementation for AI Character Builder.
+This document describes the backend implementation for Characteria.
 
 ## Tech Stack
 

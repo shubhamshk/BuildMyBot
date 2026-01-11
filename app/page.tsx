@@ -5,6 +5,7 @@ import { ArrowRight, Sparkles, Sliders, Download, Wand2, Image as ImageIcon, Boo
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthButton } from "@/components/auth-button";
 import { APIKeyIndicator } from "@/components/api-key-indicator";
+import { SubscriptionStatusCard } from "@/components/subscription-status-card";
 import Link from "next/link";
 import { useState, useRef } from "react";
 
@@ -45,7 +46,7 @@ export default function Home() {
             <div className="w-8 h-8 rounded-lg glass flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-foreground" />
             </div>
-            <span className="text-lg font-semibold text-foreground">AI Character Builder</span>
+            <span className="text-lg font-semibold text-foreground">Characteria</span>
           </div>
           <div className="flex items-center gap-4">
             <Link href="#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block">
@@ -53,6 +54,9 @@ export default function Home() {
             </Link>
             <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block">
               Features
+            </Link>
+            <Link href="/pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors hidden md:block">
+              Pricing
             </Link>
             <ThemeToggle />
             <APIKeyIndicator />
@@ -130,6 +134,11 @@ export default function Home() {
             </Link>
           </motion.div>
         </div>
+      </section>
+
+      {/* Subscription Status Section */}
+      <section className="py-12 px-6">
+        <SubscriptionStatusCard />
       </section>
 
       {/* Video Demo Section */}
@@ -587,11 +596,11 @@ export default function Home() {
               <div className="w-8 h-8 rounded-lg glass flex items-center justify-center">
                 <Sparkles className="w-4 h-4 text-foreground" />
               </div>
-              <span className="text-sm font-medium text-foreground">AI Character Builder</span>
+              <span className="text-sm font-medium text-foreground">Characteria</span>
             </div>
             <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <Link href="#" className="hover:text-foreground transition-colors">
-                Product
+              <Link href="/pricing" className="hover:text-foreground transition-colors">
+                Pricing
               </Link>
               <Link href="#" className="hover:text-foreground transition-colors">
                 Privacy
@@ -603,7 +612,7 @@ export default function Home() {
             </div>
           </div>
           <div className="mt-8 text-center text-xs text-muted-foreground">
-            © 2024 AI Character Builder. Built for creators.
+            © 2024 Characteria. Built for creators.
           </div>
         </div>
       </footer>

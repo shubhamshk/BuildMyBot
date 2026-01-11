@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Key, CheckCircle2, Settings2, ChevronDown } from "lucide-react";
 import { isAPIKeyConnected, getSelectedProvider, getAPIKey, APIProvider } from "@/lib/api-key";
 import { APIKeyManager } from "./api-key-manager";
+import { getUserSubscription } from "@/lib/subscriptions/service";
 
 const PROVIDER_LABELS: Record<APIProvider, string> = {
   openrouter: "OpenRouter",
@@ -19,6 +20,7 @@ export function APIKeyIndicator() {
   const [showDropdown, setShowDropdown] = useState(false);
   const [activeProvider, setActiveProvider] = useState<APIProvider | null>(null);
   const [maskedKey, setMaskedKey] = useState<string>("");
+  const [isPro, setIsPro] = useState(false);
 
   useEffect(() => {
     const checkConnection = () => {
@@ -76,9 +78,41 @@ export function APIKeyIndicator() {
     };
   }, []);
 
+  useEffect(() => {
+    const checkProStatus = async () => {
+      const subscription = await getUserSubscription();
+      if (subscription.data?.plan_type === "PRO_MONTHLY" || subscription.data?.plan_type === "PRO_YEARLY") {
+        setIsPro(true);
+      } else {
+        setIsPro(false);
+      }
+    };
+    checkProStatus();
+    
+    // Re-check Pro status every 5 seconds to catch upgrades
+    const interval = setInterval(checkProStatus, 5000);
+    
+    // Listen for subscription update events
+    const handleSubscriptionUpdate = () => {
+      console.log("[APIKeyIndicator] Subscription update detected");
+      checkProStatus();
+    };
+    window.addEventListener("subscription-updated", handleSubscriptionUpdate);
+    
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("subscription-updated", handleSubscriptionUpdate);
+    };
+  }, []);
+
   if (connected && activeProvider) {
     return (
       <>
+        {isPro && (
+          <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg">
+            PRO
+          </span>
+        )}
         <div className="relative api-key-dropdown">
           <button
             onClick={(e) => {
@@ -136,6 +170,11 @@ export function APIKeyIndicator() {
 
   return (
     <>
+      {isPro && (
+        <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg">
+          PRO
+        </span>
+      )}
       <button
         onClick={() => setShowModal(true)}
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 transition-all shadow-lg"

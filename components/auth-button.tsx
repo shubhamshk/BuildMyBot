@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import { useEffect, useState, useRef } from 'react'
 import { User } from '@supabase/supabase-js'
-import { User as UserIcon, LogOut, Settings, ChevronDown } from 'lucide-react'
+import { User as UserIcon, LogOut, Settings, ChevronDown, Zap } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 export function AuthButton() {
@@ -116,6 +116,14 @@ export function AuthButton() {
                             >
                                 <Settings className="w-4 h-4 text-muted-foreground" />
                                 <span className="text-sm font-medium">My Characters</span>
+                            </Link>
+                            <Link
+                                href="/pricing"
+                                onClick={() => setShowDropdown(false)}
+                                className="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition-colors text-foreground"
+                            >
+                                <Zap className="w-4 h-4 text-muted-foreground" />
+                                <span className="text-sm font-medium">Subscription</span>
                             </Link>
                             <div className="h-px bg-border my-2" />
                             <button

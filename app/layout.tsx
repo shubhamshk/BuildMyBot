@@ -8,8 +8,8 @@ import { CharacterProvider } from "@/context/CharacterContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-    title: "Anisoul Forge",
-    description: "AI Character Builder",
+    title: "Characteria",
+    description: "Characteria",
 };
 
 export default function RootLayout({

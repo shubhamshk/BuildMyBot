@@ -11,6 +11,7 @@ import { TerminalOutput } from "@/components/terminal-output";
 import { validateAPIKey, generatePersonality, generateScenario, generateBio } from "@/lib/generation/service";
 import { isAPIKeyConnected, APIProvider } from "@/lib/api-key";
 import { saveCharacter, getCurrentUser } from "@/lib/supabase/characters";
+import { UpgradeModal } from "@/components/upgrade-modal";
 
 type SectionId = "personality" | "scenarioGreeting" | "bio";
 
@@ -32,6 +33,13 @@ export default function CharacterResultPage() {
   const [isSaved, setIsSaved] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [usageLimitError, setUsageLimitError] = useState<{
+    currentCount: number;
+    limit: number;
+    resetAt: string;
+    message: string;
+  } | null>(null);
 
   const character = characters.find((char) => char.id === params?.id);
 
@@ -232,7 +240,22 @@ export default function CharacterResultPage() {
       });
 
       if (!response.ok) {
-        throw new Error("Background processing failed");
+        const errorData = await response.json();
+        
+        // Check for usage limit error
+        if (errorData.error === "USAGE_LIMIT_EXCEEDED") {
+          setUsageLimitError({
+            currentCount: errorData.currentCount || 0,
+            limit: errorData.limit || 2,
+            resetAt: errorData.resetAt || new Date().toISOString(),
+            message: errorData.message || "Daily creation limit reached",
+          });
+          setShowUpgradeModal(true);
+          setIsGenerating(false);
+          return;
+        }
+        
+        throw new Error(errorData.error || "Background processing failed");
       }
 
       const data = await response.json();
@@ -586,6 +609,19 @@ export default function CharacterResultPage() {
           </motion.div>
         </div>
       )}
+
+      {/* Upgrade Modal */}
+      <UpgradeModal
+        isOpen={showUpgradeModal}
+        onClose={() => {
+          setShowUpgradeModal(false);
+          setUsageLimitError(null);
+        }}
+        currentCount={usageLimitError?.currentCount}
+        limit={usageLimitError?.limit}
+        resetAt={usageLimitError?.resetAt}
+        reason={usageLimitError?.message}
+      />
     </div>
   );
 }

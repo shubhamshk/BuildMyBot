@@ -84,7 +84,7 @@ export default function CreatePage() {
             <div className="w-12 h-12 rounded-xl glass border border-violet-500/30 flex items-center justify-center bg-gradient-to-br from-violet-500/20 to-blue-500/20">
               <Sparkles className="w-6 h-6 text-violet-400" />
             </div>
-            <h1 className="text-3xl font-bold text-foreground">AI Character Builder</h1>
+            <h1 className="text-3xl font-bold text-foreground">Characteria</h1>
           </div>
           <h2 className="text-4xl font-bold text-foreground mb-4">
             How many characters Story do you want to create?
