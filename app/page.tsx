@@ -2,6 +2,7 @@
 
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { ArrowRight, Sparkles, Sliders, Download, Wand2, Image as ImageIcon, BookOpen, CheckCircle2, Play, Pause } from "lucide-react";
+import { FaDiscord } from "react-icons/fa";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthButton } from "@/components/auth-button";
 import { APIKeyIndicator } from "@/components/api-key-indicator";
@@ -33,6 +34,26 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Floating Discord Button */}
+      <a
+        href="https://discord.gg/VTYuMkdX"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Join us on Discord"
+        className="fixed top-20 right-6 z-50 bg-[#5865F2] hover:bg-[#4752C4] text-white rounded-full shadow-lg p-3 flex items-center justify-center transition-all duration-200 group"
+        style={{ boxShadow: '0 4px 24px 0 rgba(88,101,242,0.15)' }}
+      >
+        {/* Subtle Glow Effect */}
+        <span className="absolute inset-0 rounded-full pointer-events-none animate-pulse bg-[#5865F2]/50 blur-[10px] opacity-70 group-hover:opacity-90 transition" />
+        <span className="absolute inset-0 rounded-full pointer-events-none animate-pulse bg-[#00fff7]/20 blur-[18px] opacity-40 group-hover:opacity-60 transition" />
+        <FaDiscord
+          className="relative w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform z-10"
+          style={{
+            filter:
+              'drop-shadow(0 0 4px #00fff7) drop-shadow(0 0 8px #5865F2) drop-shadow(0 0 2px #fff)',
+          }}
+        />
+      </a>
       {/* Responsive Navigation */}
       <ResponsiveNavbar scrolled={scrolled} />
 
@@ -151,13 +172,12 @@ export default function Home() {
                 <video
                   ref={videoRef}
                   className="w-full h-full object-cover"
-                  poster="/demo-thumbnail.jpg"
+                  poster="https://res.cloudinary.com/dkwxxfewv/image/upload/v1768197338/Screenshot_2026-01-12_025820_jwhd1l.png"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
                   onEnded={() => setIsPlaying(false)}
                 >
-                  {/* Add your video source here */}
-                  <source src="/demo-video.mp4" type="video/mp4" />
+                  <source src="https://res.cloudinary.com/dkwxxfewv/video/upload/v1768197190/Untitled_video_-_Made_with_Clipchamp_1_i4u8bm.mp4" type="video/mp4" />
                   Your browser does not support the video tag.
                 </video>
 
@@ -437,6 +457,12 @@ export default function Home() {
         <div className="max-w-6xl mx-auto space-y-24">
           {[
             {
+              title: "AI Prompt Enhancer & Story Enhancer",
+              description:
+                "Enhance your character's prompts and generate the perfect story outline using advanced AI features. Get creative support for compelling, consistent narratives and dialogue.",
+              image: "left",
+            },
+            {
               title: "Wizard-Based Character Creation",
               description:
                 "No more staring at blank pages. Our guided wizard walks you through every step, from basic information to deep personality traits. Each question is designed to help you think about your character in new ways.",
@@ -448,37 +474,69 @@ export default function Home() {
                 "Adjust personality sliders to fine-tune how your character behaves. Want someone warm but reserved? Confident but calm? The sliders give you precise control over character traits.",
               image: "right",
             },
-            {
-              title: "Image Prompt Generator",
-              description:
-                "Generate detailed image prompts that match your character&apos;s personality and backstory. Perfect for creating visual references or artwork for your characters.",
-              image: "left",
-            },
-          ].map((feature, i) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className={`grid md:grid-cols-2 gap-12 items-center ${
-                feature.image === "right" ? "md:grid-flow-dense" : ""
-              }`}
-            >
-              <div className={feature.image === "right" ? "md:col-start-2" : ""}>
-                <div className="glass rounded-2xl aspect-video flex items-center justify-center border border-border">
-                  <div className="text-center">
-                    <ImageIcon className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-sm text-muted-foreground">Feature Preview</p>
+          ].map((feature, i) => {
+            // Alternate: even index (0,2,...) image left, odd index (1,3,...) image right
+            const imageLeft = i % 2 === 0;
+            return (
+              <motion.div
+                key={feature.title}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                className={`relative grid md:grid-cols-2 gap-10 md:gap-20 items-center py-10 md:py-20 mb-14 rounded-3xl shadow-xl overflow-hidden bg-gradient-to-br from-violet-700/30 via-blue-700/20 to-background transition-all duration-300 group hover:scale-[1.025] hover:shadow-2xl ${!imageLeft ? "md:grid-flow-dense" : ""}`}
+              >
+                {/* Decorative Gradient Glow */}
+                <div className="absolute -top-10 -left-10 w-60 h-60 bg-violet-400/20 rounded-full blur-2xl -z-10 group-hover:bg-violet-500/30 transition-all duration-300" />
+                <div className="absolute -bottom-10 -right-10 w-60 h-60 bg-blue-400/20 rounded-full blur-2xl -z-10 group-hover:bg-blue-500/30 transition-all duration-300" />
+                {/* Feature Image */}
+                <div className={!imageLeft ? "md:col-start-2" : ""}>
+                  <div className="relative aspect-video flex items-center justify-center overflow-hidden rounded-2xl shadow-2xl border-4 border-white/10 group-hover:border-violet-400/30 transition-all duration-300">
+                    {feature.title === "Wizard-Based Character Creation" ? (
+                      <img
+                        src="https://res.cloudinary.com/dkwxxfewv/image/upload/v1768197627/Screenshot_2026-01-12_112932_timgxq.png"
+                        alt="Wizard-Based Character Creation Preview"
+                        className="object-cover w-full h-full rounded-2xl shadow-lg"
+                      />
+                    ) : feature.title === "Deep Personality Control" ? (
+                      <img
+                        src="https://res.cloudinary.com/dkwxxfewv/image/upload/v1768197617/Screenshot_2026-01-12_112914_ytluz4.png"
+                        alt="Deep Personality Control Preview"
+                        className="object-cover w-full h-full rounded-2xl shadow-lg"
+                      />
+                    ) : feature.title === "AI Prompt Enhancer & Story Enhancer" ? (
+                      <img
+                        src="https://res.cloudinary.com/dkwxxfewv/image/upload/v1768197645/Screenshot_2026-01-12_015652_yepbyn.png"
+                        alt="AI Prompt Enhancer & Story Enhancer Preview"
+                        className="object-cover w-full h-full rounded-2xl shadow-lg"
+                      />
+                    ) : (
+                      <div className="text-center">
+                        <ImageIcon className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+                        <p className="text-sm text-muted-foreground">Feature Preview</p>
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
-              <div className={feature.image === "right" ? "md:col-start-1 md:row-start-1" : ""}>
-                <h3 className="text-3xl font-bold text-foreground mb-4">{feature.title}</h3>
-                <p className="text-lg text-muted-foreground leading-relaxed">{feature.description}</p>
-              </div>
-            </motion.div>
-          ))}
+                {/* Feature Content */}
+                <div className={`${!imageLeft ? "md:col-start-1 md:row-start-1" : ""} px-4 md:px-8 py-2 md:py-4`}>
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className={`inline-block px-4 py-1 rounded-full text-xs font-semibold shadow-md transition-all duration-300 ${i === 0 ? "bg-gradient-to-r from-fuchsia-500 to-violet-500 text-white" : i === 1 ? "bg-gradient-to-r from-blue-500 to-cyan-400 text-white" : "bg-gradient-to-r from-amber-500 to-pink-500 text-white"} group-hover:scale-105`}>
+                      {i === 0 && "AI & Story Enhancer"}
+                      {i === 1 && "Wizard Creation"}
+                      {i === 2 && "Personality Control"}
+                    </span>
+                  </div>
+                  <h3 className="text-3xl md:text-4xl font-extrabold text-white mb-4 drop-shadow-lg">
+                    {feature.title}
+                  </h3>
+                  <p className="text-lg md:text-xl text-blue-100 leading-relaxed mb-2">
+                    {feature.description}
+                  </p>
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
