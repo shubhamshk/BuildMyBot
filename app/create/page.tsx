@@ -6,15 +6,6 @@ import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { getCurrentUser } from "@/lib/auth";
 import { LoginRequiredModal } from "@/components/login-required-modal";
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  useEffect(() => {
-    (async () => {
-      const user = await getCurrentUser();
-      if (!user) {
-        setShowLoginModal(true);
-      }
-    })();
-  }, []);
 import { useCharacter } from "@/context/CharacterContext";
 import { validateAPIKey } from "@/lib/generation/service";
 import { isAPIKeyConnected } from "@/lib/api-key";
@@ -25,6 +16,16 @@ export default function CreatePage() {
   const [mode, setMode] = useState<"single" | "multiple" | null>(null);
   const [characterCount, setCharacterCount] = useState(2);
   const [isAutoFilling, setIsAutoFilling] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const user = await getCurrentUser();
+      if (!user) {
+        setShowLoginModal(true);
+      }
+    })();
+  }, []);
 
   const handleContinue = () => {
     if (mode === "single") {

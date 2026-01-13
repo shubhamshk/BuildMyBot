@@ -1,14 +1,3 @@
-import { getCurrentUser } from "@/lib/auth";
-import { LoginRequiredModal } from "@/components/login-required-modal";
-  const [showLoginModal, setShowLoginModal] = useState(false);
-  useEffect(() => {
-    (async () => {
-      const user = await getCurrentUser();
-      if (!user) {
-        setShowLoginModal(true);
-      }
-    })();
-  }, []);
 "use client";
 
 import { useState, useEffect } from "react";
@@ -25,6 +14,8 @@ import BoundariesStep from "@/components/wizard-steps/boundaries";
 import { APIKeyModal } from "@/components/api-key-modal";
 import { isAPIKeyConnected, APIProvider } from "@/lib/api-key";
 import { validateAPIKey } from "@/lib/generation/service";
+import { getCurrentUser } from "@/lib/auth";
+import { LoginRequiredModal } from "@/components/login-required-modal";
 
 const STEPS = [
   { id: "basics", label: "Basics" },
@@ -45,7 +36,18 @@ export default function WizardPage() {
   } = useCharacter();
   const [currentStep, setCurrentStep] = useState(0);
   const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const [characterSteps, setCharacterSteps] = useState<Record<string, number>>({});
+
+  // Check if user is logged in
+  useEffect(() => {
+    (async () => {
+      const user = await getCurrentUser();
+      if (!user) {
+        setShowLoginModal(true);
+      }
+    })();
+  }, []);
 
   // Redirect if no characters initialized
   useEffect(() => {
