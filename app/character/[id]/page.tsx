@@ -26,6 +26,7 @@ export default function CharacterResultPage() {
   const { characters, updateCharacter } = useCharacter();
   const [scenarioInput, setScenarioInput] = useState<string>("");
   const [showScenarioModal, setShowScenarioModal] = useState(false);
+  const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -562,7 +563,7 @@ export default function CharacterResultPage() {
         </div>
       </div>
 
-      {/* Scenario Modal */
+      {/* Scenario Modal */}
       {showScenarioModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
