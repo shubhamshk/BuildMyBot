@@ -3,8 +3,9 @@
 import { useState, useEffect } from "react";
 import { Key, CheckCircle2, Settings2, ChevronDown } from "lucide-react";
 import { isAPIKeyConnected, getSelectedProvider, getAPIKey, APIProvider } from "@/lib/api-key";
-import { APIKeyManager } from "./api-key-manager";
 import { getUserSubscription } from "@/lib/subscriptions/service";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const PROVIDER_LABELS: Record<APIProvider, string> = {
   openrouter: "OpenRouter",
@@ -15,8 +16,8 @@ const PROVIDER_LABELS: Record<APIProvider, string> = {
 };
 
 export function APIKeyIndicator() {
+  const router = useRouter();
   const [connected, setConnected] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [activeProvider, setActiveProvider] = useState<APIProvider | null>(null);
   const [maskedKey, setMaskedKey] = useState<string>("");
@@ -142,28 +143,20 @@ export function APIKeyIndicator() {
                 </code>
               </div>
               <div className="p-2">
-                <button
+                <Link
+                  href="/api-keys"
                   onClick={() => {
                     setShowDropdown(false);
-                    setShowModal(true);
                   }}
                   className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md hover:bg-slate-800 transition-colors text-left border border-transparent hover:border-slate-700"
                 >
                   <Settings2 className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
                   <span className="text-xs text-slate-200 font-medium">Manage API Keys</span>
-                </button>
+                </Link>
               </div>
             </div>
           )}
         </div>
-        <APIKeyManager
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          onSave={() => {
-            setShowModal(false);
-            setConnected(true);
-          }}
-        />
       </>
     );
   }
@@ -175,23 +168,15 @@ export function APIKeyIndicator() {
           PRO
         </span>
       )}
-      <button
-        onClick={() => setShowModal(true)}
+      <Link
+        href="/api-keys"
         className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-slate-900 border border-slate-700 hover:border-slate-600 hover:bg-slate-800 transition-all shadow-lg"
       >
         <Key className="w-3.5 h-3.5 text-slate-400 flex-shrink-0" />
         <span className="text-xs font-medium text-slate-300 hidden sm:inline whitespace-nowrap">
           Connect API Key
         </span>
-      </button>
-      <APIKeyManager
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        onSave={() => {
-          setShowModal(false);
-          setConnected(true);
-        }}
-      />
+      </Link>
     </>
   );
 }

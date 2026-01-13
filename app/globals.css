@@ -56,3 +56,32 @@
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
   }
 }
+
+/* Hero Animated Background Slideshow */
+@keyframes slideLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.hero-slideshow-track {
+  animation: slideLeft 60s linear infinite;
+  will-change: transform;
+}
+
+/* Pause animation for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .hero-slideshow-track {
+    animation-play-state: paused;
+  }
+}
+
+/* Mobile optimization: slower animation */
+@media (max-width: 768px) {
+  .hero-slideshow-track {
+    animation-duration: 80s;
+  }
+}

@@ -10,6 +10,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
     title: "Characteria",
     description: "Characteria",
+    icons: {
+        icon: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768320016/logo_ukwjo9.png",
+        shortcut: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768320016/logo_ukwjo9.png",
+        apple: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768320016/logo_ukwjo9.png",
+    },
 };
 
 export default function RootLayout({

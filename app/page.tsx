@@ -44,13 +44,12 @@ export default function Home() {
         style={{ boxShadow: '0 4px 24px 0 rgba(88,101,242,0.15)' }}
       >
         {/* Subtle Glow Effect */}
-        <span className="absolute inset-0 rounded-full pointer-events-none animate-pulse bg-[#5865F2]/50 blur-[10px] opacity-70 group-hover:opacity-90 transition" />
-        <span className="absolute inset-0 rounded-full pointer-events-none animate-pulse bg-[#00fff7]/20 blur-[18px] opacity-40 group-hover:opacity-60 transition" />
+        <span className="absolute inset-0 rounded-full pointer-events-none bg-[#5865F2]/40 blur-[8px] opacity-60 group-hover:opacity-80 transition" />
         <FaDiscord
           className="relative w-5 h-5 md:w-6 md:h-6 group-hover:scale-110 transition-transform z-10"
           style={{
             filter:
-              'drop-shadow(0 0 4px #00fff7) drop-shadow(0 0 8px #5865F2) drop-shadow(0 0 2px #fff)',
+              'drop-shadow(0 0 4px #5865F2) drop-shadow(0 0 2px #fff)',
           }}
         />
       </a>
@@ -58,34 +57,79 @@ export default function Home() {
       <ResponsiveNavbar scrolled={scrolled} />
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center px-6 pt-24 pb-16 overflow-hidden">
-        {/* Subtle animated gradient background */}
-        <motion.div
-          className="absolute inset-0 -z-10"
-          animate={{
-            background: [
-              "radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.03) 0%, transparent 50%)",
-              "radial-gradient(circle at 80% 50%, rgba(59, 130, 246, 0.03) 0%, transparent 50%)",
-              "radial-gradient(circle at 20% 50%, rgba(139, 92, 246, 0.03) 0%, transparent 50%)",
-            ],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: "linear",
-          }}
-        />
+      <section className="relative min-h-screen flex items-start justify-center px-6 pt-24 pb-16 overflow-hidden">
+        {/* Animated Background Slideshow */}
+        <div className="absolute left-0 right-0 z-0 overflow-hidden" style={{ top: '68px', height: '460px' }}>
+          <div className="hero-slideshow-track flex h-full" style={{ width: '350%' }}>
+            {/* Use provided gallery images for both sets */}
+            {(() => {
+              const images = [
+                "https://i.postimg.cc/ZRDvpchH/TA-2026-01-13-02-46-01-(artist-ma-2239987079.png",
+                "https://i.postimg.cc/3N44Bv8h/TA-2026-01-13-02-57-58-(artist-ma-1970745954.png",
+                "https://i.postimg.cc/j2pWkS5F/TA-2026-01-13-02-59-04-(artist-ma-526226082.png",
+                "https://i.postimg.cc/br7GFwJ5/TA-2026-01-13-03-07-23-(artist-ma-1647098690.png",
+                "https://i.postimg.cc/GtWBSmtL/TA-2026-01-13-03-07-26-(artist-ma-307256307.png",
+                "https://i.postimg.cc/Pf98q2yq/TA-2026-01-13-11-54-14-(artist-ma-3018215985.png",
+                "https://i.postimg.cc/tC6nnWvn/TA-2026-01-13-11-55-33-(artist-ma-2610045890.png",
+                "https://i.postimg.cc/Sxp26RH8/TA-2026-01-13-11-58-10-(artist-ma-1420471242.png",
+                "https://i.postimg.cc/cLNgRCPQ/TA-2026-01-13-12-05-07-(artist-ma-1444115690.png",
+                "https://i.postimg.cc/QdkB0s3t/TA-2026-01-13-12-54-27-(artist-ma-1728647033.png",
+                "https://i.postimg.cc/wBq1rPqj/TA-2026-01-13-14-35-50-(artist-ma-2060442952.png",
+                "https://i.postimg.cc/FKpLsvW0/TA-2026-01-13-14-40-54-(artist-ma-2265619227.png",
+                "https://i.postimg.cc/hGsdPny9/TA-2026-01-13-14-42-27-(artist-ma-1635821493.png",
+                "https://i.postimg.cc/s2mhDz67/TA-2026-01-13-14-46-25-(artist-ma-735908093.png",
+                "https://i.postimg.cc/wB2mTzfJ/TA-2026-01-13-14-50-21-(artist-ma-3351602457-(1).png",
+                "https://i.postimg.cc/ZRDvpchK/TA-2026-01-13-14-53-32-(artist-ma-132961706.png",
+                "https://i.postimg.cc/Kzs3BNyK/TA-2026-01-13-14-54-16-(artist-ma-4111183455.png",
+                "https://i.postimg.cc/k4hRKcdD/TA-2026-01-13-14-58-30-(artist-ma-271327577.png",
+                "https://i.postimg.cc/G2STGQ14/TA-2026-01-13-15-06-54-(artist-ma-2605565792.png",
+              ];
+              // Duplicate for seamless loop
+              const allImages = [...images, ...images];
+              return (
+                <div className="flex h-full" style={{ width: '100%' }}>
+                  {allImages.map((url, idx) => (
+                    <div
+                      key={`img-gallery-${idx}`}
+                      className="flex-shrink-0 h-full"
+                      style={{ width: `${100 / images.length}%` }}
+                    >
+                      <img
+                        src={url}
+                        alt="Slideshow"
+                        className="w-full h-full object-cover rounded-xl bg-neutral-800"
+                        style={{
+                          filter: 'blur(0.5px) brightness(0.5) contrast(1.05)',
+                          background: '#222',
+                        }}
+                        loading="lazy"
+                      />
+                    </div>
+                  ))}
+                </div>
+              );
+            })()}
+          </div>
+        </div>
 
-        <div className="max-w-4xl mx-auto text-center">
+
+
+        <div className="max-w-4xl mx-auto text-center relative z-10 mt-12 md:mt-20">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-5xl md:text-7xl font-bold text-foreground mb-6 leading-tight"
+            className="text-5xl md:text-7xl font-bold mb-6 leading-tight"
+            style={{
+              color: '#fff',
+              textShadow: '0 2px 24px #101010, 0 1px 0 #181818, 0 0px 32px #06b6d4',
+            }}
           >
-            Create AI Characters
+            <span className="drop-shadow-[0_2px_16px_#a21caf] text-white">
+              Create AI Characters
+            </span>
             <br />
-            <span className="bg-gradient-to-r from-violet-400 to-blue-400 bg-clip-text text-transparent">
+            <span className="font-extrabold drop-shadow-[0_2px_24px_#f472b6] text-blue-500">
               That Feel Real
             </span>
           </motion.h1>
@@ -94,7 +138,11 @@ export default function Home() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed"
+            className="text-lg md:text-xl max-w-2xl mx-auto mb-12 leading-relaxed text-white"
+            style={{
+              fontWeight: 600,
+              textShadow: '0 2px 16px #212121, 0 1px 0 #1a1a1a',
+            }}
           >
             Design personalities, backstories, and opening scenes using guided creation — not random AI.
           </motion.p>
@@ -107,14 +155,14 @@ export default function Home() {
           >
             <Link
               href="/idea"
-              className="px-8 py-4 rounded-xl glass hover:bg-white/5 transition-all font-medium flex items-center gap-2 group"
+              className="px-8 py-4 rounded-xl font-bold flex items-center gap-2 group bg-neutral-900 border border-neutral-700 shadow-md transition-all duration-200 hover:bg-neutral-800 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)" style={{ color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.25)' }}
             >
               Start Creating
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="#how-it-works"
-              className="px-8 py-4 rounded-xl border border-border hover:bg-white/5 transition-all font-medium"
+              className="px-8 py-4 rounded-xl font-bold flex items-center gap-2 group bg-neutral-900 border border-neutral-700 shadow-md transition-all duration-200 hover:bg-neutral-800 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)" style={{ color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.25)' }}
             >
               See How It Works
             </Link>
@@ -172,7 +220,7 @@ export default function Home() {
                 <video
                   ref={videoRef}
                   className="w-full h-full object-cover"
-                  poster="https://res.cloudinary.com/dkwxxfewv/image/upload/v1768197338/Screenshot_2026-01-12_025820_jwhd1l.png"
+                  poster="https://res.cloudinary.com/dkwxxfewv/image/upload/v1768322035/Screenshot_2026-01-13_220254_bdb7ij.png"
                   onPlay={() => setIsPlaying(true)}
                   onPause={() => setIsPlaying(false)}
                   onEnded={() => setIsPlaying(false)}

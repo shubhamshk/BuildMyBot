@@ -3,11 +3,21 @@
 import { motion } from "framer-motion";
 import { Sparkles, User, Users, ArrowRight, CheckCircle2, Wand2, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getCurrentUser } from "@/lib/auth";
+import { LoginRequiredModal } from "@/components/login-required-modal";
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const user = await getCurrentUser();
+      if (!user) {
+        setShowLoginModal(true);
+      }
+    })();
+  }, []);
 import { useCharacter } from "@/context/CharacterContext";
 import { validateAPIKey } from "@/lib/generation/service";
 import { isAPIKeyConnected } from "@/lib/api-key";
-import { APIKeyManager } from "@/components/api-key-manager";
 
 export default function CreatePage() {
   const router = useRouter();
@@ -15,7 +25,6 @@ export default function CreatePage() {
   const [mode, setMode] = useState<"single" | "multiple" | null>(null);
   const [characterCount, setCharacterCount] = useState(2);
   const [isAutoFilling, setIsAutoFilling] = useState(false);
-  const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
 
   const handleContinue = () => {
     if (mode === "single") {
@@ -40,13 +49,13 @@ export default function CreatePage() {
     }
 
     if (!isAPIKeyConnected()) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
     const keyCheck = validateAPIKey();
     if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
@@ -73,6 +82,7 @@ export default function CreatePage() {
 
   return (
     <div className="min-h-screen bg-background px-4 py-16 flex items-center justify-center">
+      <LoginRequiredModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
       <div className="max-w-2xl w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -272,17 +282,6 @@ export default function CreatePage() {
           </div>
         )}
       </div>
-
-      <APIKeyManager
-        isOpen={showAPIKeyModal}
-        onClose={() => setShowAPIKeyModal(false)}
-        onSave={() => {
-          setShowAPIKeyModal(false);
-          if (mode) {
-            handleAIAutoFill();
-          }
-        }}
-      />
     </div>
   );
 }

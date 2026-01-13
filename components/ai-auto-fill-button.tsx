@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Wand2, Loader2 } from "lucide-react";
 import { validateAPIKey } from "@/lib/generation/service";
 import { isAPIKeyConnected } from "@/lib/api-key";
-import { APIKeyManager } from "./api-key-manager";
+import { useRouter } from "next/navigation";
 
 interface AIAutoFillButtonProps {
   onAutoFill: (data: any) => void;
@@ -23,8 +23,8 @@ export function AIAutoFillButton({
   storyIdea,
   className = "",
 }: AIAutoFillButtonProps) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
 
   const handleAutoFill = async () => {
     const idea = storyIdea || localStorage.getItem("storyIdea") || "";
@@ -35,13 +35,13 @@ export function AIAutoFillButton({
     }
 
     if (!isAPIKeyConnected()) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
     const keyCheck = validateAPIKey();
     if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
@@ -95,14 +95,6 @@ export function AIAutoFillButton({
           </>
         )}
       </button>
-      <APIKeyManager
-        isOpen={showAPIKeyModal}
-        onClose={() => setShowAPIKeyModal(false)}
-        onSave={() => {
-          setShowAPIKeyModal(false);
-          handleAutoFill();
-        }}
-      />
     </>
   );
 }

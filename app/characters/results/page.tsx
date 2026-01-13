@@ -6,7 +6,6 @@ import { ChevronDown, ArrowLeft, Loader2, Users, Save, Check } from "lucide-reac
 import { useCharacter } from "@/context/CharacterContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { APIKeyManager } from "@/components/api-key-manager";
 import { TerminalOutput } from "@/components/terminal-output";
 import { validateAPIKey, generatePersonality, generateCombinedScenario } from "@/lib/generation/service";
 import { isAPIKeyConnected, APIProvider } from "@/lib/api-key";
@@ -30,7 +29,6 @@ export default function MultipleCharactersResultPage() {
   const router = useRouter();
   const { characters, updateCharacter } = useCharacter();
   const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set(characters.map(c => c.id)));
-  const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
   const [scenarioInput, setScenarioInput] = useState("");
   const [showScenarioModal, setShowScenarioModal] = useState(false);
   const [generationStates, setGenerationStates] = useState<Record<string, Record<SectionId, SectionState>>>({});
@@ -112,7 +110,7 @@ export default function MultipleCharactersResultPage() {
 
     // HARD BLOCK: Check API key
     if (!isAPIKeyConnected()) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
@@ -188,7 +186,7 @@ export default function MultipleCharactersResultPage() {
       ? { valid: true, apiKey, provider, error: undefined as string | undefined } 
       : validateAPIKey();
     if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
@@ -297,7 +295,7 @@ export default function MultipleCharactersResultPage() {
   const handleGenerateCombinedScenario = async (userScenario?: string) => {
     const keyCheck = validateAPIKey();
     if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
@@ -602,22 +600,7 @@ export default function MultipleCharactersResultPage() {
         </div>
       </div>
 
-      {/* API Key Manager */}
-      <APIKeyManager
-        isOpen={showAPIKeyModal}
-        onClose={() => setShowAPIKeyModal(false)}
-        onSave={() => {
-          setShowAPIKeyModal(false);
-          // Immediately restart generation for all characters
-          characters.forEach((char) => {
-            if (!char.generatedContent?.personality && !generatingCharacters.has(char.id)) {
-              handleGeneratePersonality(char.id);
-            }
-          });
-        }}
-      />
-
-      {/* Combined Scenario Modal */}
+      {/* Combined Scenario Modal */
       {showScenarioModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div

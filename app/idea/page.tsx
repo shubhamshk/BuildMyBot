@@ -3,18 +3,27 @@
 import { motion } from "framer-motion";
 import { Sparkles, Wand2, ArrowRight, Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getCurrentUser } from "@/lib/auth";
+import { LoginRequiredModal } from "@/components/login-required-modal";
 import { validateAPIKey } from "@/lib/generation/service";
 import { isAPIKeyConnected } from "@/lib/api-key";
-import { APIKeyManager } from "@/components/api-key-manager";
 
 export default function IdeaPage() {
   const router = useRouter();
   const [storyIdea, setStoryIdea] = useState("");
   const [isEnhancing, setIsEnhancing] = useState(false);
-  const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
   const [enhancedIdea, setEnhancedIdea] = useState<string | null>(null);
   const [showEnhanced, setShowEnhanced] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const user = await getCurrentUser();
+      if (!user) {
+        setShowLoginModal(true);
+      }
+    })();
+  }, []);
 
   const handleEnhance = async () => {
     if (!storyIdea.trim()) {
@@ -23,13 +32,13 @@ export default function IdeaPage() {
     }
 
     if (!isAPIKeyConnected()) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
     const keyCheck = validateAPIKey();
     if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
@@ -89,6 +98,7 @@ export default function IdeaPage() {
 
   return (
     <div className="min-h-screen bg-background px-4 py-16 flex items-center justify-center">
+      <LoginRequiredModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
       <div className="max-w-2xl w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -188,17 +198,6 @@ export default function IdeaPage() {
             </button>
           </div>
         </motion.div>
-
-        <APIKeyManager
-          isOpen={showAPIKeyModal}
-          onClose={() => setShowAPIKeyModal(false)}
-          onSave={() => {
-            setShowAPIKeyModal(false);
-            if (storyIdea.trim()) {
-              handleEnhance();
-            }
-          }}
-        />
       </div>
     </div>
   );

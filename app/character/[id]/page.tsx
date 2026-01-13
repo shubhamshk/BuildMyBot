@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Loader2, Save, Check } from "lucide-react";
 import { useCharacter } from "@/context/CharacterContext";
 import Link from "next/link";
-import { APIKeyManager } from "@/components/api-key-manager";
 import { TerminalOutput } from "@/components/terminal-output";
 import { validateAPIKey, generatePersonality, generateScenario, generateBio } from "@/lib/generation/service";
 import { isAPIKeyConnected, APIProvider } from "@/lib/api-key";
@@ -25,7 +24,6 @@ export default function CharacterResultPage() {
   const params = useParams();
   const router = useRouter();
   const { characters, updateCharacter } = useCharacter();
-  const [showAPIKeyModal, setShowAPIKeyModal] = useState(false);
   const [scenarioInput, setScenarioInput] = useState<string>("");
   const [showScenarioModal, setShowScenarioModal] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -42,15 +40,6 @@ export default function CharacterResultPage() {
   } | null>(null);
 
   const character = characters.find((char) => char.id === params?.id);
-
-  // Check if user is logged in
-  useEffect(() => {
-    const checkUser = async () => {
-      const { user } = await getCurrentUser();
-      setIsLoggedIn(!!user);
-    };
-    checkUser();
-  }, []);
 
   const [sections, setSections] = useState<Record<SectionId, SectionState>>({
     personality: {
@@ -69,6 +58,24 @@ export default function CharacterResultPage() {
       content: character?.generatedContent?.bio || "",
     },
   });
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkUser = async () => {
+      const { user } = await getCurrentUser();
+      setIsLoggedIn(!!user);
+    };
+    checkUser();
+  }, []);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const checkUser = async () => {
+      const { user } = await getCurrentUser();
+      setIsLoggedIn(!!user);
+    };
+    checkUser();
+  }, []);
 
   // Check API key and generate on mount
   useEffect(() => {
@@ -120,7 +127,7 @@ export default function CharacterResultPage() {
 
     // Check API key - HARD BLOCK
     if (!isAPIKeyConnected()) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
@@ -177,7 +184,7 @@ export default function CharacterResultPage() {
 
     const keyCheck = apiKey && provider ? { valid: true, apiKey, provider } : validateAPIKey();
     if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       throw new Error(keyCheck.error || "API key required");
     }
 
@@ -343,7 +350,7 @@ export default function CharacterResultPage() {
     setShowScenarioModal(false);
     const keyCheck = validateAPIKey();
     if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
@@ -365,7 +372,7 @@ export default function CharacterResultPage() {
     setScenarioInput("");
     const keyCheck = validateAPIKey();
     if (!keyCheck.valid || !keyCheck.apiKey || !keyCheck.provider) {
-      setShowAPIKeyModal(true);
+      router.push("/api-keys");
       return;
     }
 
@@ -555,20 +562,7 @@ export default function CharacterResultPage() {
         </div>
       </div>
 
-      {/* API Key Manager */}
-      <APIKeyManager
-        isOpen={showAPIKeyModal}
-        onClose={() => setShowAPIKeyModal(false)}
-        onSave={() => {
-          setShowAPIKeyModal(false);
-          // Immediately restart generation
-          if (!character.generatedContent?.personality) {
-            handleGenerateAll();
-          }
-        }}
-      />
-
-      {/* Scenario Modal */}
+      {/* Scenario Modal */
       {showScenarioModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div

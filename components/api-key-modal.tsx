@@ -68,18 +68,25 @@ export function APIKeyModal({ isOpen, onClose, onSave }: APIKeyModalProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleClose}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+            style={{ pointerEvents: 'auto' }}
           />
 
           {/* Modal */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+          <div className="fixed inset-0 z-[550] flex items-center justify-center h-full w-full px-30">
             <motion.div
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
               transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="glass rounded-3xl p-8 max-w-md w-full border border-border pointer-events-auto"
+              className="glass rounded-3xl p-6 sm:p-8 max-w-md w-full border border-border shadow-2xl pointer-events-auto bg-background"
+              style={{
+                boxShadow: '0 8px 32px 0 rgba(0,0,0,0.25)',
+                maxWidth: '420px',
+                minWidth: '0',
+                margin: '0 auto',
+              }}
             >
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
@@ -141,7 +148,7 @@ export function APIKeyModal({ isOpen, onClose, onSave }: APIKeyModalProps) {
               </div>
 
               {/* Buttons */}
-              <div className="flex gap-3">
+              <div className="flex gap-3 flex-col sm:flex-row">
                 <button
                   onClick={handleClose}
                   className="flex-1 py-3 rounded-xl glass border border-border hover:bg-white/5 transition-colors font-medium"

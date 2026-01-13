@@ -1,3 +1,14 @@
+import { getCurrentUser } from "@/lib/auth";
+import { LoginRequiredModal } from "@/components/login-required-modal";
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  useEffect(() => {
+    (async () => {
+      const user = await getCurrentUser();
+      if (!user) {
+        setShowLoginModal(true);
+      }
+    })();
+  }, []);
 "use client";
 
 import { useState, useEffect } from "react";
@@ -315,6 +326,7 @@ export default function WizardPage() {
 
   return (
     <div className="min-h-screen bg-background px-4 py-8">
+      <LoginRequiredModal isOpen={showLoginModal} onClose={() => setShowLoginModal(false)} />
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-8">

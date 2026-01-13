@@ -18,8 +18,8 @@ const PLANS = [
     description: "Perfect for trying out the platform",
     features: [
       "2 AI creations per 24 hours",
+      "Create upto 1k tokens characters",
       "Basic character generation",
-      "Save unlimited characters",
       "Community support",
     ],
     cta: "Current Plan",
@@ -34,9 +34,12 @@ const PLANS = [
     description: "Best for regular creators",
     features: [
       "10 AI creations per 24 hours",
+      "Create upto 3k tokens characters",
       "Advanced generation features",
       "Priority processing",
       "Save unlimited characters",
+      "Image Generation Support",
+      "Access to premium Bots ",
       "Email support",
     ],
     cta: "Subscribe Now",
@@ -53,11 +56,13 @@ const PLANS = [
     savings: "Save 32%",
     features: [
       "10 AI creations per 24 hours",
+      "Create upto 3k tokens characters",
       "Advanced generation features",
       "Priority processing",
       "Save unlimited characters",
-      "Email support",
-      "Early access to new features",
+      "8k Image Generation Support",
+      "Access to premium Bots ",
+      "Personal Support for Creating Bots"
     ],
     cta: "Subscribe Now",
     popular: false,
@@ -251,39 +256,6 @@ function PricingContent() {
             Unlock the full potential of AI character creation with our flexible plans
           </p>
         </motion.div>
-        {usageInfo && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 max-w-2xl mx-auto"
-          >
-            <div className="bg-slate-900 rounded-2xl p-6 border border-slate-700">
-              <h3 className="text-lg font-semibold text-slate-100 mb-4">
-                Your Usage Today
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Creations used</span>
-                  <span className="text-slate-100 font-semibold">
-                    {usageInfo.currentCount} / {usageInfo.limit}
-                  </span>
-                </div>
-                <div className="w-full bg-slate-800 rounded-full h-2.5">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${(usageInfo.currentCount / usageInfo.limit) * 100}%` }}
-                    className="bg-violet-500 h-2.5 rounded-full"
-                  />
-                </div>
-                <p className="text-sm text-slate-500">
-                  Resets in {Math.ceil(
-                    (new Date(usageInfo.resetAt).getTime() - new Date().getTime()) / (1000 * 60 * 60)
-                  )} hours
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
@@ -295,7 +267,8 @@ function PricingContent() {
             </div>
           </motion.div>
         )}
-        <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* PLANS AT TOP */}
+        <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto mb-12">
           {PLANS.map((plan, index) => {
             const Icon = plan.icon;
             const isCurrentPlan = plan.id === currentPlan;
@@ -306,61 +279,62 @@ function PricingContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`relative rounded-2xl border-2 p-8 transition-all ${
+                className={`relative rounded-3xl border-2 p-10 transition-all shadow-xl bg-white/90 dark:bg-neutral-900/80 backdrop-blur-lg ${
                   plan.popular
-                    ? "border-violet-500 bg-violet-500/5 shadow-lg shadow-violet-500/20"
-                    : "border-border bg-slate-900/50"
+                    ? "border-blue-500 ring-2 ring-blue-200/40"
+                    : "border-neutral-200 dark:border-neutral-700"
                 }`}
+                style={{ minHeight: 520 }}
               >
                 {plan.popular && (
-                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                    <span className="bg-violet-500 text-white px-4 py-1 rounded-full text-sm font-semibold">
+                  <div className="absolute -top-5 left-1/2 -translate-x-1/2">
+                    <span className="bg-blue-600 text-white px-5 py-1.5 rounded-full text-base font-semibold shadow-lg">
                       Most Popular
                     </span>
                   </div>
                 )}
-                <div className="text-center mb-6">
+                <div className="text-center mb-7">
                   <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 ${
-                    plan.popular ? "bg-violet-500/20" : "bg-slate-800"
+                    plan.popular ? "bg-blue-100 dark:bg-blue-900/40" : "bg-neutral-100 dark:bg-neutral-800"
                   }`}>
-                    <Icon className={`w-8 h-8 ${plan.popular ? "text-violet-400" : "text-slate-400"}`} />
+                    <Icon className={`w-8 h-8 ${plan.popular ? "text-blue-500" : "text-neutral-400 dark:text-neutral-500"}`} />
                   </div>
-                  <h3 className="text-2xl font-bold text-foreground mb-2">{plan.name}</h3>
+                  <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">{plan.name}</h3>
                   <div className="mb-2">
-                    <span className="text-4xl font-bold text-foreground">{plan.price}</span>
+                    <span className="text-4xl font-bold text-neutral-900 dark:text-white">{plan.price}</span>
                     {plan.period !== "forever" && (
-                      <span className="text-muted-foreground">/{plan.period}</span>
+                      <span className="text-neutral-500 dark:text-neutral-300">/{plan.period}</span>
                     )}
                   </div>
                   {plan.originalPrice && (
                     <div className="flex items-center justify-center gap-2 mb-2">
-                      <span className="text-sm text-muted-foreground line-through">
+                      <span className="text-sm text-neutral-400 line-through">
                         {plan.originalPrice}
                       </span>
-                      <span className="text-sm font-semibold text-green-400">
+                      <span className="text-sm font-semibold text-green-500">
                         {plan.savings}
                       </span>
                     </div>
                   )}
-                  <p className="text-sm text-muted-foreground">{plan.description}</p>
+                  <p className="text-base text-neutral-600 dark:text-neutral-300">{plan.description}</p>
                 </div>
                 <ul className="space-y-3 mb-8">
                   {plan.features.map((feature, idx) => (
                     <li key={idx} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
-                      <span className="text-sm text-slate-300">{feature}</span>
+                      <Check className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-base text-neutral-800 dark:text-neutral-200">{feature}</span>
                     </li>
                   ))}
                 </ul>
                 <button
                   onClick={() => handleSubscribe(plan.id)}
                   disabled={isCurrentPlan || isProcessing}
-                  className={`w-full py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 ${
+                  className={`w-full py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-lg shadow-md ${
                     isCurrentPlan
-                      ? "bg-slate-800 text-slate-400 cursor-not-allowed"
+                      ? "bg-neutral-200 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed"
                       : plan.popular
-                      ? "bg-violet-500 hover:bg-violet-600 text-white"
-                      : "bg-slate-800 hover:bg-slate-700 text-foreground"
+                      ? "bg-blue-600 hover:bg-blue-700 text-white"
+                      : "bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-neutral-800 dark:hover:bg-neutral-700"
                   }`}
                 >
                   {isProcessing ? (
@@ -384,6 +358,40 @@ function PricingContent() {
             );
           })}
         </div>
+        {/* USAGE BELOW PLANS */}
+        {usageInfo && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-12 max-w-2xl mx-auto"
+          >
+            <div className="bg-white/90 dark:bg-neutral-900/80 rounded-2xl p-6 border border-neutral-200 dark:border-neutral-700 shadow-md backdrop-blur-lg">
+              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">
+                Your Usage Today
+              </h3>
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-neutral-500 dark:text-neutral-300">Creations used</span>
+                  <span className="text-neutral-900 dark:text-white font-semibold">
+                    {usageInfo.currentCount} / {usageInfo.limit}
+                  </span>
+                </div>
+                <div className="w-full bg-neutral-200 dark:bg-neutral-800 rounded-full h-2.5">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(usageInfo.currentCount / usageInfo.limit) * 100}%` }}
+                    className="bg-blue-500 h-2.5 rounded-full"
+                  />
+                </div>
+                <p className="text-sm text-neutral-500 dark:text-neutral-400">
+                  Resets in {Math.ceil(
+                    (new Date(usageInfo.resetAt).getTime() - new Date().getTime()) / (1000 * 60 * 60)
+                  )} hours
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        )}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
