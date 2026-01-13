@@ -64,25 +64,24 @@ export default function Home() {
             {/* Use provided gallery images for both sets */}
             {(() => {
               const images = [
-                "https://i.postimg.cc/ZRDvpchH/TA-2026-01-13-02-46-01-(artist-ma-2239987079.png",
-                "https://i.postimg.cc/3N44Bv8h/TA-2026-01-13-02-57-58-(artist-ma-1970745954.png",
-                "https://i.postimg.cc/j2pWkS5F/TA-2026-01-13-02-59-04-(artist-ma-526226082.png",
-                "https://i.postimg.cc/br7GFwJ5/TA-2026-01-13-03-07-23-(artist-ma-1647098690.png",
-                "https://i.postimg.cc/GtWBSmtL/TA-2026-01-13-03-07-26-(artist-ma-307256307.png",
-                "https://i.postimg.cc/Pf98q2yq/TA-2026-01-13-11-54-14-(artist-ma-3018215985.png",
-                "https://i.postimg.cc/tC6nnWvn/TA-2026-01-13-11-55-33-(artist-ma-2610045890.png",
-                "https://i.postimg.cc/Sxp26RH8/TA-2026-01-13-11-58-10-(artist-ma-1420471242.png",
-                "https://i.postimg.cc/cLNgRCPQ/TA-2026-01-13-12-05-07-(artist-ma-1444115690.png",
-                "https://i.postimg.cc/QdkB0s3t/TA-2026-01-13-12-54-27-(artist-ma-1728647033.png",
-                "https://i.postimg.cc/wBq1rPqj/TA-2026-01-13-14-35-50-(artist-ma-2060442952.png",
-                "https://i.postimg.cc/FKpLsvW0/TA-2026-01-13-14-40-54-(artist-ma-2265619227.png",
-                "https://i.postimg.cc/hGsdPny9/TA-2026-01-13-14-42-27-(artist-ma-1635821493.png",
-                "https://i.postimg.cc/s2mhDz67/TA-2026-01-13-14-46-25-(artist-ma-735908093.png",
-                "https://i.postimg.cc/wB2mTzfJ/TA-2026-01-13-14-50-21-(artist-ma-3351602457-(1).png",
-                "https://i.postimg.cc/ZRDvpchK/TA-2026-01-13-14-53-32-(artist-ma-132961706.png",
-                "https://i.postimg.cc/Kzs3BNyK/TA-2026-01-13-14-54-16-(artist-ma-4111183455.png",
-                "https://i.postimg.cc/k4hRKcdD/TA-2026-01-13-14-58-30-(artist-ma-271327577.png",
-                "https://i.postimg.cc/G2STGQ14/TA-2026-01-13-15-06-54-(artist-ma-2605565792.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326742/TA-2026-01-13-14-46-25-_artist_ma-735908093_gafs9j.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326741/TA-2026-01-13-14-58-30-_artist_ma-271327577_efkpoq.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-12-54-27-_artist_ma-1728647033_cho5ek.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326739/TA-2026-01-13-15-07-52-_artist_ma-2968179715_zxkzfi.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326738/TA-2026-01-13-03-07-26-_artist_ma-307256307_jrcumn.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326738/TA-2026-01-13-11-55-06-_artist_ma-1864865991_zdfzoq.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326694/TA-2026-01-13-03-07-23-_artist_ma-1647098690_i8ocnz.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326700/TA-2026-01-13-14-54-16-_artist_ma-4111183455_bgdw7w.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326694/TA-2026-01-13-02-46-01-_artist_ma-2239987079_xf5jyh.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326737/TA-2026-01-13-11-58-10-_artist_ma-1420471242_pwkrpx.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326737/TA-2026-01-13-02-48-24-_artist_ma-3268805038_n9ztvj.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-14-50-21-_artist_ma-3351602457_1_nmshjr.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326693/TA-2026-01-13-02-38-38-_artist_ma-3962069391_v8mzt4.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326702/TA-2026-01-13-15-06-54-_artist_ma-2605565792_wmrg4p.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-14-35-50-_artist_ma-2060442952_dujkrv.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326700/TA-2026-01-13-14-53-32-_artist_ma-132961706_tkmwx9.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-12-05-07-_artist_ma-1444115690_wbekaf.png",
+                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326692/TA-2026-01-13-02-57-58-_artist_ma-1970745954_f2h9h8.png",
               ];
               // Duplicate for seamless loop
               const allImages = [...images, ...images];
@@ -103,6 +102,8 @@ export default function Home() {
                           background: '#222',
                         }}
                         loading="lazy"
+                        decoding="async"
+                        fetchPriority="high"
                       />
                     </div>
                   ))}

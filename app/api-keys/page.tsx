@@ -235,7 +235,15 @@ export default function APIKeysPage() {
           className="mb-6 p-4 rounded-xl glass border border-violet-500/30 bg-violet-500/5"
         >
           <div className="flex items-start gap-3">
-            <img src="https://i.postimg.cc/NGNjDc0q/TA-2026-01-13-02-38-38-(artist-ma-3962069391.png" alt="Banner" className="w-full rounded-xl" />
+            <Sparkles className="w-5 h-5 text-violet-400 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-violet-300 mb-1">
+                Secure Local Storage
+              </p>
+              <p className="text-xs text-slate-400">
+                Your API keys are stored locally in your browser and never sent to our servers. They're used only to generate your characters.
+              </p>
+            </div>
           </div>
         </motion.div>
 
