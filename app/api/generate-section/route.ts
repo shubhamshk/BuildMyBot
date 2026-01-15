@@ -4,7 +4,8 @@ import { generatePersonality, generateScenario, generateBio } from "@/lib/genera
 import { CharacterState } from "@/context/CharacterContext";
 
 // Extend timeout for slow local AI models (LM Studio)
-export const maxDuration = 3600; // 60 minutes
+// Note: Vercel Hobby plan max is 300 seconds (5 minutes)
+export const maxDuration = 300; // 5 minutes (max for Hobby plan)
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
