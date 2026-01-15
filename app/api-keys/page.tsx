@@ -15,42 +15,43 @@ const PROVIDERS: Array<{
   description: string;
   icon: string;
 }> = [
-  {
-    value: "openrouter",
-    label: "OpenRouter",
-    placeholder: "sk-or-...",
-    description: "Access to multiple models (Claude, DeepSeek, etc.)",
-    icon: "🌐",
-  },
-  {
-    value: "openai",
-    label: "OpenAI",
-    placeholder: "sk-...",
-    description: "GPT-4, GPT-3.5, and other OpenAI models",
-    icon: "🤖",
-  },
-  {
-    value: "gemini",
-    label: "Google Gemini",
-    placeholder: "AIza...",
-    description: "Gemini Pro and other Google AI models",
-    icon: "💎",
-  },
-  {
-    value: "huggingface",
-    label: "HuggingFace",
-    placeholder: "hf_...",
-    description: "Open-source models from HuggingFace",
-    icon: "🤗",
-  },
-  {
-    value: "lmstudio",
-    label: "LM Studio",
-    placeholder: "lm-studio-...",
-    description: "Local LM Studio models running on your machine",
-    icon: "💻",
-  },
-];
+    {
+      value: "openrouter",
+      label: "OpenRouter",
+      placeholder: "sk-or-...",
+      description: "Access to multiple models (Claude, DeepSeek, etc.)",
+      icon: "🌐",
+    },
+    {
+      value: "openai",
+      label: "OpenAI",
+      placeholder: "sk-...",
+      description: "GPT-4, GPT-3.5, and other OpenAI models",
+      icon: "🤖",
+    },
+    {
+      value: "gemini",
+      label: "Google Gemini",
+      placeholder: "AIza...",
+      description: "Gemini Pro and other Google AI models",
+      icon: "💎",
+    },
+    {
+      value: "huggingface",
+      label: "HuggingFace",
+      placeholder: "hf_...",
+      description: "Open-source models from HuggingFace",
+      icon: "🤗",
+    },
+    /* {
+      value: "lmstudio",
+      label: "LM Studio",
+      placeholder: "lm-studio-...",
+      description: "Local LM Studio models running on your machine",
+      icon: "💻",
+    }, */
+  ];
+
 
 export default function APIKeysPage() {
   const router = useRouter();
@@ -272,19 +273,17 @@ export default function APIKeysPage() {
                   <button
                     key={provider.value}
                     onClick={() => setActiveTab(provider.value)}
-                    className={`px-4 py-2.5 rounded-xl transition-all whitespace-nowrap flex items-center gap-2 relative flex-shrink-0 ${
-                      activeTab === provider.value
-                        ? "bg-violet-500/20 border border-violet-500/50 text-violet-400 shadow-lg shadow-violet-500/10"
-                        : "bg-slate-800/50 border border-slate-700 hover:bg-slate-800 hover:border-slate-600 text-slate-300"
-                    }`}
+                    className={`px-4 py-2.5 rounded-xl transition-all whitespace-nowrap flex items-center gap-2 relative flex-shrink-0 ${activeTab === provider.value
+                      ? "bg-violet-500/20 border border-violet-500/50 text-violet-400 shadow-lg shadow-violet-500/10"
+                      : "bg-slate-800/50 border border-slate-700 hover:bg-slate-800 hover:border-slate-600 text-slate-300"
+                      }`}
                   >
                     <span className="text-lg">{provider.icon}</span>
                     <span className="text-sm font-medium">{provider.label}</span>
                     {hasKeyForProvider && (
                       <div
-                        className={`w-2 h-2 rounded-full ${
-                          isSelected ? "bg-violet-400" : "bg-green-400"
-                        }`}
+                        className={`w-2 h-2 rounded-full ${isSelected ? "bg-violet-400" : "bg-green-400"
+                          }`}
                       />
                     )}
                     {isSelected && (

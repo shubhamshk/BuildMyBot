@@ -19,13 +19,13 @@ const PROVIDERS: Array<{
   description: string;
   icon: string;
 }> = [
-  {
-    value: "openrouter",
-    label: "OpenRouter",
-    placeholder: "sk-or-...",
-    description: "Access to multiple models (Claude, DeepSeek, etc.)",
-    icon: "🌐",
-  },
+    {
+      value: "openrouter",
+      label: "OpenRouter",
+      placeholder: "sk-or-...",
+      description: "Access to multiple models (Claude, DeepSeek, etc.)",
+      icon: "🌐",
+    },
     {
       value: "openai",
       label: "OpenAI",
@@ -47,13 +47,13 @@ const PROVIDERS: Array<{
       description: "Open-source models from HuggingFace",
       icon: "🤗",
     },
-    {
+    /* {
       value: "lmstudio",
       label: "LM Studio",
       placeholder: "lm-studio-...",
       description: "Local LM Studio models running on your machine",
       icon: "💻",
-    },
+    }, */
   ];
 
 export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
