@@ -75,6 +75,10 @@ export default function APIKeysPage() {
   const [selectedProvider, setSelectedProvider] = useState<APIProvider | null>(null);
   const [copiedKey, setCopiedKey] = useState<APIProvider | null>(null);
   const [saveSuccess, setSaveSuccess] = useState<APIProvider | null>(null);
+  // Additional fields for rulesinfo provider
+  const [rulesinfoName, setRulesinfoName] = useState<string>("");
+  const [rulesinfoSkey, setRulesinfoSkey] = useState<string>("");
+  const [rulesinfoModel, setRulesinfoModel] = useState<string>("");
 
   // Load existing keys on mount
   useEffect(() => {
@@ -96,6 +100,14 @@ export default function APIKeysPage() {
 
     setApiKeys(keys);
     setSelectedProvider(getSelectedProvider());
+
+    // Load rulesinfo additional fields
+    const savedName = localStorage.getItem("rulesinfo_name");
+    const savedSkey = localStorage.getItem("rulesinfo_skey");
+    const savedModel = localStorage.getItem("rulesinfo_model");
+    if (savedName) setRulesinfoName(savedName);
+    if (savedSkey) setRulesinfoSkey(savedSkey);
+    if (savedModel) setRulesinfoModel(savedModel);
 
     // Set active tab to selected provider or first provider
     const savedProvider = getSelectedProvider();
@@ -128,6 +140,13 @@ export default function APIKeysPage() {
     setAPIKey(provider, key);
     setSelectedProvider(provider);
 
+    // Save additional rulesinfo fields if this is the rulesinfo provider
+    if (provider === "rulesinfo") {
+      localStorage.setItem("rulesinfo_name", rulesinfoName.trim());
+      localStorage.setItem("rulesinfo_skey", rulesinfoSkey.trim());
+      localStorage.setItem("rulesinfo_model", rulesinfoModel.trim());
+    }
+
     // Update local state
     setApiKeys((prev) => ({ ...prev, [provider]: key }));
 
@@ -143,6 +162,16 @@ export default function APIKeysPage() {
       // Clear this specific key
       localStorage.removeItem(`api_key_${provider}`);
 
+      // Clear additional rulesinfo fields if this is the rulesinfo provider
+      if (provider === "rulesinfo") {
+        localStorage.removeItem("rulesinfo_name");
+        localStorage.removeItem("rulesinfo_skey");
+        localStorage.removeItem("rulesinfo_model");
+        setRulesinfoName("");
+        setRulesinfoSkey("");
+        setRulesinfoModel("");
+      }
+
       // If this was the selected provider, clear selection
       if (selectedProvider === provider) {
         localStorage.removeItem("api_key_provider");
@@ -157,6 +186,10 @@ export default function APIKeysPage() {
   const handleClearAll = () => {
     if (confirm("Are you sure you want to remove ALL API keys? This action cannot be undone.")) {
       clearAllAPIKeys();
+      // Clear rulesinfo additional fields
+      localStorage.removeItem("rulesinfo_name");
+      localStorage.removeItem("rulesinfo_skey");
+      localStorage.removeItem("rulesinfo_model");
       setApiKeys({
         openai: "",
         gemini: "",
@@ -165,6 +198,9 @@ export default function APIKeysPage() {
         lmstudio: "",
         rulesinfo: "",
       });
+      setRulesinfoName("");
+      setRulesinfoSkey("");
+      setRulesinfoModel("");
       setSelectedProvider(null);
     }
   };
@@ -360,6 +396,48 @@ export default function APIKeysPage() {
                     Your API key is stored locally in your browser and never sent to our servers.
                   </p>
                 </div>
+
+                {/* Additional fields for rulesinfo provider */}
+                {activeTab === "rulesinfo" && (
+                  <>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        value={rulesinfoName}
+                        onChange={(e) => setRulesinfoName(e.target.value)}
+                        placeholder="Display name or identifier"
+                        className="w-full h-12 px-4 rounded-xl glass border border-border focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all outline-none text-sm text-foreground placeholder:text-muted-foreground"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">
+                        Secondary Key (skey)
+                      </label>
+                      <input
+                        type="text"
+                        value={rulesinfoSkey}
+                        onChange={(e) => setRulesinfoSkey(e.target.value)}
+                        placeholder="Secondary key or service key"
+                        className="w-full h-12 px-4 rounded-xl glass border border-border focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all outline-none font-mono text-sm text-foreground placeholder:text-muted-foreground"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-sm font-medium text-foreground mb-2 block">
+                        Model
+                      </label>
+                      <input
+                        type="text"
+                        value={rulesinfoModel}
+                        onChange={(e) => setRulesinfoModel(e.target.value)}
+                        placeholder="Model name (e.g., gpt-4, llama-2)"
+                        className="w-full h-12 px-4 rounded-xl glass border border-border focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20 transition-all outline-none text-sm text-foreground placeholder:text-muted-foreground"
+                      />
+                    </div>
+                  </>
+                )}
 
                 {/* Status */}
                 {hasKey(activeTab) && (

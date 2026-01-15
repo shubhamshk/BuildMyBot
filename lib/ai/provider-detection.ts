@@ -37,6 +37,10 @@ export const MODEL_CONFIGS: Record<APIProvider, ModelConfig> = {
     default: "local-model",
     long: "local-model",
   },
+  rulesinfo: {
+    default: "rules-model",
+    long: "rules-model",
+  },
 };
 
 /**

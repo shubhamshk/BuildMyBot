@@ -212,9 +212,55 @@ export class LMStudioProvider implements AIProvider {
 }
 
 /**
+ * Rules Info Provider
+ * Custom provider for rules-based API integration
+ */
+export class RulesInfoProvider implements AIProvider {
+  async generate(prompt: string, apiKey: string, model: string, maxTokens: number = 1800): Promise<string> {
+    // Get additional rulesinfo configuration from localStorage
+    const name = typeof window !== 'undefined' ? localStorage.getItem("rulesinfo_name") || "" : "";
+    const skey = typeof window !== 'undefined' ? localStorage.getItem("rulesinfo_skey") || "" : "";
+    const configuredModel = typeof window !== 'undefined' ? localStorage.getItem("rulesinfo_model") || model : model;
+
+    // TODO: Replace with your actual Rules Info API endpoint
+    const apiUrl = "https://api.rulesinfo.com/v1/generate"; // Placeholder URL
+
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${apiKey}`,
+        "X-Service-Key": skey,
+      },
+      body: JSON.stringify({
+        prompt,
+        model: configuredModel,
+        name,
+        max_tokens: maxTokens,
+        temperature: 0.7,
+      }),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Rules Info API error (${response.status}): ${errorText || "Unknown error"}`);
+    }
+
+    const data = await response.json();
+    const text = data.text || data.response || data.content;
+
+    if (!text || text.trim() === "") {
+      throw new Error("Rules Info returned empty response.");
+    }
+
+    return text.trim();
+  }
+}
+
+/**
  * Get AI provider instance
  */
-export function getAIProvider(provider: "openai" | "gemini" | "openrouter" | "huggingface" | "lmstudio"): AIProvider {
+export function getAIProvider(provider: "openai" | "gemini" | "openrouter" | "huggingface" | "lmstudio" | "rulesinfo"): AIProvider {
   if (provider === "openai" || provider === "openrouter") {
     return new OpenAIProvider();
   }
@@ -226,6 +272,9 @@ export function getAIProvider(provider: "openai" | "gemini" | "openrouter" | "hu
   }
   if (provider === "lmstudio") {
     return new LMStudioProvider();
+  }
+  if (provider === "rulesinfo") {
+    return new RulesInfoProvider();
   }
   throw new Error(`Unknown provider: ${provider}`);
 }
