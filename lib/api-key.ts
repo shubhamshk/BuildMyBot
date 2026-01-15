@@ -74,7 +74,7 @@ export function clearAPIKey(): void {
  * Clear all API keys from all providers
  */
 export function clearAllAPIKeys(): void {
-  const providers: APIProvider[] = ["openai", "gemini", "openrouter", "huggingface", "lmstudio"];
+  const providers: APIProvider[] = ["openai", "gemini", "openrouter", "huggingface", "lmstudio", "rulesinfo"];
   providers.forEach((provider) => {
     localStorage.removeItem(`api_key_${provider}`);
   });
@@ -86,7 +86,7 @@ export function clearAllAPIKeys(): void {
  * Get all configured API keys (masked for display)
  */
 export function getAllAPIKeys(): Record<APIProvider, { exists: boolean; masked: string }> {
-  const providers: APIProvider[] = ["openai", "gemini", "openrouter", "huggingface", "lmstudio"];
+  const providers: APIProvider[] = ["openai", "gemini", "openrouter", "huggingface", "lmstudio", "rulesinfo"];
   const result: Record<APIProvider, { exists: boolean; masked: string }> = {} as any;
 
   providers.forEach((provider) => {
