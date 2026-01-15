@@ -43,6 +43,14 @@ const PROVIDERS: Array<{
     description: "Open-source models from HuggingFace",
     icon: "🤗",
   },
+
+  {
+    value: "rulesinfo",
+    label: "Rules Info",
+    placeholder: "api-keylength-info",
+    description: "Handle API key length for Rules Info service",
+    icon: "📋",
+  },
 ];
 
 export default function APIKeysPage() {
@@ -54,6 +62,7 @@ export default function APIKeysPage() {
     openrouter: "",
     huggingface: "",
     lmstudio: "",
+    rulesinfo: "",
   });
   const [showKeys, setShowKeys] = useState<Record<APIProvider, boolean>>({
     openai: false,
@@ -61,6 +70,7 @@ export default function APIKeysPage() {
     openrouter: false,
     huggingface: false,
     lmstudio: false,
+    rulesinfo: false,
   });
   const [selectedProvider, setSelectedProvider] = useState<APIProvider | null>(null);
   const [copiedKey, setCopiedKey] = useState<APIProvider | null>(null);
@@ -74,6 +84,7 @@ export default function APIKeysPage() {
       openrouter: "",
       huggingface: "",
       lmstudio: "",
+      rulesinfo: "",
     };
 
     PROVIDERS.forEach((provider) => {
@@ -152,6 +163,7 @@ export default function APIKeysPage() {
         openrouter: "",
         huggingface: "",
         lmstudio: "",
+        rulesinfo: "",
       });
       setSelectedProvider(null);
     }

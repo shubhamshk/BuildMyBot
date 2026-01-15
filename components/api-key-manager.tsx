@@ -47,13 +47,14 @@ const PROVIDERS: Array<{
       description: "Open-source models from HuggingFace",
       icon: "🤗",
     },
-    // {
-    //   value: "lmstudio",
-    //   label: "LM Studio",
-    //   placeholder: "unused-key",
-    //   description: "Local model running via LM Studio (OpenAI compatible)",
-    //   icon: "🏠",
-    // },
+  
+    {
+      value: "rulesinfo",
+      label: "Rules Info",
+      placeholder: "lmstudio-api-key",
+      description: "Handle LM Studio API key for local models",
+      icon: "📋",
+    },
   ];
 
 export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
@@ -64,6 +65,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     openrouter: "",
     huggingface: "",
     lmstudio: "",
+    rulesinfo: "",
   });
   const [showKeys, setShowKeys] = useState<Record<APIProvider, boolean>>({
     openai: false,
@@ -71,6 +73,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     openrouter: false,
     huggingface: false,
     lmstudio: false,
+    rulesinfo: false,
   });
   const [selectedProvider, setSelectedProvider] = useState<APIProvider | null>(null);
   const [copiedKey, setCopiedKey] = useState<APIProvider | null>(null);
@@ -84,6 +87,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
         openrouter: "",
         huggingface: "",
         lmstudio: "",
+        rulesinfo: "",
       };
 
       PROVIDERS.forEach((provider) => {
@@ -162,6 +166,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
         openrouter: "",
         huggingface: "",
         lmstudio: "",
+        rulesinfo: "",
       });
       setSelectedProvider(null);
     }
@@ -192,6 +197,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
       openrouter: "",
       huggingface: "",
       lmstudio: "",
+      rulesinfo: "",
     });
     onClose();
   };

@@ -5,7 +5,7 @@
 
 import { detectProviderFromKey } from "@/lib/ai/provider-detection";
 
-export type APIProvider = "openai" | "gemini" | "openrouter" | "huggingface" | "lmstudio";
+export type APIProvider = "openai" | "gemini" | "openrouter" | "huggingface" | "lmstudio" | "rulesinfo";
 
 export function getAPIKey(provider?: APIProvider): string | null {
   if (provider) {
