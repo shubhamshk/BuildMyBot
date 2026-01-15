@@ -10,11 +10,10 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 py-3 px-6 transition-all duration-300 backdrop-blur-xl ${
-        scrolled
+      className={`fixed top-0 left-0 right-0 z-50 py-3 px-6 transition-all duration-300 backdrop-blur-xl ${scrolled
           ? "bg-white/70 dark:bg-neutral-900/80 border-b border-border shadow-lg"
           : "bg-white/40 dark:bg-neutral-900/60"
-      }`}
+        }`}
       style={{
         boxShadow: scrolled
           ? '0 4px 24px 0 rgba(0,0,0,0.08)' : '0 2px 8px 0 rgba(0,0,0,0.04)',
