@@ -47,13 +47,12 @@ const PROVIDERS: Array<{
       description: "Open-source models from HuggingFace",
       icon: "🤗",
     },
-  
     {
-      value: "rulesinfo",
-      label: "Rules Info",
-      placeholder: "lmstudio-api-key",
-      description: "Handle LM Studio API key for local models",
-      icon: "📋",
+      value: "lmstudio",
+      label: "LM Studio",
+      placeholder: "lm-studio-...",
+      description: "Local LM Studio models running on your machine",
+      icon: "💻",
     },
   ];
 
@@ -65,7 +64,6 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     openrouter: "",
     huggingface: "",
     lmstudio: "",
-    rulesinfo: "",
   });
   const [showKeys, setShowKeys] = useState<Record<APIProvider, boolean>>({
     openai: false,
@@ -73,14 +71,9 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     openrouter: false,
     huggingface: false,
     lmstudio: false,
-    rulesinfo: false,
   });
   const [selectedProvider, setSelectedProvider] = useState<APIProvider | null>(null);
   const [copiedKey, setCopiedKey] = useState<APIProvider | null>(null);
-  // Additional fields for rulesinfo provider
-  const [rulesinfoName, setRulesinfoName] = useState<string>("");
-  const [rulesinfoSkey, setRulesinfoSkey] = useState<string>("");
-  const [rulesinfoModel, setRulesinfoModel] = useState<string>("");
 
   // Load existing keys on mount
   useEffect(() => {
@@ -91,7 +84,6 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
         openrouter: "",
         huggingface: "",
         lmstudio: "",
-        rulesinfo: "",
       };
 
       PROVIDERS.forEach((provider) => {
@@ -103,14 +95,6 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
 
       setApiKeys(keys);
       setSelectedProvider(getSelectedProvider());
-
-      // Load rulesinfo additional fields
-      const savedName = localStorage.getItem("rulesinfo_name");
-      const savedSkey = localStorage.getItem("rulesinfo_skey");
-      const savedModel = localStorage.getItem("rulesinfo_model");
-      if (savedName) setRulesinfoName(savedName);
-      if (savedSkey) setRulesinfoSkey(savedSkey);
-      if (savedModel) setRulesinfoModel(savedModel);
 
       // Set active tab to selected provider or first provider
       const savedProvider = getSelectedProvider();
@@ -144,13 +128,6 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     setAPIKey(provider, key);
     setSelectedProvider(provider);
 
-    // Save additional rulesinfo fields if this is the rulesinfo provider
-    if (provider === "rulesinfo") {
-      localStorage.setItem("rulesinfo_name", rulesinfoName.trim());
-      localStorage.setItem("rulesinfo_skey", rulesinfoSkey.trim());
-      localStorage.setItem("rulesinfo_model", rulesinfoModel.trim());
-    }
-
     // Update local state
     setApiKeys((prev) => ({ ...prev, [provider]: key }));
 
@@ -164,16 +141,6 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     if (confirm(`Are you sure you want to remove the ${PROVIDERS.find(p => p.value === provider)?.label} API key?`)) {
       // Clear this specific key
       localStorage.removeItem(`api_key_${provider}`);
-
-      // Clear additional rulesinfo fields if this is the rulesinfo provider
-      if (provider === "rulesinfo") {
-        localStorage.removeItem("rulesinfo_name");
-        localStorage.removeItem("rulesinfo_skey");
-        localStorage.removeItem("rulesinfo_model");
-        setRulesinfoName("");
-        setRulesinfoSkey("");
-        setRulesinfoModel("");
-      }
 
       // If this was the selected provider, clear selection
       if (selectedProvider === provider) {
@@ -189,21 +156,13 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
   const handleClearAll = () => {
     if (confirm("Are you sure you want to remove ALL API keys? This action cannot be undone.")) {
       clearAllAPIKeys();
-      // Clear rulesinfo additional fields
-      localStorage.removeItem("rulesinfo_name");
-      localStorage.removeItem("rulesinfo_skey");
-      localStorage.removeItem("rulesinfo_model");
       setApiKeys({
         openai: "",
         gemini: "",
         openrouter: "",
         huggingface: "",
         lmstudio: "",
-        rulesinfo: "",
       });
-      setRulesinfoName("");
-      setRulesinfoSkey("");
-      setRulesinfoModel("");
       setSelectedProvider(null);
     }
   };
@@ -233,7 +192,6 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
       openrouter: "",
       huggingface: "",
       lmstudio: "",
-      rulesinfo: "",
     });
     onClose();
   };
@@ -383,48 +341,6 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                       </p>
                     </div>
 
-                    {/* Additional fields for rulesinfo provider */}
-                    {activeTab === "rulesinfo" && (
-                      <>
-                        <div>
-                          <label className="text-xs font-medium text-slate-300 mb-1.5 block">
-                            Name
-                          </label>
-                          <input
-                            type="text"
-                            value={rulesinfoName}
-                            onChange={(e) => setRulesinfoName(e.target.value)}
-                            placeholder="Display name or identifier"
-                            className="w-full h-10 px-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all outline-none text-sm text-slate-100 placeholder:text-slate-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-xs font-medium text-slate-300 mb-1.5 block">
-                            Secondary Key (skey)
-                          </label>
-                          <input
-                            type="text"
-                            value={rulesinfoSkey}
-                            onChange={(e) => setRulesinfoSkey(e.target.value)}
-                            placeholder="Secondary key or service key"
-                            className="w-full h-10 px-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all outline-none font-mono text-sm text-slate-100 placeholder:text-slate-500"
-                          />
-                        </div>
-                        <div>
-                          <label className="text-xs font-medium text-slate-300 mb-1.5 block">
-                            Model
-                          </label>
-                          <input
-                            type="text"
-                            value={rulesinfoModel}
-                            onChange={(e) => setRulesinfoModel(e.target.value)}
-                            placeholder="Model name (e.g., gpt-4, llama-2)"
-                            className="w-full h-10 px-3 rounded-lg bg-slate-800 border border-slate-700 focus:border-violet-500 focus:ring-1 focus:ring-violet-500/50 transition-all outline-none text-sm text-slate-100 placeholder:text-slate-500"
-                          />
-                        </div>
-                      </>
-                    )}
-
                     {/* Status */}
                     {hasKey(activeTab) && (
                       <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30">
@@ -521,6 +437,16 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
                             className="text-[10px] text-violet-400 hover:text-violet-300 underline"
                           >
                             Get HuggingFace Token →
+                          </a>
+                        )}
+                        {activeTab === "lmstudio" && (
+                          <a
+                            href="https://lmstudio.ai/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[10px] text-violet-400 hover:text-violet-300 underline"
+                          >
+                            Download LM Studio →
                           </a>
                         )}
                       </div>

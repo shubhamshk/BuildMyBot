@@ -164,6 +164,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../app/api/generate-section/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/generate-section">> = Specific
+  const handler = {} as typeof import("../../app/api/generate-section/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/api/paypal/create-subscription/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/create-subscription">> = Specific

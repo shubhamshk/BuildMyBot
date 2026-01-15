@@ -9,7 +9,7 @@ import { APIKeyIndicator } from "@/components/api-key-indicator";
 import { SubscriptionStatusCard } from "@/components/subscription-status-card";
 import { ResponsiveNavbar } from "@/components/responsive-navbar";
 import Link from "next/link";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function Home() {
   const { scrollY } = useScroll();
@@ -20,6 +20,12 @@ export default function Home() {
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 20);
   });
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const toggleVideo = () => {
     if (videoRef.current) {
@@ -156,14 +162,14 @@ export default function Home() {
           >
             <Link
               href="/idea"
-              className="px-8 py-4 rounded-xl font-bold flex items-center gap-2 group bg-neutral-900 border border-neutral-700 shadow-md transition-all duration-200 hover:bg-neutral-800 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)" style={{ color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.25)' }}
+              className="px-8 py-4 rounded-xl font-bold flex items-center gap-2 group bg-neutral-900 border border-neutral-700 shadow-md transition-all duration-200 hover:bg-neutral-800 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]" style={{ color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.25)' }}
             >
               Start Creating
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="#how-it-works"
-              className="px-8 py-4 rounded-xl font-bold flex items-center gap-2 group bg-neutral-900 border border-neutral-700 shadow-md transition-all duration-200 hover:bg-neutral-800 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)" style={{ color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.25)' }}
+              className="px-8 py-4 rounded-xl font-bold flex items-center gap-2 group bg-neutral-900 border border-neutral-700 shadow-md transition-all duration-200 hover:bg-neutral-800 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]" style={{ color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.25)' }}
             >
               See How It Works
             </Link>
@@ -214,28 +220,32 @@ export default function Home() {
             <div className="relative rounded-3xl overflow-hidden glass border border-border shadow-2xl shadow-violet-500/10">
               {/* Gradient Border Effect */}
               <div className="absolute inset-0 rounded-3xl p-[1px] bg-gradient-to-br from-violet-500/50 via-transparent to-blue-500/50 -z-10" />
-              
+
               {/* Video Player */}
               <div className="relative aspect-video bg-[#0a0a1a]">
                 {/* Replace with your actual video URL */}
-                <video
-                  ref={videoRef}
-                  className="w-full h-full object-cover"
-                  poster="https://res.cloudinary.com/dkwxxfewv/image/upload/v1768322035/Screenshot_2026-01-13_220254_bdb7ij.png"
-                  onPlay={() => setIsPlaying(true)}
-                  onPause={() => setIsPlaying(false)}
-                  onEnded={() => setIsPlaying(false)}
-                >
-                  <source src="https://res.cloudinary.com/dkwxxfewv/video/upload/v1768197190/Untitled_video_-_Made_with_Clipchamp_1_i4u8bm.mp4" type="video/mp4" />
-                  Your browser does not support the video tag.
-                </video>
+                {mounted ? (
+                  <video
+                    ref={videoRef}
+                    className="w-full h-full object-cover"
+                    poster="https://res.cloudinary.com/dkwxxfewv/image/upload/v1768322035/Screenshot_2026-01-13_220254_bdb7ij.png"
+                    onPlay={() => setIsPlaying(true)}
+                    onPause={() => setIsPlaying(false)}
+                    onEnded={() => setIsPlaying(false)}
+                    suppressHydrationWarning
+                  >
+                    <source src="https://res.cloudinary.com/dkwxxfewv/video/upload/v1768197190/Untitled_video_-_Made_with_Clipchamp_1_i4u8bm.mp4" type="video/mp4" />
+                    Your browser does not support the video tag.
+                  </video>
+                ) : (
+                  <div className="w-full h-full bg-[#0a0a1a]" />
+                )}
 
                 {/* Play Button Overlay */}
                 <motion.button
                   onClick={toggleVideo}
-                  className={`absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity ${
-                    isPlaying ? "opacity-0 hover:opacity-100" : "opacity-100"
-                  }`}
+                  className={`absolute inset-0 flex items-center justify-center bg-black/30 transition-opacity ${isPlaying ? "opacity-0 hover:opacity-100" : "opacity-100"
+                    }`}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >

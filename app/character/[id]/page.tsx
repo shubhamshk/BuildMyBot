@@ -3,11 +3,11 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, Save, Check } from "lucide-react";
+import { ArrowLeft, Loader2, Save, Check, Sparkles, RefreshCw } from "lucide-react";
 import { useCharacter } from "@/context/CharacterContext";
 import Link from "next/link";
 import { TerminalOutput } from "@/components/terminal-output";
-import { validateAPIKey, generatePersonality, generateScenario, generateBio } from "@/lib/generation/service";
+import { validateAPIKey } from "@/lib/generation/service";
 import { isAPIKeyConnected, APIProvider } from "@/lib/api-key";
 import { saveCharacter, getCurrentUser } from "@/lib/supabase/characters";
 import { UpgradeModal } from "@/components/upgrade-modal";
@@ -192,20 +192,37 @@ export default function CharacterResultPage() {
     updateSection(sectionId, { loading: true, error: null });
 
     try {
-      let content = "";
+      // Get scenario context for bio generation
+      const scenarioContext = sectionId === "bio"
+        ? (sections.scenarioGreeting.content || character?.generatedContent?.scenario || "")
+        : sectionId === "scenarioGreeting"
+          ? (scenarioInput.trim() || undefined)
+          : undefined;
 
-      if (sectionId === "personality") {
-        content = await generatePersonality(character, keyCheck.apiKey, keyCheck.provider);
-      } else if (sectionId === "scenarioGreeting") {
-        const userScenario = scenarioInput.trim() || undefined;
-        content = await generateScenario(character, userScenario, keyCheck.apiKey, keyCheck.provider);
-      } else if (sectionId === "bio") {
-        const scenario = sections.scenarioGreeting.content || character?.generatedContent?.scenario || "";
-        if (!scenario) {
-          throw new Error("Scenario must be generated before bio");
-        }
-        content = await generateBio(character, scenario, keyCheck.apiKey, keyCheck.provider);
+      if (sectionId === "bio" && !scenarioContext) {
+        throw new Error("Scenario must be generated before bio");
       }
+
+      // Call server-side API to avoid CORS issues with LM Studio
+      const response = await fetch("/api/generate-section", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          character,
+          section: sectionId,
+          apiKey: keyCheck.apiKey,
+          provider: keyCheck.provider,
+          scenario: scenarioContext,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(errorData.error || `Failed to generate ${sectionId}`);
+      }
+
+      const data = await response.json();
+      const content = data.content;
 
       // Validate content is not empty
       if (!content || content.trim() === "") {
@@ -228,28 +245,34 @@ export default function CharacterResultPage() {
     if (!character) return;
 
     setIsGenerating(true);
+
+    // Start with only personality loading, others not started yet
     setSections({
       personality: { loading: true, error: null, content: "" },
-      scenarioGreeting: { loading: true, error: null, content: "" },
-      bio: { loading: true, error: null, content: "" },
+      scenarioGreeting: { loading: false, error: null, content: "" },
+      bio: { loading: false, error: null, content: "" },
     });
 
+    let personalityContent = "";
+    let scenarioContent = "";
+    let bioContent = "";
+
     try {
-      // Process in background - don't block UI
-      const response = await fetch("/api/process-characters", {
+      // Step 1: Generate Personality
+      const personalityResponse = await fetch("/api/generate-section", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          characters: [character],
+          character,
+          section: "personality",
           apiKey,
           provider,
-          storyIdea,
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        
+      if (!personalityResponse.ok) {
+        const errorData = await personalityResponse.json().catch(() => ({ error: "Unknown error" }));
+
         // Check for usage limit error
         if (errorData.error === "USAGE_LIMIT_EXCEEDED") {
           setUsageLimitError({
@@ -262,48 +285,88 @@ export default function CharacterResultPage() {
           setIsGenerating(false);
           return;
         }
-        
-        throw new Error(errorData.error || "Background processing failed");
+
+        throw new Error(errorData.error || "Failed to generate personality");
       }
 
-      const data = await response.json();
-      const result = data.results?.[0];
+      const personalityData = await personalityResponse.json();
+      personalityContent = personalityData.content;
 
-      if (result) {
-        if (result.error) {
-          throw new Error(result.error);
-        }
+      // Update UI - Personality complete, Scenario starting
+      setSections(prev => ({
+        ...prev,
+        personality: { loading: false, error: null, content: personalityContent },
+        scenarioGreeting: { loading: true, error: null, content: "" },
+      }));
+      updateCharacterContent("personality", personalityContent);
 
-        // Update all sections
-        setSections({
-          personality: {
-            loading: false,
-            error: null,
-            content: result.personality || "",
-          },
-          scenarioGreeting: {
-            loading: false,
-            error: null,
-            content: result.scenario || "",
-          },
-          bio: {
-            loading: false,
-            error: null,
-            content: result.bio || "",
+      // Step 2: Generate Scenario
+      const scenarioResponse = await fetch("/api/generate-section", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          character,
+          section: "scenarioGreeting",
+          apiKey,
+          provider,
+          scenario: storyIdea,
+        }),
+      });
+
+      if (!scenarioResponse.ok) {
+        const errorData = await scenarioResponse.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(errorData.error || "Failed to generate scenario");
+      }
+
+      const scenarioData = await scenarioResponse.json();
+      scenarioContent = scenarioData.content;
+
+      // Update UI - Scenario complete, Bio starting
+      setSections(prev => ({
+        ...prev,
+        scenarioGreeting: { loading: false, error: null, content: scenarioContent },
+        bio: { loading: true, error: null, content: "" },
+      }));
+      updateCharacterContent("scenarioGreeting", scenarioContent);
+
+      // Step 3: Generate Bio
+      const bioResponse = await fetch("/api/generate-section", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          character,
+          section: "bio",
+          apiKey,
+          provider,
+          scenario: scenarioContent,
+        }),
+      });
+
+      if (!bioResponse.ok) {
+        const errorData = await bioResponse.json().catch(() => ({ error: "Unknown error" }));
+        throw new Error(errorData.error || "Failed to generate bio");
+      }
+
+      const bioData = await bioResponse.json();
+      bioContent = bioData.content;
+
+      // Update UI - Bio complete
+      setSections(prev => ({
+        ...prev,
+        bio: { loading: false, error: null, content: bioContent },
+      }));
+      updateCharacterContent("bio", bioContent);
+
+      // Update character context with all content
+      const charIndex = characters.findIndex((c) => c.id === character.id);
+      if (charIndex !== -1) {
+        updateCharacter(charIndex, {
+          generatedContent: {
+            personality: personalityContent,
+            scenario: scenarioContent,
+            bio: bioContent,
           },
         });
-
-        // Update character
-        const charIndex = characters.findIndex((c) => c.id === character.id);
-        if (charIndex !== -1) {
-          updateCharacter(charIndex, {
-            generatedContent: {
-              personality: result.personality,
-              scenario: result.scenario,
-              bio: result.bio,
-            },
-          });
-        }
       }
 
       // Clear background processing flag
@@ -313,11 +376,19 @@ export default function CharacterResultPage() {
       localStorage.removeItem("processingStoryIdea");
     } catch (error: any) {
       console.error("Background processing error:", error);
-      setSections({
-        personality: { loading: false, error: error.message, content: "" },
-        scenarioGreeting: { loading: false, error: error.message, content: "" },
-        bio: { loading: false, error: error.message, content: "" },
-      });
+
+      // Update only the sections that are still loading with the error
+      setSections(prev => ({
+        personality: prev.personality.loading
+          ? { loading: false, error: error.message, content: "" }
+          : prev.personality,
+        scenarioGreeting: prev.scenarioGreeting.loading
+          ? { loading: false, error: error.message, content: "" }
+          : prev.scenarioGreeting,
+        bio: prev.bio.loading
+          ? { loading: false, error: error.message, content: "" }
+          : prev.bio,
+      }));
     } finally {
       setIsGenerating(false);
     }
@@ -334,12 +405,30 @@ export default function CharacterResultPage() {
 
     setIsGenerating(true);
 
+    // Start with only personality loading
+    setSections({
+      personality: { loading: true, error: null, content: "" },
+      scenarioGreeting: { loading: false, error: null, content: "" },
+      bio: { loading: false, error: null, content: "" },
+    });
+
     try {
-      // Step 1: Generate Personality (MUST succeed)
+      // Step 1: Generate Personality
       await handleGenerateSection("personality", keyCheck.apiKey, keyCheck.provider);
 
-      // Step 2: Show scenario modal after personality succeeds
-      setShowScenarioModal(true);
+      // Step 2: Automatically generate Scenario (no modal)
+      setSections(prev => ({
+        ...prev,
+        scenarioGreeting: { loading: true, error: null, content: "" },
+      }));
+      await handleGenerateSection("scenarioGreeting", keyCheck.apiKey, keyCheck.provider);
+
+      // Step 3: Automatically generate Bio
+      setSections(prev => ({
+        ...prev,
+        bio: { loading: true, error: null, content: "" },
+      }));
+      await handleGenerateSection("bio", keyCheck.apiKey, keyCheck.provider);
     } catch (error) {
       console.error("Generation failed:", error);
     } finally {
@@ -471,6 +560,19 @@ export default function CharacterResultPage() {
 
         {/* Character Sections */}
         <div className="space-y-6">
+          {/* Note for users */}
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 rounded-2xl bg-violet-500/10 border border-violet-500/20 flex items-center gap-3"
+          >
+            <div className="w-8 h-8 rounded-full bg-violet-500/20 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-4 h-4 text-violet-400" />
+            </div>
+            <p className="text-sm text-violet-300">
+              <span className="font-semibold text-violet-200">Pro Tip:</span> If the character data isn&apos;t generating automatically, just click the <span className="inline-flex items-center gap-1 font-mono bg-violet-500/20 px-1.5 py-0.5 rounded text-xs text-violet-200"><RefreshCw className="w-3 h-3" /> regenerate </span> button in each section to trigger it manually.
+            </p>
+          </motion.div>
           {/* Personality Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -546,8 +648,8 @@ export default function CharacterResultPage() {
               onClick={handleSaveToProfile}
               disabled={isSaving || isSaved || !sections.personality.content}
               className={`flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-semibold transition-colors ${isSaved
-                  ? "bg-emerald-500 text-white"
-                  : "bg-violet-500 hover:bg-violet-600 text-white"
+                ? "bg-emerald-500 text-white"
+                : "bg-violet-500 hover:bg-violet-600 text-white"
                 } disabled:opacity-50`}
             >
               {isSaving ? (

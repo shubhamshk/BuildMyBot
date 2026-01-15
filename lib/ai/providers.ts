@@ -181,86 +181,55 @@ export class LMStudioProvider implements AIProvider {
       messages.push({ role: "user", content: prompt });
     }
 
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": apiKey ? `Bearer ${apiKey}` : "Bearer unused",
-      },
-      body: JSON.stringify({
-        model: model || "local-model",
-        messages,
-        temperature: 0.7,
-        max_tokens: maxTokens,
-      }),
-    });
+    // Create AbortController with 60 minute timeout for very slow local models
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60 * 60 * 1000); // 60 minutes
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`LM Studio error (${response.status}): ${errorText || "Is LM Studio running?"}`);
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": apiKey ? `Bearer ${apiKey}` : "Bearer unused",
+        },
+        body: JSON.stringify({
+          model: model || "local-model",
+          messages,
+          temperature: 0.7,
+          max_tokens: maxTokens,
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`LM Studio error (${response.status}): ${errorText || "Is LM Studio running?"}`);
+      }
+
+      const data = await response.json();
+      const text = data.choices?.[0]?.message?.content;
+
+      if (!text || text.trim() === "") {
+        throw new Error("LM Studio returned empty response.");
+      }
+
+      return text.trim();
+    } catch (error: any) {
+      clearTimeout(timeoutId);
+      if (error.name === 'AbortError') {
+        throw new Error("LM Studio request timed out after 60 minutes. Try a smaller/faster model.");
+      }
+      throw error;
     }
-
-    const data = await response.json();
-    const text = data.choices?.[0]?.message?.content;
-
-    if (!text || text.trim() === "") {
-      throw new Error("LM Studio returned empty response.");
-    }
-
-    return text.trim();
-  }
-}
-
-/**
- * Rules Info Provider
- * Custom provider for rules-based API integration
- */
-export class RulesInfoProvider implements AIProvider {
-  async generate(prompt: string, apiKey: string, model: string, maxTokens: number = 1800): Promise<string> {
-    // Get additional rulesinfo configuration from localStorage
-    const name = typeof window !== 'undefined' ? localStorage.getItem("rulesinfo_name") || "" : "";
-    const skey = typeof window !== 'undefined' ? localStorage.getItem("rulesinfo_skey") || "" : "";
-    const configuredModel = typeof window !== 'undefined' ? localStorage.getItem("rulesinfo_model") || model : model;
-
-    // TODO: Replace with your actual Rules Info API endpoint
-    const apiUrl = "https://api.rulesinfo.com/v1/generate"; // Placeholder URL
-
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`,
-        "X-Service-Key": skey,
-      },
-      body: JSON.stringify({
-        prompt,
-        model: configuredModel,
-        name,
-        max_tokens: maxTokens,
-        temperature: 0.7,
-      }),
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Rules Info API error (${response.status}): ${errorText || "Unknown error"}`);
-    }
-
-    const data = await response.json();
-    const text = data.text || data.response || data.content;
-
-    if (!text || text.trim() === "") {
-      throw new Error("Rules Info returned empty response.");
-    }
-
-    return text.trim();
   }
 }
 
 /**
  * Get AI provider instance
  */
-export function getAIProvider(provider: "openai" | "gemini" | "openrouter" | "huggingface" | "lmstudio" | "rulesinfo"): AIProvider {
+export function getAIProvider(provider: "openai" | "gemini" | "openrouter" | "huggingface" | "lmstudio"): AIProvider {
   if (provider === "openai" || provider === "openrouter") {
     return new OpenAIProvider();
   }
@@ -272,9 +241,6 @@ export function getAIProvider(provider: "openai" | "gemini" | "openrouter" | "hu
   }
   if (provider === "lmstudio") {
     return new LMStudioProvider();
-  }
-  if (provider === "rulesinfo") {
-    return new RulesInfoProvider();
   }
   throw new Error(`Unknown provider: ${provider}`);
 }
