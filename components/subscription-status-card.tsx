@@ -68,11 +68,6 @@ export function SubscriptionStatusCard() {
 
   const isPro = currentPlan === "PRO_MONTHLY" || currentPlan === "PRO_YEARLY";
   const remaining = usageInfo ? usageInfo.limit - usageInfo.currentCount : 0;
-  const hoursUntilReset = usageInfo
-    ? Math.ceil(
-        (new Date(usageInfo.resetAt).getTime() - new Date().getTime()) / (1000 * 60 * 60)
-      )
-    : 24;
 
   return (
     <motion.div
@@ -82,15 +77,14 @@ export function SubscriptionStatusCard() {
       className="max-w-4xl mx-auto mb-12"
     >
       <div
-        className={`rounded-2xl border-2 p-6 transition-all ${
-          isPro
-            ? "bg-gradient-to-br from-violet-500/10 to-blue-500/10 border-violet-500/30 shadow-lg shadow-violet-500/10"
-            : "glass border-border"
-        }`}
+        className={`rounded-2xl border-2 p-6 transition-all ${isPro
+          ? "bg-gradient-to-br from-violet-500/10 to-blue-500/10 border-violet-500/30 shadow-lg shadow-violet-500/10"
+          : "glass border-border"
+          }`}
       >
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex flex-col md:flex-row items-center md:items-center justify-between gap-4">
           {/* Left: Plan Info */}
-          <div className="flex-1">
+          <div className="flex-1 flex flex-col items-center md:items-start text-center md:text-left">
             <div className="flex items-center gap-3 mb-2">
               {isPro ? (
                 <Crown className="w-5 h-5 text-violet-400" />
@@ -114,7 +108,7 @@ export function SubscriptionStatusCard() {
 
             {/* Usage Info */}
             {usageInfo && (
-              <div className="flex items-center gap-4 text-sm">
+              <div className="flex flex-col sm:flex-row items-center justify-center md:justify-start gap-2 sm:gap-4 text-sm mt-1">
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">Today:</span>
                   <span className="font-semibold text-foreground">
@@ -123,7 +117,7 @@ export function SubscriptionStatusCard() {
                 </div>
                 {remaining > 0 && (
                   <span className="text-muted-foreground">
-                    {remaining} remaining • Resets in {hoursUntilReset}h
+                    {remaining} remaining
                   </span>
                 )}
               </div>

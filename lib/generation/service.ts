@@ -42,6 +42,8 @@ function getMaxTokensForType(generationType: GenerationType): number {
       return 500; // ~200-300 tokens target
     case "bio":
       return 300; // ~200-300 tokens target
+    case "imagePrompts":
+      return 2000; // High token limit for JSON array of 10 prompts
     default:
       return 500;
   }
@@ -50,7 +52,7 @@ function getMaxTokensForType(generationType: GenerationType): number {
 /**
  * Generate with fallback retry logic
  */
-async function generateWithFallback(
+export async function generateWithFallback(
   provider: APIProvider,
   apiKey: string,
   prompt: string,
@@ -171,7 +173,7 @@ export function validateAPIKey(): { valid: boolean; apiKey: string | null; provi
   }
 
   // Auto-detect from all stored keys
-  const providers: APIProvider[] = ["openrouter","openai", "gemini", "huggingface", "lmstudio"];
+  const providers: APIProvider[] = ["openrouter", "openai", "gemini", "huggingface", "lmstudio"];
   for (const p of providers) {
     const key = getAPIKey(p);
     if (key && key.trim() !== "" && key.length >= 10) {

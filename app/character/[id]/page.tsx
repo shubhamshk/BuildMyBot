@@ -3,7 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
-import { ArrowLeft, Loader2, Save, Check, Sparkles, RefreshCw } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, Save, Check, Sparkles, RefreshCw, Image as ImageIcon } from "lucide-react";
 import { useCharacter } from "@/context/CharacterContext";
 import Link from "next/link";
 import { TerminalOutput } from "@/components/terminal-output";
@@ -630,6 +630,16 @@ export default function CharacterResultPage() {
               {saveError}
             </div>
           )}
+
+          {/* Image Prompts Feature */}
+          <Link
+            href={`/character/${character.id}/image-prompts`}
+            className="w-full mb-4 flex items-center justify-center gap-2 py-4 rounded-2xl bg-gradient-to-r from-violet-600/20 to-indigo-600/20 border border-violet-500/30 hover:border-violet-500/50 text-violet-200 font-semibold transition-all group hover:shadow-[0_0_20px_-5px_rgba(139,92,246,0.3)]"
+          >
+            <ImageIcon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+            Generate AI Image Prompts
+            <ArrowRight className="w-4 h-4 opacity-70 group-hover:translate-x-1 transition-transform" />
+          </Link>
 
           <div className="flex gap-4">
             <Link

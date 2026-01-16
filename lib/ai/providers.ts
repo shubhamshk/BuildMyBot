@@ -181,48 +181,33 @@ export class LMStudioProvider implements AIProvider {
       messages.push({ role: "user", content: prompt });
     }
 
-    // Create AbortController with 60 minute timeout for very slow local models
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60 * 60 * 1000); // 60 minutes
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": apiKey ? `Bearer ${apiKey}` : "Bearer unused",
+      },
+      body: JSON.stringify({
+        model: model || "local-model",
+        messages,
+        temperature: 0.7,
+        max_tokens: maxTokens,
+      }),
+    });
 
-    try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": apiKey ? `Bearer ${apiKey}` : "Bearer unused",
-        },
-        body: JSON.stringify({
-          model: model || "local-model",
-          messages,
-          temperature: 0.7,
-          max_tokens: maxTokens,
-        }),
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`LM Studio error (${response.status}): ${errorText || "Is LM Studio running?"}`);
-      }
-
-      const data = await response.json();
-      const text = data.choices?.[0]?.message?.content;
-
-      if (!text || text.trim() === "") {
-        throw new Error("LM Studio returned empty response.");
-      }
-
-      return text.trim();
-    } catch (error: any) {
-      clearTimeout(timeoutId);
-      if (error.name === 'AbortError') {
-        throw new Error("LM Studio request timed out after 60 minutes. Try a smaller/faster model.");
-      }
-      throw error;
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`LM Studio error (${response.status}): ${errorText || "Is LM Studio running?"}`);
     }
+
+    const data = await response.json();
+    const text = data.choices?.[0]?.message?.content;
+
+    if (!text || text.trim() === "") {
+      throw new Error("LM Studio returned empty response.");
+    }
+
+    return text.trim();
   }
 }
 

@@ -8,6 +8,7 @@ import { AuthButton } from "@/components/auth-button";
 import { APIKeyIndicator } from "@/components/api-key-indicator";
 import { SubscriptionStatusCard } from "@/components/subscription-status-card";
 import { ResponsiveNavbar } from "@/components/responsive-navbar";
+import { SocialProof } from "@/components/social-proof";
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
 
@@ -174,12 +175,23 @@ export default function Home() {
               See How It Works
             </Link>
           </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-12 flex justify-center"
+          >
+            <SocialProof />
+          </motion.div>
         </div>
       </section>
 
       {/* Subscription Status Section */}
-      <section className="py-12 px-6">
-        <SubscriptionStatusCard />
+      <section className="py-24 px-6 md:px-12 flex justify-center">
+        <div className="w-full max-w-4xl">
+          <SubscriptionStatusCard />
+        </div>
       </section>
 
       {/* Video Demo Section */}
