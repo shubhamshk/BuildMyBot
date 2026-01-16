@@ -5,7 +5,7 @@
 
 import { APIProvider } from "@/lib/api-key";
 
-export type GenerationType = "personality" | "scenario" | "initialMessage" | "bio" | "imagePrompts";
+export type GenerationType = "personality" | "scenario" | "initialMessage" | "bio";
 
 export interface ModelConfig {
   default: string;

@@ -42,8 +42,6 @@ function getMaxTokensForType(generationType: GenerationType): number {
       return 500; // ~200-300 tokens target
     case "bio":
       return 300; // ~200-300 tokens target
-    case "imagePrompts":
-      return 2000; // High token limit for JSON array of 10 prompts
     default:
       return 500;
   }

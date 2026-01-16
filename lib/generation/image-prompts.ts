@@ -55,7 +55,7 @@ export async function generateImagePrompts(
     const userPrompt = buildImagePromptUserPrompt(character);
     const fullPrompt = `${systemPrompt}\n\n${userPrompt}`;
 
-    const result = await generateWithFallback(provider, apiKey, fullPrompt, "imagePrompts");
+    const result = await generateWithFallback(provider, apiKey, fullPrompt, "scenario");
 
     const json = extractJSONFromText(result);
 
