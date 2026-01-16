@@ -65,6 +65,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../app/character/[id]/image-prompts/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/character/[id]/image-prompts">> = Specific
+  const handler = {} as typeof import("../../app/character/[id]/image-prompts/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/character/[id]/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/character/[id]">> = Specific
@@ -159,6 +168,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/enhance-idea">> = Specific
   const handler = {} as typeof import("../../app/api/enhance-idea/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/generate-image-prompts/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/generate-image-prompts">> = Specific
+  const handler = {} as typeof import("../../app/api/generate-image-prompts/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
