@@ -108,36 +108,47 @@ export async function getUserSubscriptionServer(userId: string): Promise<{
   data: Subscription | null;
   error: string | null;
 }> {
-  const supabase = createAdminClient();
+  try {
+    const supabase = createAdminClient();
 
-  const { data, error } = await supabase
-    .from("subscriptions")
-    .select("*")
-    .eq("user_id", userId)
-    .single();
+    const { data, error } = await supabase
+      .from("subscriptions")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
 
-  if (error) {
-    if (error.code === "PGRST116") {
-      // Create default FREE subscription
-      const { data: newSub, error: createError } = await supabase
-        .from("subscriptions")
-        .insert({
-          user_id: userId,
-          plan_type: "FREE",
-          subscription_status: "ACTIVE",
-        })
-        .select()
-        .single();
+    if (error) {
+      console.log(`[getUserSubscriptionServer] Query error for user ${userId}:`, error);
+      
+      if (error.code === "PGRST116") {
+        // No subscription found - create default FREE subscription
+        console.log(`[getUserSubscriptionServer] Creating FREE subscription for user ${userId}`);
+        const { data: newSub, error: createError } = await supabase
+          .from("subscriptions")
+          .insert({
+            user_id: userId,
+            plan_type: "FREE",
+            subscription_status: "ACTIVE",
+          })
+          .select()
+          .single();
 
-      if (createError) {
-        return { data: null, error: createError.message };
+        if (createError) {
+          console.error(`[getUserSubscriptionServer] Failed to create subscription:`, createError);
+          return { data: null, error: createError.message };
+        }
+        console.log(`[getUserSubscriptionServer] Created FREE subscription:`, newSub);
+        return { data: newSub, error: null };
       }
-      return { data: newSub, error: null };
+      return { data: null, error: error.message };
     }
-    return { data: null, error: error.message };
-  }
 
-  return { data, error: null };
+    console.log(`[getUserSubscriptionServer] Found subscription for user ${userId}:`, data);
+    return { data, error: null };
+  } catch (error: any) {
+    console.error(`[getUserSubscriptionServer] Unexpected error:`, error);
+    return { data: null, error: error.message || "Unexpected error fetching subscription" };
+  }
 }
 
 /**

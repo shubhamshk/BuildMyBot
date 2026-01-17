@@ -6,24 +6,53 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
     try {
+        console.log("[/api/subscriptions/usage] GET request received");
+        
         const supabase = await createClient();
         const { data: { user }, error: userError } = await supabase.auth.getUser();
 
-        if (userError || !user) {
+        if (userError) {
+            console.error("[/api/subscriptions/usage] Auth error:", userError);
             return NextResponse.json(
-                { error: "Unauthorized" },
+                { error: "Authentication failed", details: userError.message },
                 { status: 401 }
             );
         }
 
-        const usageResult = await checkUsageLimitServer(user.id);
+        if (!user) {
+            console.warn("[/api/subscriptions/usage] No user found");
+            return NextResponse.json(
+                { error: "Unauthorized - No user session" },
+                { status: 401 }
+            );
+        }
 
-        return NextResponse.json(usageResult);
+        console.log(`[/api/subscriptions/usage] User authenticated: ${user.id}`);
+
+        try {
+            const usageResult = await checkUsageLimitServer(user.id);
+            console.log(`[/api/subscriptions/usage] Usage result:`, usageResult);
+            return NextResponse.json(usageResult);
+        } catch (limitError: any) {
+            console.error("[/api/subscriptions/usage] Error in checkUsageLimitServer:", limitError);
+            // Return a safe fallback for FREE users
+            return NextResponse.json({
+                allowed: true,
+                currentCount: 0,
+                limit: 2,
+                resetAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+                reason: "Error checking usage - defaulting to FREE plan",
+            });
+        }
     } catch (error: any) {
-        console.error("Error fetching usage:", error);
-        return NextResponse.json(
-            { error: error.message || "Failed to fetch usage" },
-            { status: 500 }
-        );
+        console.error("[/api/subscriptions/usage] Unexpected error:", error);
+        // Return safe fallback instead of error to prevent blocking users
+        return NextResponse.json({
+            allowed: true,
+            currentCount: 0,
+            limit: 2,
+            resetAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+            reason: "System error - defaulting to FREE plan limits",
+        });
     }
 }

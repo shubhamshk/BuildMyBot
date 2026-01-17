@@ -150,6 +150,16 @@ export async function checkUsageLimit(): Promise<UsageLimitResult> {
       },
     });
 
+    if (response.status === 401) {
+      return {
+        allowed: false,
+        reason: "User not authenticated",
+        currentCount: 0,
+        limit: 2,
+        resetAt: new Date().toISOString(),
+      };
+    }
+
     if (!response.ok) {
       throw new Error("Failed to fetch usage limit");
     }
@@ -161,11 +171,11 @@ export async function checkUsageLimit(): Promise<UsageLimitResult> {
 
     return data as UsageLimitResult;
   } catch (error) {
-    console.error("Check usage limit error:", error);
-    // Fallback to strict unknown state
+    // Silently handle network errors or auth errors by falling back to safe defaults
+    // console.warn("Check usage limit error:", error); // Optional: uncomment for debugging
     return {
       allowed: false,
-      reason: "Could not verify usage limit (Network Error)",
+      reason: "Could not verify usage limit",
       currentCount: 0,
       limit: 2,
       resetAt: new Date().toISOString(),
