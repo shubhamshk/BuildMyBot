@@ -167,7 +167,7 @@ export async function checkUsageLimit(): Promise<UsageLimitResult> {
       allowed: false,
       reason: "Could not verify usage limit (Network Error)",
       currentCount: 0,
-      limit: 0,
+      limit: 2,
       resetAt: new Date().toISOString(),
     };
   }

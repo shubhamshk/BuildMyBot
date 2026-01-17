@@ -184,7 +184,7 @@ export async function checkUsageLimitServer(userId: string): Promise<UsageLimitR
       allowed: false,
       reason: "Failed to get subscription",
       currentCount: 0,
-      limit: 0,
+      limit: PLAN_LIMITS["FREE"],
       resetAt: new Date().toISOString(),
     };
   }
