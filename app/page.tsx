@@ -162,7 +162,7 @@ export default function Home() {
             className="flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <Link
-              href="/idea"
+              href="/create-choice"
               className="px-8 py-4 rounded-xl font-bold flex items-center gap-2 group bg-neutral-900 border border-neutral-700 shadow-md transition-all duration-200 hover:bg-neutral-800 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400 drop-shadow-[0_2px_12px_rgba(0,0,0,0.25)]" style={{ color: '#fff', textShadow: '0 2px 8px rgba(0,0,0,0.25)' }}
             >
               Start Creating

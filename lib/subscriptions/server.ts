@@ -4,6 +4,7 @@
  */
 
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { PlanType, SubscriptionStatus } from "./service";
 
 export interface Subscription {
@@ -42,13 +43,64 @@ const PLAN_LIMITS: Record<PlanType, number> = {
 };
 
 /**
+ * Sync usage count from creation_logs table (last 24 hours)
+ * This ensures accuracy by counting actual successful creations
+ */
+export async function syncUsageFromLogsServer(userId: string): Promise<number> {
+  const supabase = createAdminClient();
+
+  // Get the last reset time (24 hours ago)
+  const now = new Date();
+  const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+  // Count successful creations in the last 24 hours
+  const { count, error } = await supabase
+    .from("creation_logs")
+    .select("*", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("was_allowed", true)
+    .gte("created_at", twentyFourHoursAgo.toISOString());
+
+  if (error) {
+    console.error("Error counting creation logs:", error);
+    // Fallback: try to get from usage_tracking directly
+    const { data: usage } = await supabase
+      .from("usage_tracking")
+      .select("daily_creation_count")
+      .eq("user_id", userId)
+      .single();
+
+    return usage?.daily_creation_count || 0;
+  }
+
+  const actualCount = count || 0;
+
+  // Update usage_tracking to match actual count
+  // We don't care about the result of this update, just fire and forget (awaiting to ensure it runs)
+  const { error: upsertError } = await supabase
+    .from("usage_tracking")
+    .upsert({
+      user_id: userId,
+      daily_creation_count: actualCount,
+      last_reset_at: twentyFourHoursAgo.toISOString(),
+      updated_at: now.toISOString(),
+    }, { onConflict: "user_id" });
+
+  if (upsertError) {
+    console.error("Error syncing usage tracking:", upsertError);
+  }
+
+  return actualCount;
+}
+
+/**
  * Get user's subscription (server-side)
  */
 export async function getUserSubscriptionServer(userId: string): Promise<{
   data: Subscription | null;
   error: string | null;
 }> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("subscriptions")
@@ -87,7 +139,7 @@ export async function getUserUsageServer(userId: string): Promise<{
   data: UsageTracking | null;
   error: string | null;
 }> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data, error } = await supabase
     .from("usage_tracking")
@@ -120,33 +172,10 @@ export async function getUserUsageServer(userId: string): Promise<{
 }
 
 /**
- * Reset usage count if 24 hours have passed
- */
-async function resetUsageIfNeededServer(
-  userId: string,
-  usage: UsageTracking
-): Promise<void> {
-  const supabase = await createClient();
-  const lastReset = new Date(usage.last_reset_at);
-  const now = new Date();
-  const hoursSinceReset = (now.getTime() - lastReset.getTime()) / (1000 * 60 * 60);
-
-  if (hoursSinceReset >= 24) {
-    await supabase
-      .from("usage_tracking")
-      .update({
-        daily_creation_count: 0,
-        last_reset_at: now.toISOString(),
-      })
-      .eq("user_id", userId);
-  }
-}
-
-/**
  * Check if user can create a character (server-side)
  */
 export async function checkUsageLimitServer(userId: string): Promise<UsageLimitResult> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Get subscription
   const { data: subscription, error: subError } = await getUserSubscriptionServer(userId);
@@ -171,36 +200,18 @@ export async function checkUsageLimitServer(userId: string): Promise<UsageLimitR
     };
   }
 
-  // Get usage
-  const { data: usage, error: usageError } = await getUserUsageServer(userId);
-  if (usageError || !usage) {
-    return {
-      allowed: false,
-      reason: "Failed to get usage data",
-      currentCount: 0,
-      limit: PLAN_LIMITS[subscription.plan_type],
-      resetAt: new Date().toISOString(),
-    };
-  }
-
-  // Reset if needed
-  await resetUsageIfNeededServer(userId, usage);
-
-  // Refresh usage after potential reset
-  const { data: updatedUsage } = await getUserUsageServer(userId);
-  const currentUsage = updatedUsage || usage;
+  // SYNC from creation_logs for accuracy
+  // This counts actual successful creations in the last 24 hours
+  const currentCount = await syncUsageFromLogsServer(userId);
 
   const limit = PLAN_LIMITS[subscription.plan_type];
-  const currentCount = currentUsage.daily_creation_count;
+  const now = new Date();
+  const resetAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24h from now
 
   if (currentCount >= limit) {
-    const resetAt = new Date(currentUsage.last_reset_at);
-    resetAt.setHours(resetAt.getHours() + 24);
     return {
       allowed: false,
-      reason: `Daily limit of ${limit} creations reached. Resets in ${Math.ceil(
-        (resetAt.getTime() - new Date().getTime()) / (1000 * 60 * 60)
-      )} hours.`,
+      reason: `Daily limit of ${limit} creations reached. Creates will reset as older ones expire (rolling 24h window).`,
       currentCount,
       limit,
       resetAt: resetAt.toISOString(),
@@ -211,37 +222,42 @@ export async function checkUsageLimitServer(userId: string): Promise<UsageLimitR
     allowed: true,
     currentCount,
     limit,
-    resetAt: new Date(currentUsage.last_reset_at).toISOString(),
+    resetAt: resetAt.toISOString(),
   };
 }
 
 /**
  * Increment usage count after successful creation (server-side)
+ * uses Admin Client to bypass RLS
  */
 export async function incrementUsageCountServer(userId: string): Promise<{
   success: boolean;
   error: string | null;
 }> {
-  const supabase = await createClient();
+  // Use Admin Client to ensure we can update usage tracking regardless of RLS
+  const supabase = createAdminClient();
 
-  // Get current usage
+  // We primarily rely on Sync from logs, but we can increment locally to keep cache fresh immediately
   const { data: usage, error: usageError } = await getUserUsageServer(userId);
+
   if (usageError || !usage) {
     return { success: false, error: "Failed to get usage data" };
   }
 
-  // Reset if needed before incrementing
-  await resetUsageIfNeededServer(userId, usage);
+  const newCount = usage.daily_creation_count + 1;
+  const now = new Date();
 
-  // Increment count
+  // Update with new values
   const { error: updateError } = await supabase
     .from("usage_tracking")
     .update({
-      daily_creation_count: (usage.daily_creation_count + 1),
+      daily_creation_count: newCount,
+      updated_at: now.toISOString(),
     })
     .eq("user_id", userId);
 
   if (updateError) {
+    console.error("Failed to increment usage:", updateError);
     return { success: false, error: updateError.message };
   }
 
@@ -257,18 +273,23 @@ export async function logCreationAttemptServer(
   wasAllowed: boolean,
   errorMessage?: string
 ): Promise<void> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: subscription } = await getUserSubscriptionServer(userId);
   const planType = subscription?.plan_type || "FREE";
 
-  await supabase.from("creation_logs").insert({
+  const { error } = await supabase.from("creation_logs").insert({
     user_id: userId,
     character_id: characterId,
     plan_type: planType,
     was_allowed: wasAllowed,
     error_message: errorMessage || null,
   });
+
+  if (error) {
+    console.error("CRITICAL: Failed to write to creation_logs:", error);
+    // We cannot do much else, but logging is essential for debugging
+  }
 }
 
 /**
@@ -284,7 +305,7 @@ export async function updateSubscriptionServer(
     expires_at?: string;
   }
 ): Promise<{ success: boolean; error: string | null }> {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { error } = await supabase
     .from("subscriptions")

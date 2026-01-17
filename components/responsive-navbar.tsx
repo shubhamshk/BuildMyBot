@@ -11,8 +11,8 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 py-3 px-6 transition-all duration-300 backdrop-blur-xl ${scrolled
-          ? "bg-white/70 dark:bg-neutral-900/80 border-b border-border shadow-lg"
-          : "bg-white/40 dark:bg-neutral-900/60"
+        ? "bg-white/70 dark:bg-neutral-900/80 border-b border-border shadow-lg"
+        : "bg-white/40 dark:bg-neutral-900/60"
         }`}
       style={{
         boxShadow: scrolled
@@ -43,7 +43,7 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
           <APIKeyIndicator />
           <AuthButton />
           <Link
-            href="/idea"
+            href="/create-choice"
             className="ml-2 px-5 py-2 rounded-lg font-semibold shadow transition-all text-sm text-white bg-gradient-to-r from-blue-600 via-sky-400 to-fuchsia-500 hover:from-blue-700 hover:to-fuchsia-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
             style={{ boxShadow: '0 2px 8px 0 rgba(37,99,235,0.10)' }}
           >
@@ -83,7 +83,7 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
           </Link>
           <AuthButton />
           <Link
-            href="/idea"
+            href="/create-choice"
             className="mt-2 px-5 py-2 rounded-lg font-semibold shadow text-base text-white bg-gradient-to-r from-blue-600 via-sky-400 to-fuchsia-500 hover:from-blue-700 hover:to-fuchsia-600 focus:outline-none focus:ring-2 focus:ring-blue-400 transition-all"
             style={{ boxShadow: '0 2px 8px 0 rgba(37,99,235,0.10)' }}
             onClick={() => setMenuOpen(false)}
