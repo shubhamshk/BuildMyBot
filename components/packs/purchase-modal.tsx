@@ -109,7 +109,7 @@ export function PurchaseModal({ isOpen, onClose, item }: PurchaseModalProps) {
                                 <div className="relative z-10 pr-8">
                                     <h2 className="text-xl font-bold text-white leading-tight">{item.title}</h2>
                                     <p className="text-sm text-neutral-400 mt-1">
-                                        {isService ? 'Custom Service Request' : 'Premium Prompt Pack'}
+                                        {isService ? 'Custom Service Request' : 'Premium Image + Prompt Pack'}
                                     </p>
                                 </div>
                                 <button

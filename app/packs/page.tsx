@@ -103,7 +103,7 @@ function PacksPageContent() {
                         </div>
 
                         <h1 className="text-5xl md:text-7xl font-extrabold mb-6 tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-white to-neutral-400 drop-shadow-sm">
-                            Premium Prompt Packs<br />& Custom Creations
+                            Premium Image + Prompt Packs<br />& Custom Creations
                         </h1>
 
                         <p className="text-lg md:text-xl text-neutral-400 max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -119,7 +119,7 @@ function PacksPageContent() {
                 <div className="container max-w-6xl mx-auto">
                     <div className="mb-12 flex items-end justify-between border-b border-white/10 pb-6">
                         <div>
-                            <h2 className="text-3xl font-bold text-white mb-2">Prompt Packs</h2>
+                            <h2 className="text-3xl font-bold text-white mb-2">Image + Prompt Packs</h2>
                             <p className="text-neutral-400">Instant access to high-quality curated prompts.</p>
                         </div>
                     </div>

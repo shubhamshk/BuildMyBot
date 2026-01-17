@@ -35,6 +35,17 @@ export function ServiceCard({ service, onClick, index }: ServiceCardProps) {
                 )}
 
                 <div className="relative z-10 flex flex-col h-full">
+                    {/* Image */}
+                    {service.image && (
+                        <div className="w-full aspect-video rounded-2xl mb-6 overflow-hidden border border-white/10">
+                            <img
+                                src={service.image}
+                                alt={service.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                        </div>
+                    )}
+
                     {/* Header */}
                     <div className="flex justify-between items-start mb-6">
                         <div>

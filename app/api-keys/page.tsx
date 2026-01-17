@@ -43,13 +43,13 @@ const PROVIDERS: Array<{
     description: "Open-source models from HuggingFace",
     icon: "🤗",
   },
-  {
-    value: "lmstudio",
-    label: "LM Studio",
-    placeholder: "lm-studio-...",
-    description: "Local LM Studio models running on your machine",
-    icon: "💻",
-  },
+  // {
+  //   value: "lmstudio",
+  //   label: "LM Studio",
+  //   placeholder: "lm-studio-...",
+  //   description: "Local LM Studio models running on your machine",
+  //   icon: "💻",
+  // },
 ];
 
 export default function APIKeysPage() {
