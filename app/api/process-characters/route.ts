@@ -105,12 +105,15 @@ export async function POST(request: NextRequest) {
 
     // Increment usage count for each successful character creation
     const successfulCreations = results.filter(r => !r.error && r.personality).length;
+    console.log(`[process-characters] Successful creations: ${successfulCreations}/${results.length}`);
+    
     if (successfulCreations > 0) {
-      // Increment once per character created
+      // Log each successful creation separately for accurate tracking
       for (let i = 0; i < successfulCreations; i++) {
         await incrementUsageCountServer(user.id);
+        // Log each creation separately so the count matches in creation_logs
+        await logCreationAttemptServer(user.id, results[i].characterId, true);
       }
-      await logCreationAttemptServer(user.id, null, true);
     } else {
       // Log failed attempt
       await logCreationAttemptServer(user.id, null, false, "All character generations failed");

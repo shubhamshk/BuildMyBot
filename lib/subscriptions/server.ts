@@ -53,16 +53,18 @@ export async function syncUsageFromLogsServer(userId: string): Promise<number> {
   const now = new Date();
   const twentyFourHoursAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
+  console.log(`[syncUsageFromLogsServer] Counting logs for user ${userId} since ${twentyFourHoursAgo.toISOString()}`);
+
   // Count successful creations in the last 24 hours
-  const { count, error } = await supabase
+  const { count, error, data: logs } = await supabase
     .from("creation_logs")
-    .select("*", { count: "exact", head: true })
+    .select("*", { count: "exact", head: false })
     .eq("user_id", userId)
     .eq("was_allowed", true)
     .gte("created_at", twentyFourHoursAgo.toISOString());
 
   if (error) {
-    console.error("Error counting creation logs:", error);
+    console.error("[syncUsageFromLogsServer] Error counting creation logs:", error);
     // Fallback: try to get from usage_tracking directly
     const { data: usage } = await supabase
       .from("usage_tracking")
@@ -70,10 +72,16 @@ export async function syncUsageFromLogsServer(userId: string): Promise<number> {
       .eq("user_id", userId)
       .single();
 
-    return usage?.daily_creation_count || 0;
+    const fallbackCount = usage?.daily_creation_count || 0;
+    console.log(`[syncUsageFromLogsServer] Using fallback count from usage_tracking: ${fallbackCount}`);
+    return fallbackCount;
   }
 
   const actualCount = count || 0;
+  console.log(`[syncUsageFromLogsServer] Found ${actualCount} successful creation logs in last 24h`);
+  if (logs && logs.length > 0) {
+    console.log(`[syncUsageFromLogsServer] Recent logs:`, logs.slice(0, 3));
+  }
 
   // Update usage_tracking to match actual count
   // We don't care about the result of this update, just fire and forget (awaiting to ensure it runs)
@@ -87,7 +95,7 @@ export async function syncUsageFromLogsServer(userId: string): Promise<number> {
     }, { onConflict: "user_id" });
 
   if (upsertError) {
-    console.error("Error syncing usage tracking:", upsertError);
+    console.error("[syncUsageFromLogsServer] Error syncing usage tracking:", upsertError);
   }
 
   return actualCount;
@@ -177,9 +185,12 @@ export async function getUserUsageServer(userId: string): Promise<{
 export async function checkUsageLimitServer(userId: string): Promise<UsageLimitResult> {
   const supabase = createAdminClient();
 
+  console.log(`[checkUsageLimitServer] Checking usage for user: ${userId}`);
+
   // Get subscription
   const { data: subscription, error: subError } = await getUserSubscriptionServer(userId);
   if (subError || !subscription) {
+    console.error(`[checkUsageLimitServer] Failed to get subscription:`, subError);
     return {
       allowed: false,
       reason: "Failed to get subscription",
@@ -189,9 +200,12 @@ export async function checkUsageLimitServer(userId: string): Promise<UsageLimitR
     };
   }
 
+  console.log(`[checkUsageLimitServer] Subscription found - Plan: ${subscription.plan_type}, Status: ${subscription.subscription_status}`);
+
   // Check subscription status - only enforce for paid plans
   // FREE plan users should always be allowed to use their limits regardless of status
   if (subscription.subscription_status !== "ACTIVE" && subscription.plan_type !== "FREE") {
+    console.warn(`[checkUsageLimitServer] Paid subscription not active for user ${userId}`);
     return {
       allowed: false,
       reason: "Subscription is not active",
@@ -204,10 +218,13 @@ export async function checkUsageLimitServer(userId: string): Promise<UsageLimitR
   // SYNC from creation_logs for accuracy
   // This counts actual successful creations in the last 24 hours
   const currentCount = await syncUsageFromLogsServer(userId);
+  console.log(`[checkUsageLimitServer] Current count from logs: ${currentCount}`);
 
   const limit = PLAN_LIMITS[subscription.plan_type];
   const now = new Date();
   const resetAt = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24h from now
+
+  console.log(`[checkUsageLimitServer] Usage check - Count: ${currentCount}/${limit}, Allowed: ${currentCount < limit}`);
 
   if (currentCount >= limit) {
     return {
