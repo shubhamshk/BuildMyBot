@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthButton } from "@/components/auth-button";
 import { APIKeyIndicator } from "@/components/api-key-indicator";
@@ -7,6 +8,9 @@ import { Sparkles } from "lucide-react";
 
 export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isActive = (path: string) => pathname === path;
 
   return (
     <nav
@@ -39,6 +43,15 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
           <Link href="/pricing" className="px-3 py-2 rounded-lg text-sm font-medium text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60 transition-colors">
             Pricing
           </Link>
+          <Link
+            href="/packs"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive('/packs')
+                ? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/10"
+                : "text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60"
+              }`}
+          >
+            Packs
+          </Link>
           <ThemeToggle />
           <APIKeyIndicator />
           <AuthButton />
@@ -70,6 +83,16 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
           </Link>
           <Link href="/pricing" className="px-3 py-2 rounded-lg text-base font-medium text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-colors" onClick={() => setMenuOpen(false)}>
             Pricing
+          </Link>
+          <Link
+            href="/packs"
+            className={`px-3 py-2 rounded-lg text-base font-medium transition-colors ${isActive('/packs')
+                ? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/10"
+                : "text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60"
+              }`}
+            onClick={() => setMenuOpen(false)}
+          >
+            Packs
           </Link>
           <ThemeToggle />
           <Link

@@ -128,6 +128,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../app/packs/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/packs">> = Specific
+  const handler = {} as typeof import("../../app/packs/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/">> = Specific
@@ -213,6 +222,24 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/generate-strict-prompts">> = Specific
   const handler = {} as typeof import("../../app/api/generate-strict-prompts/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/paypal/capture-order/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/capture-order">> = Specific
+  const handler = {} as typeof import("../../app/api/paypal/capture-order/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/paypal/create-order/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/create-order">> = Specific
+  const handler = {} as typeof import("../../app/api/paypal/create-order/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
