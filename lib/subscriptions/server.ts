@@ -189,10 +189,9 @@ export async function checkUsageLimitServer(userId: string): Promise<UsageLimitR
     };
   }
 
-  // Check subscription status
-  // Allow FREE plan users to proceed regardless of status (as they don't value 'ACTIVE' the same way)
-  // Only enforce ACTIVE status for paid plans
-  if (subscription.plan_type !== "FREE" && subscription.subscription_status !== "ACTIVE") {
+  // Check subscription status - only enforce for paid plans
+  // FREE plan users should always be allowed to use their limits regardless of status
+  if (subscription.subscription_status !== "ACTIVE" && subscription.plan_type !== "FREE") {
     return {
       allowed: false,
       reason: "Subscription is not active",
