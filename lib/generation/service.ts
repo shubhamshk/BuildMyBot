@@ -42,6 +42,8 @@ function getMaxTokensForType(generationType: GenerationType): number {
       return 500; // ~200-300 tokens target
     case "bio":
       return 300; // ~200-300 tokens target
+    case "imagePrompts":
+      return 2000;
     default:
       return 500;
   }

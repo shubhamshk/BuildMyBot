@@ -1,3 +1,4 @@
+
 export interface AIProvider {
   generate(prompt: string, apiKey: string, model: string, maxTokens?: number): Promise<string>;
 }
@@ -181,6 +182,15 @@ export class LMStudioProvider implements AIProvider {
       messages.push({ role: "user", content: prompt });
     }
 
+    // Create a custom agent with extended timeouts for local LLMs
+    // Dynamically import undici to avoid issues in non-Node environments or build times
+    const { Agent } = await import("undici");
+    const dispatcher = new Agent({
+      headersTimeout: 1200000, // 20 minutes
+      connectTimeout: 60000,
+      bodyTimeout: 1200000,
+    });
+
     const response = await fetch(apiUrl, {
       method: "POST",
       headers: {
@@ -193,7 +203,9 @@ export class LMStudioProvider implements AIProvider {
         temperature: 0.7,
         max_tokens: maxTokens,
       }),
-    });
+      // @ts-ignore - dispatcher is supported by undici but not typed in standard fetch
+      dispatcher,
+    } as any);
 
     if (!response.ok) {
       const errorText = await response.text();
