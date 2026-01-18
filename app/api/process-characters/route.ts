@@ -7,7 +7,7 @@ import { checkUsageLimitServer, incrementUsageCountServer, logCreationAttemptSer
 
 export async function POST(request: NextRequest) {
   try {
-    const { characters, apiKey, provider, storyIdea } = await request.json();
+    const { characters, apiKey, provider, storyIdea, proxyConfig } = await request.json();
 
     if (!characters || !Array.isArray(characters) || !apiKey || !provider) {
       return NextResponse.json(
@@ -15,6 +15,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    
+    // For custom provider, use proxyConfig if provided
+    const effectiveApiKey = (provider === "custom" && proxyConfig) 
+      ? JSON.stringify(proxyConfig) 
+      : apiKey;
 
     // Check authentication
     const supabase = await createClient();
@@ -87,14 +92,14 @@ export async function POST(request: NextRequest) {
 
       try {
         // Generate personality
-        result.personality = await generatePersonality(character, apiKey, provider as APIProvider);
+        result.personality = await generatePersonality(character, effectiveApiKey, provider as APIProvider);
 
         // Generate scenario
-        result.scenario = await generateScenario(character, storyIdea, apiKey, provider as APIProvider);
+        result.scenario = await generateScenario(character, storyIdea, effectiveApiKey, provider as APIProvider);
 
         // Generate bio
         if (result.scenario) {
-          result.bio = await generateBio(character, result.scenario, apiKey, provider as APIProvider);
+          result.bio = await generateBio(character, result.scenario, effectiveApiKey, provider as APIProvider);
         }
       } catch (error: any) {
         result.error = error.message || "Generation failed";

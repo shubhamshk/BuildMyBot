@@ -4,7 +4,7 @@ import { APIProvider } from "@/lib/api-key";
 
 export async function POST(request: NextRequest) {
   try {
-    const { storyIdea, step, characterIndex, existingData, apiKey, provider } = await request.json();
+    const { storyIdea, step, characterIndex, existingData, apiKey, provider, proxyConfig } = await request.json();
 
     if (!storyIdea || !step || !apiKey || !provider) {
       return NextResponse.json(
@@ -12,13 +12,23 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    
+    // For custom provider, use proxyConfig if provided
+    const effectiveApiKey = (provider === "custom" && proxyConfig) 
+      ? JSON.stringify(proxyConfig) 
+      : apiKey;
 
     const aiProvider = getAIProvider(provider as APIProvider);
-    const model = provider === "openai" || provider === "openrouter" 
-      ? "gpt-4o-mini" 
-      : provider === "gemini" 
-      ? "gemini-2.0-flash" 
-      : "gpt-4o-mini";
+    
+    // Determine the model based on provider
+    let model = "gpt-4o-mini";
+    if (provider === "gemini") {
+      model = "gemini-2.0-flash";
+    } else if (provider === "openrouter") {
+      model = "openai/gpt-4o-mini";
+    } else if (provider === "custom" || provider === "lmstudio") {
+      model = "local-model"; // For custom proxies and LM Studio
+    }
 
     let prompt = "";
     let responseFormat = "";
@@ -111,7 +121,7 @@ Generate content boundaries. Return ONLY a JSON object:
         );
     }
 
-    const result = await aiProvider.generate(prompt, apiKey, model, 500);
+    const result = await aiProvider.generate(prompt, effectiveApiKey, model, 500);
 
     let parsedResult;
     if (responseFormat === "json") {

@@ -11,7 +11,7 @@ export const maxDuration = 300; // 5 minutes
 
 export async function POST(request: NextRequest) {
     try {
-        const { character, storyIdea, apiKey, provider, style } = await request.json();
+        const { character, storyIdea, apiKey, provider, style, proxyConfig } = await request.json();
 
         if ((!character && !storyIdea) || !apiKey || !provider) {
             return NextResponse.json(
@@ -19,6 +19,11 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
+        
+        // For custom provider, use proxyConfig if provided
+        const effectiveApiKey = (provider === "custom" && proxyConfig) 
+          ? JSON.stringify(proxyConfig) 
+          : apiKey;
 
         const systemPrompt = `You generate ONLY comma-separated keyword tags.
 No sentences.
@@ -63,7 +68,7 @@ Output 10 lines now:`;
         // Call AI
         const result = await generateWithFallback(
             provider as APIProvider,
-            apiKey,
+            effectiveApiKey,
             fullPrompt,
             "imagePrompts"
         );

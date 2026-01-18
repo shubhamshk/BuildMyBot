@@ -3,6 +3,22 @@
  * Auto-detects provider from API key pattern and selects safe models
  */
 
+// ==============================================================================
+//  NEW PROXY SYSTEM AVAILABLE
+// ==============================================================================
+//  We have implemented a Janitor-AI style Proxy System.
+//  New features should prefer using the Proxy Route: /api/ai/chat
+//  
+//  To use the proxy in frontend components:
+//  import { chatWithProxy } from "@/lib/ai/proxy-client";
+//  
+//  To configure the proxy:
+//  - Server-side: Set AI_PROXY_URL, AI_PROXY_KEY env vars
+//  - Client-side: Visit /settings/proxy to set a custom endpoint (e.g. Localhost)
+//  
+//  See: lib/ai/proxy-config.ts, app/api/ai/chat/route.ts
+// ==============================================================================
+
 import { APIProvider } from "@/lib/api-key";
 
 export type GenerationType = "personality" | "scenario" | "initialMessage" | "bio" | "imagePrompts";
@@ -34,6 +50,10 @@ export const MODEL_CONFIGS: Record<APIProvider, ModelConfig> = {
     fallback: "mistralai/Mistral-7B-Instruct-v0.2",
   },
   lmstudio: {
+    default: "local-model",
+    long: "local-model",
+  },
+  custom: {
     default: "local-model",
     long: "local-model",
   },

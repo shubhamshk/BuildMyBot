@@ -203,7 +203,27 @@ export default function CharacterResultPage() {
         throw new Error("Scenario must be generated before bio");
       }
 
-      // Call server-side API to avoid CORS issues with LM Studio
+      // Get proxy config if using custom provider
+      let proxyConfig = null;
+      if (keyCheck.provider === "custom") {
+        const savedConfig = localStorage.getItem("custom_proxy_config");
+        if (savedConfig) {
+          try {
+            proxyConfig = JSON.parse(savedConfig);
+          } catch (e) {
+            console.error("Failed to parse proxy config", e);
+          }
+        }
+      }
+
+      // Enable streaming for custom provider to avoid Cloudflare timeouts
+      const useStreaming = keyCheck.provider === "custom" && proxyConfig;
+      
+      if (useStreaming) {
+        console.log(`\u{1F680} Streaming enabled for ${sectionId} generation - this will bypass Cloudflare timeout!`);
+      }
+
+      // Call server-side API with streaming support
       const response = await fetch("/api/generate-section", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -213,6 +233,8 @@ export default function CharacterResultPage() {
           apiKey: keyCheck.apiKey,
           provider: keyCheck.provider,
           scenario: scenarioContext,
+          proxyConfig,
+          stream: useStreaming,
         }),
       });
 
@@ -221,16 +243,65 @@ export default function CharacterResultPage() {
         throw new Error(errorData.error || `Failed to generate ${sectionId}`);
       }
 
-      const data = await response.json();
-      const content = data.content;
+      // Handle streaming response
+      if (useStreaming && response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let accumulatedContent = "";
 
-      // Validate content is not empty
-      if (!content || content.trim() === "") {
-        throw new Error("Generation returned empty content. Please try again.");
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\\n");
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = line.slice(6);
+                if (data === "[DONE]") continue;
+
+                try {
+                  const parsed = JSON.parse(data);
+                  const content = parsed.choices?.[0]?.delta?.content || "";
+                  if (content) {
+                    accumulatedContent += content;
+                    // Update UI in real-time
+                    updateSection(sectionId, { 
+                      loading: true, 
+                      error: null, 
+                      content: accumulatedContent 
+                    });
+                  }
+                } catch (e) {
+                  // Skip invalid JSON lines
+                }
+              }
+            }
+          }
+        } finally {
+          reader.releaseLock();
+        }
+
+        if (!accumulatedContent || accumulatedContent.trim() === "") {
+          throw new Error("Generation returned empty content. Please try again.");
+        }
+
+        updateSection(sectionId, { loading: false, error: null, content: accumulatedContent });
+        updateCharacterContent(sectionId, accumulatedContent);
+      } else {
+        // Non-streaming response
+        const data = await response.json();
+        const content = data.content;
+
+        if (!content || content.trim() === "") {
+          throw new Error("Generation returned empty content. Please try again.");
+        }
+
+        updateSection(sectionId, { loading: false, error: null, content });
+        updateCharacterContent(sectionId, content);
       }
-
-      updateSection(sectionId, { loading: false, error: null, content });
-      updateCharacterContent(sectionId, content);
     } catch (error: any) {
       updateSection(sectionId, {
         loading: false,
@@ -246,6 +317,22 @@ export default function CharacterResultPage() {
 
     setIsGenerating(true);
 
+    // Get proxy config if using custom provider
+    let proxyConfig = null;
+    if (provider === "custom") {
+      const savedConfig = localStorage.getItem("custom_proxy_config");
+      if (savedConfig) {
+        try {
+          proxyConfig = JSON.parse(savedConfig);
+        } catch (e) {
+          console.error("Failed to parse proxy config", e);
+        }
+      }
+    }
+
+    // Enable streaming for custom provider
+    const useStreaming = provider === "custom" && proxyConfig;
+
     // Start with only personality loading, others not started yet
     setSections({
       personality: { loading: true, error: null, content: "" },
@@ -258,7 +345,7 @@ export default function CharacterResultPage() {
     let bioContent = "";
 
     try {
-      // Step 1: Generate Personality
+      // Step 1: Generate Personality with streaming
       const personalityResponse = await fetch("/api/generate-section", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -267,6 +354,8 @@ export default function CharacterResultPage() {
           section: "personality",
           apiKey,
           provider,
+          proxyConfig,
+          stream: useStreaming,
         }),
       });
 
@@ -289,8 +378,50 @@ export default function CharacterResultPage() {
         throw new Error(errorData.error || "Failed to generate personality");
       }
 
-      const personalityData = await personalityResponse.json();
-      personalityContent = personalityData.content;
+      // Handle streaming for personality
+      if (useStreaming && personalityResponse.body) {
+        const reader = personalityResponse.body.getReader();
+        const decoder = new TextDecoder();
+        let accumulatedContent = "";
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\\n");
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = line.slice(6);
+                if (data === "[DONE]") continue;
+
+                try {
+                  const parsed = JSON.parse(data);
+                  const content = parsed.choices?.[0]?.delta?.content || "";
+                  if (content) {
+                    accumulatedContent += content;
+                    setSections(prev => ({
+                      ...prev,
+                      personality: { loading: true, error: null, content: accumulatedContent },
+                    }));
+                  }
+                } catch (e) {
+                  // Skip invalid JSON lines
+                }
+              }
+            }
+          }
+        } finally {
+          reader.releaseLock();
+        }
+
+        personalityContent = accumulatedContent;
+      } else {
+        const personalityData = await personalityResponse.json();
+        personalityContent = personalityData.content;
+      }
 
       // Update UI - Personality complete, Scenario starting
       setSections(prev => ({
@@ -300,7 +431,7 @@ export default function CharacterResultPage() {
       }));
       updateCharacterContent("personality", personalityContent);
 
-      // Step 2: Generate Scenario
+      // Step 2: Generate Scenario with streaming
       const scenarioResponse = await fetch("/api/generate-section", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -310,6 +441,8 @@ export default function CharacterResultPage() {
           apiKey,
           provider,
           scenario: storyIdea,
+          proxyConfig,
+          stream: useStreaming,
         }),
       });
 
@@ -318,8 +451,50 @@ export default function CharacterResultPage() {
         throw new Error(errorData.error || "Failed to generate scenario");
       }
 
-      const scenarioData = await scenarioResponse.json();
-      scenarioContent = scenarioData.content;
+      // Handle streaming for scenario
+      if (useStreaming && scenarioResponse.body) {
+        const reader = scenarioResponse.body.getReader();
+        const decoder = new TextDecoder();
+        let accumulatedContent = "";
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\\n");
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = line.slice(6);
+                if (data === "[DONE]") continue;
+
+                try {
+                  const parsed = JSON.parse(data);
+                  const content = parsed.choices?.[0]?.delta?.content || "";
+                  if (content) {
+                    accumulatedContent += content;
+                    setSections(prev => ({
+                      ...prev,
+                      scenarioGreeting: { loading: true, error: null, content: accumulatedContent },
+                    }));
+                  }
+                } catch (e) {
+                  // Skip invalid JSON lines
+                }
+              }
+            }
+          }
+        } finally {
+          reader.releaseLock();
+        }
+
+        scenarioContent = accumulatedContent;
+      } else {
+        const scenarioData = await scenarioResponse.json();
+        scenarioContent = scenarioData.content;
+      }
 
       // Update UI - Scenario complete, Bio starting
       setSections(prev => ({
@@ -329,7 +504,7 @@ export default function CharacterResultPage() {
       }));
       updateCharacterContent("scenarioGreeting", scenarioContent);
 
-      // Step 3: Generate Bio
+      // Step 3: Generate Bio with streaming
       const bioResponse = await fetch("/api/generate-section", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -339,6 +514,8 @@ export default function CharacterResultPage() {
           apiKey,
           provider,
           scenario: scenarioContent,
+          proxyConfig,
+          stream: useStreaming,
         }),
       });
 
@@ -347,8 +524,50 @@ export default function CharacterResultPage() {
         throw new Error(errorData.error || "Failed to generate bio");
       }
 
-      const bioData = await bioResponse.json();
-      bioContent = bioData.content;
+      // Handle streaming for bio
+      if (useStreaming && bioResponse.body) {
+        const reader = bioResponse.body.getReader();
+        const decoder = new TextDecoder();
+        let accumulatedContent = "";
+
+        try {
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const lines = chunk.split("\\n");
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = line.slice(6);
+                if (data === "[DONE]") continue;
+
+                try {
+                  const parsed = JSON.parse(data);
+                  const content = parsed.choices?.[0]?.delta?.content || "";
+                  if (content) {
+                    accumulatedContent += content;
+                    setSections(prev => ({
+                      ...prev,
+                      bio: { loading: true, error: null, content: accumulatedContent },
+                    }));
+                  }
+                } catch (e) {
+                  // Skip invalid JSON lines
+                }
+              }
+            }
+          }
+        } finally {
+          reader.releaseLock();
+        }
+
+        bioContent = accumulatedContent;
+      } else {
+        const bioData = await bioResponse.json();
+        bioContent = bioData.content;
+      }
 
       // Update UI - Bio complete
       setSections(prev => ({

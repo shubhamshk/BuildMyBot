@@ -64,6 +64,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     openrouter: "",
     huggingface: "",
     lmstudio: "",
+    custom: "",
   });
   const [showKeys, setShowKeys] = useState<Record<APIProvider, boolean>>({
     openai: false,
@@ -71,6 +72,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
     openrouter: false,
     huggingface: false,
     lmstudio: false,
+    custom: false,
   });
   const [selectedProvider, setSelectedProvider] = useState<APIProvider | null>(null);
   const [copiedKey, setCopiedKey] = useState<APIProvider | null>(null);
@@ -84,6 +86,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
         openrouter: "",
         huggingface: "",
         lmstudio: "",
+        custom: "",
       };
 
       PROVIDERS.forEach((provider) => {
@@ -162,6 +165,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
         openrouter: "",
         huggingface: "",
         lmstudio: "",
+        custom: "",
       });
       setSelectedProvider(null);
     }
@@ -192,6 +196,7 @@ export function APIKeyManager({ isOpen, onClose, onSave }: APIKeyManagerProps) {
       openrouter: "",
       huggingface: "",
       lmstudio: "",
+      custom: "",
     });
     onClose();
   };

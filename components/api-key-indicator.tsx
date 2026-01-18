@@ -13,6 +13,7 @@ const PROVIDER_LABELS: Record<APIProvider, string> = {
   gemini: "Gemini",
   huggingface: "HuggingFace",
   lmstudio: "LM Studio",
+  custom: "Custom Proxy",
 };
 
 export function APIKeyIndicator() {

@@ -66,6 +66,19 @@ export default function IdeaPage() {
 
     setIsEnhancing(true);
     try {
+      // Get proxy config if using custom provider
+      let proxyConfig = null;
+      if (keyCheck.provider === "custom") {
+        const savedConfig = localStorage.getItem("custom_proxy_config");
+        if (savedConfig) {
+          try {
+            proxyConfig = JSON.parse(savedConfig);
+          } catch (e) {
+            console.error("Failed to parse proxy config", e);
+          }
+        }
+      }
+      
       // Call AI enhancement API
       const response = await fetch("/api/enhance-idea", {
         method: "POST",
@@ -76,6 +89,7 @@ export default function IdeaPage() {
           idea: storyIdea,
           apiKey: keyCheck.apiKey,
           provider: keyCheck.provider,
+          proxyConfig,
         }),
       });
 

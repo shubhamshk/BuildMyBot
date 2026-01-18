@@ -166,9 +166,18 @@ export function validateAPIKey(): { valid: boolean; apiKey: string | null; provi
   let provider: APIProvider | null = selectedProvider;
 
   if (selectedProvider) {
-    apiKey = getAPIKey(selectedProvider);
-    if (apiKey && apiKey.trim() !== "" && apiKey.length >= 10) {
-      return { valid: true, apiKey, provider: selectedProvider };
+    // Special handling for custom proxy
+    if (selectedProvider === "custom") {
+      const proxyConfig = localStorage.getItem("custom_proxy_config");
+      if (proxyConfig) {
+        // Custom proxy is configured, return valid with a placeholder key
+        return { valid: true, apiKey: "custom-proxy-configured", provider: "custom" };
+      }
+    } else {
+      apiKey = getAPIKey(selectedProvider);
+      if (apiKey && apiKey.trim() !== "" && apiKey.length >= 10) {
+        return { valid: true, apiKey, provider: selectedProvider };
+      }
     }
   }
 

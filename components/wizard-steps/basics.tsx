@@ -93,16 +93,24 @@ export default function BasicsStep({ characterIndex, onNext }: BasicsStepProps) 
               type="number"
               placeholder="24"
               min="18"
-              value={character.basics.age}
+              value={character.basics.age ?? ""}
               onChange={(e) => {
-                const ageValue = e.target.value;
-                // Enforce minimum age of 18
-                if (ageValue && parseInt(ageValue) < 18) {
-                  return; // Don't update if below 18
-                }
+                // Always store as string for smooth typing
                 updateCharacter(characterIndex, {
-                  basics: { ...character.basics, age: ageValue },
+                  basics: { ...character.basics, age: e.target.value },
                 });
+              }}
+              onBlur={() => {
+                // Validate on blur
+                const ageValue = character.basics.age;
+                if (ageValue && parseInt(ageValue) < 18) {
+                  setErrors((prev) => ({ ...prev, age: "Age must be 18 or above" }));
+                } else {
+                  setErrors((prev) => {
+                    const { age, ...rest } = prev;
+                    return rest;
+                  });
+                }
               }}
               className={`w-full h-12 px-4 rounded-xl glass border transition-all outline-none ${
                 errors.age
@@ -111,9 +119,6 @@ export default function BasicsStep({ characterIndex, onNext }: BasicsStepProps) 
               }`}
             />
             {errors.age && <p className="text-sm text-red-400 mt-1">{errors.age}</p>}
-            {character.basics.age && parseInt(character.basics.age) < 18 && (
-              <p className="text-sm text-red-400 mt-1">Age must be 18 or above</p>
-            )}
           </div>
           <div>
             <label className="text-sm font-medium text-foreground mb-2 block">Gender</label>

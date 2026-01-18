@@ -4,7 +4,7 @@ import { APIProvider } from "@/lib/api-key";
 
 export async function POST(request: NextRequest) {
   try {
-    const { idea, apiKey, provider } = await request.json();
+    const { idea, apiKey, provider, proxyConfig } = await request.json();
 
     if (!idea || !apiKey || !provider) {
       return NextResponse.json(
@@ -12,6 +12,11 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+    
+    // For custom provider, use proxyConfig if provided
+    const effectiveApiKey = (provider === "custom" && proxyConfig) 
+      ? JSON.stringify(proxyConfig) 
+      : apiKey;
 
     const prompt = `You are helping to refine a story idea. Your task is ONLY to improve clarity and flow striclty in human written language - NOT to change or expand the idea.
 
@@ -37,13 +42,18 @@ Original idea: ${idea}
 Enhanced idea (3-4 lines only, brief and rough, natural human tone, preserve original meaning):`;
 
     const aiProvider = getAIProvider(provider as APIProvider);
-    const model = provider === "openai" || provider === "openrouter" 
-      ? "gpt-4o-mini" 
-      : provider === "gemini" 
-      ? "gemini-2.0-flash" 
-      : "gpt-4o-mini";
+    
+    // Determine the model based on provider
+    let model = "gpt-4o-mini";
+    if (provider === "gemini") {
+      model = "gemini-2.0-flash";
+    } else if (provider === "openrouter") {
+      model = "openai/gpt-4o-mini";
+    } else if (provider === "custom" || provider === "lmstudio") {
+      model = "local-model"; // For custom proxies and LM Studio
+    }
 
-    const enhancedIdea = await aiProvider.generate(prompt, apiKey, model, 150);
+    const enhancedIdea = await aiProvider.generate(prompt, effectiveApiKey, model, 150);
     
     // Ensure it's 1-2 lines max - take first 2 lines if longer
     const lines = enhancedIdea.trim().split('\n').filter(line => line.trim());

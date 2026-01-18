@@ -166,6 +166,19 @@ export default function WizardPage() {
   };
 
   const handleAIAutoFillAll = async (storyIdea: string, apiKey: string, provider: APIProvider) => {
+    // Get proxy config if using custom provider
+    let proxyConfig = null;
+    if (provider === "custom") {
+      const savedConfig = localStorage.getItem("custom_proxy_config");
+      if (savedConfig) {
+        try {
+          proxyConfig = JSON.parse(savedConfig);
+        } catch (e) {
+          console.error("Failed to parse proxy config", e);
+        }
+      }
+    }
+    
     // Auto-fill all characters in background - don't wait
     const autoFillPromises = characters.map(async (char, charIndex) => {
       try {
@@ -179,6 +192,7 @@ export default function WizardPage() {
             characterIndex: charIndex,
             apiKey,
             provider,
+            proxyConfig,
           }),
         });
         const basicsData = await basicsResponse.json();
@@ -194,6 +208,7 @@ export default function WizardPage() {
             existingData: { basics: basicsData.data },
             apiKey,
             provider,
+            proxyConfig,
           }),
         });
         const personalityData = await personalityResponse.json();
@@ -209,6 +224,7 @@ export default function WizardPage() {
             existingData: { basics: basicsData.data },
             apiKey,
             provider,
+            proxyConfig,
           }),
         });
         const backstoryData = await backstoryResponse.json();
@@ -224,6 +240,7 @@ export default function WizardPage() {
             existingData: { basics: basicsData.data },
             apiKey,
             provider,
+            proxyConfig,
           }),
         });
         const speechData = await speechResponse.json();
@@ -239,6 +256,7 @@ export default function WizardPage() {
             existingData: { basics: basicsData.data },
             apiKey,
             provider,
+            proxyConfig,
           }),
         });
         const boundariesData = await boundariesResponse.json();

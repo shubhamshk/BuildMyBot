@@ -1,7 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { APIProvider } from "@/lib/api-key";
-import { generatePersonality, generateScenario, generateBio } from "@/lib/generation/service";
+import { getAIProvider } from "@/lib/ai/providers";
 import { CharacterState } from "@/context/CharacterContext";
+import {
+  buildJanitorPersonalityPrompt,
+  getPersonalitySystemPrompt,
+  buildScenarioPrompt,
+  buildBioPrompt,
+} from "@/lib/prompts/janitor-ai";
+import {
+  getModelForGeneration,
+  GenerationType,
+} from "@/lib/ai/provider-detection";
 
 // Extend timeout for slow local AI models (LM Studio)
 // Note: Vercel Hobby plan max is 300 seconds (5 minutes)
@@ -10,61 +20,195 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
     try {
-        const { character, section, apiKey, provider, scenario } = await request.json();
+        const { character, section, apiKey, provider, scenario, proxyConfig, stream } = await request.json();
 
         if (!character || !section || !apiKey || !provider) {
-            return NextResponse.json(
-                { error: "Missing required fields: character, section, apiKey, provider" },
-                { status: 400 }
+            return new Response(
+                JSON.stringify({ error: "Missing required fields: character, section, apiKey, provider" }),
+                { status: 400, headers: { "Content-Type": "application/json" } }
             );
         }
+        
+        // For custom provider, use proxyConfig if provided
+        const effectiveApiKey = (provider === "custom" && proxyConfig) 
+          ? JSON.stringify(proxyConfig) 
+          : apiKey;
 
         const validSections = ["personality", "scenarioGreeting", "bio"];
         if (!validSections.includes(section)) {
-            return NextResponse.json(
-                { error: `Invalid section: ${section}. Must be one of: ${validSections.join(", ")}` },
-                { status: 400 }
+            return new Response(
+                JSON.stringify({ error: `Invalid section: ${section}. Must be one of: ${validSections.join(", ")}` }),
+                { status: 400, headers: { "Content-Type": "application/json" } }
             );
         }
 
-        let content = "";
+        // Build the prompt based on section
+        let prompt = "";
+        let generationType: GenerationType = "personality";
 
-        try {
-            if (section === "personality") {
-                content = await generatePersonality(character as CharacterState, apiKey, provider as APIProvider);
-            } else if (section === "scenarioGreeting") {
-                content = await generateScenario(character as CharacterState, scenario, apiKey, provider as APIProvider);
-            } else if (section === "bio") {
-                if (!scenario) {
-                    return NextResponse.json(
-                        { error: "Scenario is required for bio generation" },
-                        { status: 400 }
+        if (section === "personality") {
+            const systemPrompt = getPersonalitySystemPrompt();
+            const userPrompt = buildJanitorPersonalityPrompt(character as CharacterState);
+            prompt = `${systemPrompt}\n\n${userPrompt}`;
+            generationType = "personality";
+        } else if (section === "scenarioGreeting") {
+            prompt = buildScenarioPrompt(character as CharacterState, scenario);
+            generationType = "scenario";
+        } else if (section === "bio") {
+            if (!scenario) {
+                return new Response(
+                    JSON.stringify({ error: "Scenario is required for bio generation" }),
+                    { status: 400, headers: { "Content-Type": "application/json" } }
+                );
+            }
+            prompt = buildBioPrompt(character as CharacterState, scenario);
+            generationType = "bio";
+        }
+
+        // Get model and max tokens
+        const model = getModelForGeneration(provider as APIProvider, generationType);
+        const maxTokens = generationType === "personality" ? 800 : generationType === "scenario" ? 300 : 300;
+
+        // If streaming is not requested, use the old non-streaming approach
+        if (!stream) {
+            try {
+                const aiProvider = getAIProvider(provider as APIProvider);
+                const content = await aiProvider.generate(prompt, effectiveApiKey, model, maxTokens);
+
+                if (!content || content.trim() === "") {
+                    return new Response(
+                        JSON.stringify({ error: "Generation returned empty content" }),
+                        { status: 500, headers: { "Content-Type": "application/json" } }
                     );
                 }
-                content = await generateBio(character as CharacterState, scenario, apiKey, provider as APIProvider);
-            }
 
-            // Validate content is not empty
-            if (!content || content.trim() === "") {
-                return NextResponse.json(
-                    { error: "Generation returned empty content" },
-                    { status: 500 }
+                return new Response(
+                    JSON.stringify({ content, section }),
+                    { status: 200, headers: { "Content-Type": "application/json" } }
+                );
+            } catch (error: any) {
+                console.error(`Generation error for ${section}:`, error);
+                return new Response(
+                    JSON.stringify({ error: error.message || `Failed to generate ${section}` }),
+                    { status: 500, headers: { "Content-Type": "application/json" } }
+                );
+            }
+        }
+
+        // STREAMING MODE: Call the proxy with stream=true
+        const proxyUrl = proxyConfig?.proxyUrl || process.env.AI_PROXY_URL || "";
+        const proxyKey = proxyConfig?.apiKey || process.env.AI_PROXY_KEY || "";
+        const proxyModel = proxyConfig?.model || model;
+
+        if (!proxyUrl) {
+            return new Response(
+                JSON.stringify({ error: "Streaming requires a custom proxy URL. Please configure in API Keys settings." }),
+                { status: 400, headers: { "Content-Type": "application/json" } }
+            );
+        }
+
+        // Ensure URL ends with /v1/chat/completions
+        let finalProxyUrl = proxyUrl;
+        if (!finalProxyUrl.endsWith("/v1/chat/completions")) {
+            finalProxyUrl = finalProxyUrl.replace(/\/+$/, "") + "/v1/chat/completions";
+        }
+
+        // Build messages
+        let messages: Array<{ role: string; content: string }> = [];
+        const marker = "\n\nCHARACTER";
+        if (prompt.includes(marker)) {
+            const parts = prompt.split(marker);
+            messages.push({ role: "system", content: parts[0].trim() });
+            messages.push({ role: "user", content: "CHARACTER" + parts.slice(1).join(marker).trim() });
+        } else if (prompt.includes("CRITICAL RULES:") || prompt.includes("You are an expert")) {
+            const systemMatch = prompt.match(/^([\s\S]+?)(?=\n\nCHARACTER|CHARACTER BASICS|User-provided|Generate|Write|Create)/);
+            const systemPrompt = systemMatch ? systemMatch[1].trim() : "";
+            const userPrompt = systemMatch ? prompt.replace(systemMatch[1], "").trim() : prompt;
+            if (systemPrompt) {
+                messages.push({ role: "system", content: systemPrompt });
+            }
+            messages.push({ role: "user", content: userPrompt });
+        } else {
+            messages.push({ role: "user", content: prompt });
+        }
+
+        const headers: Record<string, string> = {
+            "Content-Type": "application/json",
+        };
+
+        if (proxyKey) {
+            headers["Authorization"] = `Bearer ${proxyKey}`;
+        }
+
+        try {
+            const proxyResponse = await fetch(finalProxyUrl, {
+                method: "POST",
+                headers,
+                body: JSON.stringify({
+                    model: proxyModel,
+                    messages,
+                    temperature: 0.7,
+                    max_tokens: maxTokens,
+                    stream: true,
+                }),
+            });
+
+            if (!proxyResponse.ok) {
+                const errorText = await proxyResponse.text();
+                console.error("Proxy Streaming Error:", errorText);
+                
+                // Check if it's HTML error (Cloudflare 524)
+                const isHtmlError = errorText.trim().startsWith('<!DOCTYPE') || errorText.trim().startsWith('<html');
+                let errorMessage = `Proxy error (${proxyResponse.status})`;
+                
+                if (isHtmlError && (proxyResponse.status === 524 || errorText.includes('524: A timeout occurred') || errorText.includes('Error code 524'))) {
+                    // Extract title from HTML
+                    const titleMatch = errorText.match(/<title>([^<]+)<\/title>/i);
+                    const title = titleMatch ? titleMatch[1] : 'Cloudflare Timeout';
+                    errorMessage = `⚠️ ${title}\n\nYour proxy took too long to respond. This error occurred even with streaming enabled, which suggests:\n\n1. Your proxy may not support streaming (stream=true)\n2. The AI model is extremely slow\n3. Network issues between Cloudflare and your proxy\n\nTry: Use a faster model, or bypass Cloudflare by using the direct proxy URL.`;
+                } else if (isHtmlError) {
+                    const titleMatch = errorText.match(/<title>([^<]+)<\/title>/i);
+                    errorMessage = titleMatch ? titleMatch[1] : errorText.substring(0, 200);
+                } else {
+                    errorMessage = errorText.substring(0, 500);
+                }
+                
+                return new Response(
+                    JSON.stringify({ error: errorMessage }),
+                    { status: proxyResponse.status, headers: { "Content-Type": "application/json" } }
                 );
             }
 
-            return NextResponse.json({ content, section });
+            // Check if response is actually streaming (has body stream)
+            if (!proxyResponse.body) {
+                console.error("Proxy returned no body for streaming request");
+                return new Response(
+                    JSON.stringify({ error: "Proxy did not return a streaming response. Your proxy may not support streaming." }),
+                    { status: 500, headers: { "Content-Type": "application/json" } }
+                );
+            }
+
+            // Pipe the streaming response to the client
+            return new Response(proxyResponse.body, {
+                status: 200,
+                headers: {
+                    "Content-Type": "text/event-stream",
+                    "Cache-Control": "no-cache",
+                    "Connection": "keep-alive",
+                },
+            });
         } catch (error: any) {
-            console.error(`Generation error for ${section}:`, error);
-            return NextResponse.json(
-                { error: error.message || `Failed to generate ${section}` },
-                { status: 500 }
+            console.error("Streaming error:", error);
+            return new Response(
+                JSON.stringify({ error: error.message || "Streaming failed" }),
+                { status: 500, headers: { "Content-Type": "application/json" } }
             );
         }
     } catch (error: any) {
         console.error("Request parsing error:", error);
-        return NextResponse.json(
-            { error: error.message || "Invalid request" },
-            { status: 400 }
+        return new Response(
+            JSON.stringify({ error: error.message || "Invalid request" }),
+            { status: 400, headers: { "Content-Type": "application/json" } }
         );
     }
 }

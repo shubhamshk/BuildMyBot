@@ -107,10 +107,24 @@ function ImageGeneratorContent() {
                 throw new Error(keyError || "API Key not configured");
             }
 
+            // Get proxy config if using custom provider
+            let proxyConfig = null;
+            if (provider === "custom") {
+                const savedConfig = localStorage.getItem("custom_proxy_config");
+                if (savedConfig) {
+                    try {
+                        proxyConfig = JSON.parse(savedConfig);
+                    } catch (e) {
+                        console.error("Failed to parse proxy config", e);
+                    }
+                }
+            }
+
             let payload: any = {
                 apiKey,
                 provider,
-                style
+                style,
+                proxyConfig,
             };
 
             if (mode === "character") {

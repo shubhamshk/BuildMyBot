@@ -5,9 +5,11 @@
 
 import { detectProviderFromKey } from "@/lib/ai/provider-detection";
 
-export type APIProvider = "openai" | "gemini" | "openrouter" | "huggingface" | "lmstudio";
+export type APIProvider = "openai" | "gemini" | "openrouter" | "huggingface" | "lmstudio" | "custom";
 
 export function getAPIKey(provider?: APIProvider): string | null {
+  if (provider === "custom") return null; // Custom proxy doesn't use this storage mechanism directly
+
   if (provider) {
     const key = localStorage.getItem(`api_key_${provider}`);
     return key && key.trim() !== "" ? key : null;
@@ -16,11 +18,23 @@ export function getAPIKey(provider?: APIProvider): string | null {
   const selectedProvider = getSelectedProvider();
   if (!selectedProvider) return null;
 
+  // If custom proxy is selected, we consider it "connected" if the config exists, 
+  // but we don't return a single "key" here because it's complex config.
+  if (selectedProvider === "custom") return "custom-proxy-active";
+
   const key = localStorage.getItem(`api_key_${selectedProvider}`);
   return key && key.trim() !== "" ? key : null;
 }
 
 export function setAPIKey(provider: APIProvider, key: string): void {
+  if (provider === "custom") {
+    // Custom proxy settings are handled in app/api-keys/page.tsx directly
+    // But we set the provider selection here
+    localStorage.setItem("api_key_provider", provider);
+    localStorage.setItem("api_key_connected", "true");
+    return;
+  }
+
   // Validate key format matches provider
   const detected = detectProviderFromKey(key);
   if (detected && detected !== provider) {
@@ -46,6 +60,12 @@ export function isAPIKeyConnected(): boolean {
     return false;
   }
 
+  if (provider === "custom") {
+    // Check if custom config exists
+    const config = localStorage.getItem("custom_proxy_config");
+    return !!config;
+  }
+
   // Get the actual key
   const key = localStorage.getItem(`api_key_${provider}`);
 
@@ -63,7 +83,7 @@ export function isAPIKeyConnected(): boolean {
 
 export function clearAPIKey(): void {
   const provider = getSelectedProvider();
-  if (provider) {
+  if (provider && provider !== "custom") {
     localStorage.removeItem(`api_key_${provider}`);
   }
   localStorage.removeItem("api_key_provider");
@@ -78,6 +98,7 @@ export function clearAllAPIKeys(): void {
   providers.forEach((provider) => {
     localStorage.removeItem(`api_key_${provider}`);
   });
+  localStorage.removeItem("custom_proxy_config");
   localStorage.removeItem("api_key_provider");
   localStorage.removeItem("api_key_connected");
 }
@@ -86,10 +107,16 @@ export function clearAllAPIKeys(): void {
  * Get all configured API keys (masked for display)
  */
 export function getAllAPIKeys(): Record<APIProvider, { exists: boolean; masked: string }> {
-  const providers: APIProvider[] = ["openai", "gemini", "openrouter", "huggingface", "lmstudio"];
+  const providers: APIProvider[] = ["openai", "gemini", "openrouter", "huggingface", "lmstudio", "custom"];
   const result: Record<APIProvider, { exists: boolean; masked: string }> = {} as any;
 
   providers.forEach((provider) => {
+    if (provider === "custom") {
+      const config = localStorage.getItem("custom_proxy_config");
+      result[provider] = { exists: !!config, masked: config ? "Proxy Configured" : "" };
+      return;
+    }
+
     const key = localStorage.getItem(`api_key_${provider}`);
     if (key && key.trim() !== "") {
       result[provider] = {

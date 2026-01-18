@@ -227,6 +227,19 @@ export default function MultipleCharactersResultPage() {
     setCombinedScenario({ loading: true, error: null, content: "" });
 
     try {
+      // Get proxy config if using custom provider
+      let proxyConfig = null;
+      if (provider === "custom") {
+        const savedConfig = localStorage.getItem("custom_proxy_config");
+        if (savedConfig) {
+          try {
+            proxyConfig = JSON.parse(savedConfig);
+          } catch (e) {
+            console.error("Failed to parse proxy config", e);
+          }
+        }
+      }
+      
       // Process all characters in background
       const response = await fetch("/api/process-characters", {
         method: "POST",
@@ -236,6 +249,7 @@ export default function MultipleCharactersResultPage() {
           apiKey,
           provider,
           storyIdea,
+          proxyConfig,
         }),
       });
 
