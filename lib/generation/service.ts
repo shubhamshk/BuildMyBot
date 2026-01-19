@@ -1,6 +1,8 @@
 /**
  * AI Generation Service
  * Handles all AI content generation with API key management and auto-detection
+ * 
+ * UPDATED: Includes output validation, sanitization, and retry logic for proxy LLMs
  */
 
 import { CharacterState } from "@/context/CharacterContext";
@@ -20,6 +22,10 @@ import {
   getFallbackModel,
   GenerationType,
 } from "@/lib/ai/provider-detection";
+import { 
+  sanitizeAndValidate, 
+  ValidationResult 
+} from "@/lib/ai/output-sanitizer";
 
 export interface GenerationState {
   loading: boolean;
@@ -51,34 +57,114 @@ function getMaxTokensForType(generationType: GenerationType): number {
 
 /**
  * Generate with fallback retry logic
+ * UPDATED: Includes validation and automatic retry on validation failure
  */
 export async function generateWithFallback(
   provider: APIProvider,
   apiKey: string,
   prompt: string,
-  generationType: GenerationType
+  generationType: GenerationType,
+  maxRetries: number = 1
 ): Promise<string> {
   const model = getModelForGeneration(provider, generationType);
   const aiProvider = getAIProvider(provider);
   const maxTokens = getMaxTokensForType(generationType);
 
-  try {
-    const result = await aiProvider.generate(prompt, apiKey, model, maxTokens);
-    return result;
-  } catch (error: any) {
-    // Try fallback model if available
-    const fallbackModel = getFallbackModel(provider);
-    if (fallbackModel && (error.message?.includes("model") || error.message?.includes("404"))) {
-      console.warn(`Primary model ${model} failed, trying fallback ${fallbackModel}`);
-      try {
-        const result = await aiProvider.generate(prompt, apiKey, fallbackModel, maxTokens);
-        return result;
-      } catch (fallbackError: any) {
-        throw new Error(`Generation failed with both models. Primary: ${error.message}. Fallback: ${fallbackError.message}`);
+  let lastError: Error | null = null;
+  let lastValidation: ValidationResult | null = null;
+
+  // Attempt generation with retries
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      // Generate content
+      const result = await aiProvider.generate(prompt, apiKey, model, maxTokens);
+
+      // Validate and sanitize output (skip for bio which doesn't have strict template requirements)
+      if (generationType === "personality" || generationType === "scenario") {
+        const { cleaned, validation } = sanitizeAndValidate(
+          result,
+          generationType === "personality" ? "personality" : "scenario",
+          { autoFix: true, logWarnings: true }
+        );
+
+        // If validation passed, return cleaned output
+        if (validation.valid) {
+          if (attempt > 0) {
+            console.log(`[Generation] Succeeded on retry attempt ${attempt}`);
+          }
+          return cleaned;
+        }
+
+        // Validation failed - retry if we have attempts left
+        lastValidation = validation;
+        if (attempt < maxRetries) {
+          console.warn(`[Generation] Validation failed on attempt ${attempt + 1}, retrying...`, validation.errors);
+          // Add a stricter instruction to the prompt for retry
+          prompt = `${prompt}\n\nCRITICAL: Your previous output was invalid. You MUST follow the exact template structure. Do NOT add any text before or after the template tags.`;
+          continue;
+        }
+
+        // Out of retries - return cleaned output even if validation failed
+        console.error(`[Generation] Validation failed after ${maxRetries + 1} attempts:`, validation.errors);
+        return cleaned;
+      }
+
+      // For other generation types (bio, imagePrompts), just return the result
+      return result;
+
+    } catch (error: any) {
+      lastError = error;
+
+      // Try fallback model if available and this is the first attempt
+      if (attempt === 0) {
+        const fallbackModel = getFallbackModel(provider);
+        if (fallbackModel && (error.message?.includes("model") || error.message?.includes("404"))) {
+          console.warn(`Primary model ${model} failed, trying fallback ${fallbackModel}`);
+          try {
+            const result = await aiProvider.generate(prompt, apiKey, fallbackModel, maxTokens);
+            
+            // Validate and sanitize fallback output
+            if (generationType === "personality" || generationType === "scenario") {
+              const { cleaned, validation } = sanitizeAndValidate(
+                result,
+                generationType === "personality" ? "personality" : "scenario",
+                { autoFix: true, logWarnings: true }
+              );
+              
+              if (validation.valid || attempt >= maxRetries) {
+                return cleaned;
+              }
+              
+              lastValidation = validation;
+              continue;
+            }
+            
+            return result;
+          } catch (fallbackError: any) {
+            // Continue to retry logic
+            lastError = fallbackError;
+          }
+        }
+      }
+
+      // If this is not the last attempt, retry
+      if (attempt < maxRetries) {
+        console.warn(`[Generation] Attempt ${attempt + 1} failed, retrying...`, error.message);
+        continue;
       }
     }
-    throw error;
   }
+
+  // All attempts failed
+  if (lastError) {
+    throw new Error(`Generation failed after ${maxRetries + 1} attempts. Last error: ${lastError.message}`);
+  }
+  
+  if (lastValidation) {
+    throw new Error(`Generation validation failed after ${maxRetries + 1} attempts. Errors: ${lastValidation.errors.join(", ")}`);
+  }
+
+  throw new Error("Generation failed for unknown reason");
 }
 
 /**

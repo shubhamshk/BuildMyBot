@@ -1,6 +1,54 @@
+import { sanitizeAIOutput } from "./output-sanitizer";
 
 export interface AIProvider {
   generate(prompt: string, apiKey: string, model: string, maxTokens?: number): Promise<string>;
+}
+
+/**
+ * Split combined prompt into system and user messages
+ * This prevents system rules from being concatenated with user prompts,
+ * which causes proxy LLMs to echo instructions into output
+ */
+function splitPromptIntoMessages(prompt: string): Array<{ role: string; content: string }> {
+  const messages: Array<{ role: string; content: string }> = [];
+
+  // Look for delimiter patterns that indicate system/user split
+  const delimiters = [
+    "\n\nCHARACTER BASICS:",
+    "\n\nCHARACTER:",
+    "\n\nUser-provided",
+    "\n\nGenerate",
+    "\n\nWrite",
+    "\n\nCreate",
+  ];
+
+  let splitPoint = -1;
+  let foundDelimiter = "";
+  
+  for (const delimiter of delimiters) {
+    const index = prompt.indexOf(delimiter);
+    if (index !== -1) {
+      splitPoint = index;
+      foundDelimiter = delimiter;
+      break;
+    }
+  }
+
+  if (splitPoint > 0) {
+    // Found a split point - separate system from user
+    const systemContent = prompt.substring(0, splitPoint).trim();
+    const userContent = prompt.substring(splitPoint + foundDelimiter.length).trim();
+
+    if (systemContent) {
+      messages.push({ role: "system", content: systemContent });
+    }
+    messages.push({ role: "user", content: userContent });
+  } else {
+    // No clear split - treat entire prompt as user message
+    messages.push({ role: "user", content: prompt });
+  }
+
+  return messages;
 }
 
 /**
@@ -69,22 +117,8 @@ export class GeminiProvider implements AIProvider {
  */
 export class OpenAIProvider implements AIProvider {
   async generate(prompt: string, apiKey: string, model: string, maxTokens: number = 1800): Promise<string> {
-    // Handle system/user message split if prompt contains system instructions
-    let messages: Array<{ role: string; content: string }> = [];
-
-    if (prompt.includes("CRITICAL RULES:") || prompt.includes("You are an expert")) {
-      // Split system and user prompts
-      const systemMatch = prompt.match(/^([\s\S]+?)(?=\n\nCHARACTER|CHARACTER BASICS|User-provided|Generate|Write|Create)/);
-      const systemPrompt = systemMatch ? systemMatch[1].trim() : "";
-      const userPrompt = systemMatch ? prompt.replace(systemMatch[1], "").trim() : prompt;
-
-      if (systemPrompt) {
-        messages.push({ role: "system", content: systemPrompt });
-      }
-      messages.push({ role: "user", content: userPrompt });
-    } else {
-      messages.push({ role: "user", content: prompt });
-    }
+    // CRITICAL: Use proper message structure to prevent system prompt leakage
+    const messages = splitPromptIntoMessages(prompt);
 
     // Determine API endpoint based on model
     const isOpenRouter = model.includes("/");
@@ -128,7 +162,8 @@ export class OpenAIProvider implements AIProvider {
       throw new Error("API returned empty response. Please check your API key and model access.");
     }
 
-    return text.trim();
+    // Sanitize output (especially important for OpenRouter proxy models)
+    return sanitizeAIOutput(text.trim());
   }
 }
 
@@ -175,6 +210,9 @@ export class HuggingFaceProvider implements AIProvider {
 
 /**
  * Proxy Provider (for custom endpoints, JanitorAI style)
+ * 
+ * CRITICAL: This is the most important provider for proper message structure enforcement.
+ * Proxy/local LLMs are especially prone to echoing system instructions into output.
  */
 export class ProxyProvider implements AIProvider {
   async generate(prompt: string, apiKey: string, model: string, maxTokens: number = 1800): Promise<string> {
@@ -226,25 +264,9 @@ export class ProxyProvider implements AIProvider {
       proxyUrl = proxyUrl.replace(/\/+$/, "") + "/v1/chat/completions";
     }
 
-    // Build messages
-    let messages: Array<{ role: string; content: string }> = [];
-    const marker = "\n\nCHARACTER";
-    if (prompt.includes(marker)) {
-      const parts = prompt.split(marker);
-      messages.push({ role: "system", content: parts[0].trim() });
-      messages.push({ role: "user", content: "CHARACTER" + parts.slice(1).join(marker).trim() });
-    } else if (prompt.includes("CRITICAL RULES:") || prompt.includes("You are an expert")) {
-      const systemMatch = prompt.match(/^([\s\S]+?)(?=\n\nCHARACTER|CHARACTER BASICS|User-provided|Generate|Write|Create)/);
-      const systemPrompt = systemMatch ? systemMatch[1].trim() : "";
-      const userPrompt = systemMatch ? prompt.replace(systemMatch[1], "").trim() : prompt;
-
-      if (systemPrompt) {
-        messages.push({ role: "system", content: systemPrompt });
-      }
-      messages.push({ role: "user", content: userPrompt });
-    } else {
-      messages.push({ role: "user", content: prompt });
-    }
+    // CRITICAL: Use proper message structure to prevent system prompt leakage
+    // This is the most important fix for proxy LLMs
+    const messages = splitPromptIntoMessages(prompt);
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
@@ -301,9 +323,17 @@ export class ProxyProvider implements AIProvider {
       throw new Error("Proxy API returned empty response.");
     }
 
-    return text.trim();
+    // CRITICAL: Sanitize proxy output (most important for local LLMs)
+    // This removes leaked system instructions, jailbreaks, and malformed tokens
+    return sanitizeAIOutput(text.trim());
   }
 }
+
+// NOTE: Model Capability Warning
+// Small models (≤ 3B parameters) often fail structured output requirements.
+// Proxy formatting reliability improves significantly with 7B+ models.
+// Recommended: Llama 3 8B, Mistral 7B, or larger instruction-tuned models.
+// The output sanitizer provides a safety net, but cannot fix fundamentally incoherent output.
 
 /**
  * LM Studio Provider (OpenAI compatible, local only)
@@ -311,16 +341,9 @@ export class ProxyProvider implements AIProvider {
 export class LMStudioProvider implements AIProvider {
   async generate(prompt: string, apiKey: string, model: string, maxTokens: number = 1800): Promise<string> {
     const apiUrl = "http://localhost:1234/v1/chat/completions";
-    let messages: Array<{ role: string; content: string }> = [];
-
-    const marker = "\n\nCHARACTER";
-    if (prompt.includes(marker)) {
-      const parts = prompt.split(marker);
-      messages.push({ role: "system", content: parts[0].trim() });
-      messages.push({ role: "user", content: "CHARACTER" + parts.slice(1).join(marker).trim() });
-    } else {
-      messages.push({ role: "user", content: prompt });
-    }
+    
+    // CRITICAL: Use proper message structure to prevent system prompt leakage
+    const messages = splitPromptIntoMessages(prompt);
 
     // Create a custom agent with extended timeouts for local LLMs
     // Dynamically import undici to avoid issues in non-Node environments or build times
@@ -359,7 +382,8 @@ export class LMStudioProvider implements AIProvider {
       throw new Error("LM Studio returned empty response.");
     }
 
-    return text.trim();
+    // Sanitize output (local LLMs are prone to instruction leakage)
+    return sanitizeAIOutput(text.trim());
   }
 }
 
