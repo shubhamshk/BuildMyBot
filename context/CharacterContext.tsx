@@ -32,6 +32,7 @@ export interface CharacterState {
     topics?: string;
     tone?: string;
   };
+  personalityFormat?: "Basic" | "Advanced" | "Optimized";
   generatedContent?: {
     personality?: string;
     backstory?: string;
@@ -71,6 +72,7 @@ const initialCharacter: Omit<CharacterState, "id"> = {
     calmness: 50,
     reserve: 50,
   },
+  personalityFormat: "Basic",
   isComplete: false,
 };
 

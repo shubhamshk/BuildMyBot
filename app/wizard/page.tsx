@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useCharacter } from "@/context/CharacterContext";
 import { useRouter } from "next/navigation";
 import BasicsStep from "@/components/wizard-steps/basics";
+import PersonalityFormatStep from "@/components/wizard-steps/personality-format";
 import PersonalityStep from "@/components/wizard-steps/personality";
 import BackstoryStep from "@/components/wizard-steps/backstory";
 import SpeechStep from "@/components/wizard-steps/speech";
@@ -19,6 +20,7 @@ import { LoginRequiredModal } from "@/components/login-required-modal";
 
 const STEPS = [
   { id: "basics", label: "Basics" },
+  { id: "personality-format", label: "Format" },
   { id: "personality", label: "Personality" },
   { id: "backstory", label: "Backstory" },
   { id: "speech", label: "Speech & Behavior" },
@@ -178,7 +180,7 @@ export default function WizardPage() {
         }
       }
     }
-    
+
     // Auto-fill all characters in background - don't wait
     const autoFillPromises = characters.map(async (char, charIndex) => {
       try {
@@ -320,6 +322,7 @@ export default function WizardPage() {
     const char = characters[charIndex];
     let completed = 0;
     if (char.basics.name && char.basics.setting) completed++;
+    if (char.personalityFormat) completed++;
     if (char.personality.warmth !== 50 || char.personality.confidence !== 50) completed++;
     if (char.backstoryStyle) completed++;
     if (char.speechRules?.tone) completed++;
@@ -331,6 +334,8 @@ export default function WizardPage() {
     switch (currentStepId) {
       case "basics":
         return <BasicsStep characterIndex={activeCharacterIndex} onNext={handleNext} />;
+      case "personality-format":
+        return <PersonalityFormatStep characterIndex={activeCharacterIndex} onNext={handleNext} onBack={handleBack} />;
       case "personality":
         return <PersonalityStep characterIndex={activeCharacterIndex} onNext={handleNext} onBack={handleBack} />;
       case "backstory":
@@ -378,8 +383,8 @@ export default function WizardPage() {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       className={`relative glass rounded-2xl p-4 border-2 transition-all overflow-hidden group ${isActive
-                          ? "border-violet-500 bg-violet-500/10 shadow-lg shadow-violet-500/20"
-                          : "border-border hover:border-violet-500/50"
+                        ? "border-violet-500 bg-violet-500/10 shadow-lg shadow-violet-500/20"
+                        : "border-border hover:border-violet-500/50"
                         }`}
                     >
                       {/* Active indicator */}
@@ -402,8 +407,8 @@ export default function WizardPage() {
 
                       {/* Character number */}
                       <div className={`w-12 h-12 rounded-xl mb-3 flex items-center justify-center font-bold text-lg transition-all ${isActive
-                          ? "bg-violet-500/20 border-2 border-violet-500/50 text-violet-400"
-                          : "bg-muted border-2 border-border text-muted-foreground"
+                        ? "bg-violet-500/20 border-2 border-violet-500/50 text-violet-400"
+                        : "bg-muted border-2 border-border text-muted-foreground"
                         }`}>
                         {index + 1}
                       </div>
@@ -460,8 +465,8 @@ export default function WizardPage() {
                   initial={{ scale: 0.8 }}
                   animate={{ scale: index <= currentStep ? 1 : 0.8 }}
                   className={`h-2 rounded-full transition-all ${index <= currentStep
-                      ? "w-10 bg-violet-500 shadow-lg shadow-violet-500/30"
-                      : "w-8 bg-muted"
+                    ? "w-10 bg-violet-500 shadow-lg shadow-violet-500/30"
+                    : "w-8 bg-muted"
                     }`}
                 />
               ))}

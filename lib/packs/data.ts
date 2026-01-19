@@ -40,7 +40,7 @@ export const packs: Pack[] = [
         id: "nsfw-safe-pack",
         title: "NSFW-Safe Image + Prompt Pack",
         description: "Tasteful and safe prompts designed for more mature themes without crossing boundaries.",
-        price: 6,
+        price: 9,
     },
 ];
 
