@@ -1,6 +1,6 @@
 
 import { NextRequest, NextResponse } from "next/server";
-import { packs, services } from "@/lib/packs/data";
+import { packs, services, specialPacks } from "@/lib/packs/data";
 
 // PayPal API configuration
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
         const { itemId, email, description } = requestData;
 
         // Find the item in packs or services
-        const item = [...packs, ...services].find((p) => p.id === itemId);
+        const item = [...packs, ...services, ...specialPacks].find((p) => p.id === itemId);
 
         if (!item) {
             return NextResponse.json(

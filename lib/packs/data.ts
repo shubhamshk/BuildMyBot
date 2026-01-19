@@ -17,6 +17,12 @@ export interface Service {
     image?: string; // Optional image URL
 }
 
+export interface SpecialPack extends Pack {
+    subtitle: string;
+    features: string[];
+    goal: string;
+}
+
 export const packs: Pack[] = [
     {
         id: "romance-prompt-pack",
@@ -70,4 +76,59 @@ export const services: Service[] = [
         deliveryTime: "Agreed upon review",
         image: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-12-54-27-_artist_ma-1728647033_cho5ek.png",
     },
+];
+
+export const specialPacks: SpecialPack[] = [
+    {
+        id: "viral-bot-creation-guide",
+        title: "Viral Bot Creation & Growth Guide",
+        description: "Perfect for beginners and intermediate creators who want to build bots that actually get noticed.",
+        price: 30,
+        subtitle: "Perfect for beginners and intermediate creators who want to build bots that actually get noticed.",
+        features: [
+            "Complete bot creation tutorial (step-by-step, beginner-friendly)",
+            "How to structure personality, scenario, and starter messages",
+            "Common mistakes that kill bot engagement (and how to avoid them)",
+            "Viral growth insights — what makes bots trend",
+            "Guidance for creating short viral reels & promos for bots",
+            "Tips on bio optimization, tags, and presentation",
+            "Basic lorebook creation guide"
+        ],
+        goal: "Help you create bots that attract users and keep them chatting."
+    },
+    {
+        id: "pro-bot-image-mastery",
+        title: "Professional Bot Image Creation Mastery",
+        description: "Made for creators who want high-quality, eye-catching bot images without constantly hitting filters or limits.",
+        price: 30,
+        subtitle: "Made for creators who want high-quality, eye-catching bot images without constantly hitting filters or limits.",
+        features: [
+            "Full guide on professional bot image creation",
+            "How to find image ideas that fit your character & story",
+            "Advanced prompt engineering for character images",
+            "Deep guidance on LoRAs, embeddings, and styles",
+            "How to avoid common filters, bans, and limits",
+            "Best image generation websites & models explained",
+            "How to maintain visual consistency across images"
+        ],
+        goal: "Make your bots visually appealing, consistent, and platform-safe."
+    },
+    {
+        id: "ultimate-creator-pack",
+        title: "Ultimate Creator Pack (All-in-One)",
+        description: "The complete professional package for serious creators.",
+        price: 60,
+        subtitle: "The complete professional package for serious creators.",
+        features: [
+            "Everything from Pack 1 + Pack 2",
+            "3 fully built, premium bots (professionally structured)",
+            "Bots are fully customizable to your needs",
+            "Image packs tailored to each bot",
+            "Prompt packs for chat + image generation",
+            "Advanced personalization tips",
+            "Priority guidance for setup & usage",
+            "Fully fledged detailed lorebook creation guide"
+        ],
+        goal: "Give you a ready-to-use, high-quality foundation with professional-level polish."
+    }
 ];

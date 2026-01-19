@@ -5,12 +5,13 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { ResponsiveNavbar } from "@/components/responsive-navbar";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { Sparkles, ArrowRight } from "lucide-react";
+import { Sparkles, ArrowRight, LayoutGrid, Zap, PenTool } from "lucide-react";
 import Link from "next/link";
 import { Pack, Service, packs, services } from "@/lib/packs/data";
 import { PackCard } from "@/components/packs/pack-card";
 import { ServiceCard } from "@/components/packs/service-card";
 import { PurchaseModal } from "@/components/packs/purchase-modal";
+import { SpecialServicePacks } from "@/components/packs/SpecialServicePacks";
 
 export default function PacksPage() {
     return (
@@ -111,11 +112,40 @@ function PacksPageContent() {
                             One-time purchases. No subscriptions. Built for creators.
                         </p>
                     </motion.div>
+                    {/* Quick Navigation - Floating in Hero */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+                        className="flex flex-wrap items-center justify-center gap-4 mt-8"
+                    >
+                        <button
+                            onClick={() => document.getElementById('prompt-packs')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-violet-500/30 transition-all backdrop-blur-sm"
+                        >
+                            <LayoutGrid className="w-4 h-4 text-violet-400 group-hover:scale-110 transition-transform" />
+                            <span className="text-sm font-medium text-neutral-300 group-hover:text-white">Image + Prompt Packs</span>
+                        </button>
+                        <button
+                            onClick={() => document.getElementById('special-packs')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-blue-500/30 transition-all backdrop-blur-sm"
+                        >
+                            <Zap className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform" />
+                            <span className="text-sm font-medium text-neutral-300 group-hover:text-white">Special Service Packs</span>
+                        </button>
+                        <button
+                            onClick={() => document.getElementById('custom-services')?.scrollIntoView({ behavior: 'smooth' })}
+                            className="group flex items-center gap-2 px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 hover:border-fuchsia-500/30 transition-all backdrop-blur-sm"
+                        >
+                            <PenTool className="w-4 h-4 text-fuchsia-400 group-hover:scale-110 transition-transform" />
+                            <span className="text-sm font-medium text-neutral-300 group-hover:text-white">Custom Services</span>
+                        </button>
+                    </motion.div>
                 </div>
             </section>
 
             {/* PROMPT PACKS SECTION */}
-            <section className="py-20 px-6 relative z-10">
+            <section id="prompt-packs" className="py-20 px-6 relative z-10">
                 <div className="container max-w-6xl mx-auto">
                     <div className="mb-12 flex items-end justify-between border-b border-white/10 pb-6">
                         <div>
@@ -137,8 +167,13 @@ function PacksPageContent() {
                 </div>
             </section>
 
+            {/* SPECIAL CREATOR SERVICE PACKS SECTION */}
+            <div id="special-packs">
+                <SpecialServicePacks />
+            </div>
+
             {/* CUSTOM SERVICES SECTION */}
-            <section className="py-20 px-6 relative z-10 bg-gradient-to-b from-transparent to-black/40">
+            <section id="custom-services" className="py-20 px-6 relative z-10 bg-gradient-to-b from-transparent to-black/40">
                 <div className="container max-w-6xl mx-auto">
                     <div className="mb-12 flex items-end justify-between border-b border-white/10 pb-6">
                         <div>
@@ -203,8 +238,10 @@ function PacksPageContent() {
                             <Sparkles className="w-8 h-8" />
                         </div>
                         <h3 className="text-2xl font-bold text-white mb-2">Payment Successful!</h3>
-                        <p className="text-neutral-400 mb-6">
-                            Thank you for your purchase. We have received your order.
+                        <p className="text-neutral-400 mb-6 space-y-2">
+                            <span className="block mb-2">Thank you for your purchase. We have received your order.</span>
+                            <span className="block text-sm">You will receive the pack details within 24 hours at your email address.</span>
+                            <span className="block text-sm text-neutral-500 mt-2">For any queries, please email at <a href="mailto:designbyshk@gmail.com" className="text-blue-400 hover:underline">designbyshk@gmail.com</a></span>
                         </p>
                         <button
                             onClick={() => setCaptureSuccess(false)}
