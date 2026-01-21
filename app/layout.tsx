@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SocialProofNotifications } from "@/components/social-proof-notifications";
 import { CharacterProvider } from "@/context/CharacterContext";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -36,6 +37,7 @@ export default function RootLayout({
                 >
                     <CharacterProvider>
                         {children}
+                        <SocialProofNotifications />
                     </CharacterProvider>
                 </ThemeProvider>
             </body>
