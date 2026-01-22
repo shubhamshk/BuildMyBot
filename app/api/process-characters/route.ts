@@ -3,7 +3,12 @@ import { APIProvider } from "@/lib/api-key";
 import { generatePersonality, generateScenario, generateBio } from "@/lib/generation/service";
 import { CharacterState } from "@/context/CharacterContext";
 import { createClient } from "@/lib/supabase/server";
-import { checkUsageLimitServer, incrementUsageCountServer, logCreationAttemptServer } from "@/lib/subscriptions/server";
+
+import {
+  checkUsageLimitServer,
+  logCharacterCreation,
+  hasCharacterBeenLogged
+} from "@/lib/subscriptions/server";
 
 export async function POST(request: NextRequest) {
   try {
@@ -15,10 +20,10 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-    
+
     // For custom provider, use proxyConfig if provided
-    const effectiveApiKey = (provider === "custom" && proxyConfig) 
-      ? JSON.stringify(proxyConfig) 
+    const effectiveApiKey = (provider === "custom" && proxyConfig)
+      ? JSON.stringify(proxyConfig)
       : apiKey;
 
     // Check authentication
@@ -35,7 +40,7 @@ export async function POST(request: NextRequest) {
     // Check usage limit
     const usageCheck = await checkUsageLimitServer(user.id);
     if (!usageCheck.allowed) {
-      await logCreationAttemptServer(user.id, null, false, usageCheck.reason);
+      await logCharacterCreation(user.id, "bulk", false, usageCheck.reason);
       return NextResponse.json(
         {
           error: "USAGE_LIMIT_EXCEEDED",
@@ -52,9 +57,9 @@ export async function POST(request: NextRequest) {
     const characterCount = characters.length;
     const remaining = usageCheck.limit - usageCheck.currentCount;
     if (characterCount > remaining) {
-      await logCreationAttemptServer(
+      await logCharacterCreation(
         user.id,
-        null,
+        "bulk",
         false,
         `Attempted to create ${characterCount} characters but only ${remaining} remaining`
       );
@@ -111,28 +116,32 @@ export async function POST(request: NextRequest) {
     // Increment usage count for each successful character creation
     const successfulCreations = results.filter(r => !r.error && r.personality).length;
     console.log(`[process-characters] Successful creations: ${successfulCreations}/${results.length}`);
-    
+
     if (successfulCreations > 0) {
       // Log each successful creation separately for accurate tracking
       for (let i = 0; i < successfulCreations; i++) {
-        await incrementUsageCountServer(user.id);
-        // Log each creation separately so the count matches in creation_logs
-        await logCreationAttemptServer(user.id, results[i].characterId, true);
+        const charId = results[i].characterId;
+        // Check if already logged
+        const alreadyLogged = await hasCharacterBeenLogged(user.id, charId);
+
+        if (!alreadyLogged) {
+          await logCharacterCreation(user.id, charId, true);
+        }
       }
     } else {
       // Log failed attempt
-      await logCreationAttemptServer(user.id, null, false, "All character generations failed");
+      await logCharacterCreation(user.id, "bulk", false, "All character generations failed");
     }
 
     return NextResponse.json({ results });
   } catch (error: any) {
     console.error("Processing error:", error);
-    
+
     // Log error
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-      await logCreationAttemptServer(user.id, null, false, error.message || "Processing failed");
+      await logCharacterCreation(user.id, "bulk", false, error.message || "Processing failed");
     }
 
     return NextResponse.json(

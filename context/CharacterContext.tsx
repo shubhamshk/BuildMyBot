@@ -145,8 +145,8 @@ export function CharacterProvider({ children }: { children: React.ReactNode }) {
   };
 
   const initializeCharacters = (count: number) => {
-    const newCharacters: CharacterState[] = Array.from({ length: count }, (_, i) => ({
-      id: `char-${Date.now()}-${i}`,
+    const newCharacters: CharacterState[] = Array.from({ length: count }, () => ({
+      id: crypto.randomUUID(), // Use standard UUID
       ...initialCharacter,
     }));
     setCharacters(newCharacters);

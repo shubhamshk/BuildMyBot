@@ -1,16 +1,22 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import {
+    checkUsageLimitServer,
+    logCharacterCreation,
+    hasCharacterBeenLogged
+} from "@/lib/subscriptions/server";
 import { APIProvider } from "@/lib/api-key";
 import { getAIProvider } from "@/lib/ai/providers";
 import { CharacterState } from "@/context/CharacterContext";
 import {
-  buildJanitorPersonalityPrompt,
-  getPersonalitySystemPrompt,
-  buildScenarioPrompt,
-  buildBioPrompt,
+    buildJanitorPersonalityPrompt,
+    getPersonalitySystemPrompt,
+    buildScenarioPrompt,
+    buildBioPrompt,
 } from "@/lib/prompts/janitor-ai";
 import {
-  getModelForGeneration,
-  GenerationType,
+    getModelForGeneration,
+    GenerationType,
 } from "@/lib/ai/provider-detection";
 
 // Extend timeout for slow local AI models (LM Studio)
@@ -28,11 +34,52 @@ export async function POST(request: NextRequest) {
                 { status: 400, headers: { "Content-Type": "application/json" } }
             );
         }
-        
+
+        // Authenticate user
+        const supabase = await createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        // Check Usage Limit (if user is authenticated)
+        let shouldLogCreation = false;
+        let userId: string | null = null;
+
+        if (user) {
+            userId = user.id;
+
+            // Check if this specific character was already logged
+            // If it was, we consider this a re-generation which is free
+            const alreadyLogged = await hasCharacterBeenLogged(userId, character.id);
+
+            if (!alreadyLogged) {
+                // This is a NEW character - check limits
+                const usageCheck = await checkUsageLimitServer(userId);
+
+                if (!usageCheck.allowed) {
+                    // Log the blocked attempt
+                    await logCharacterCreation(userId, character.id, false, usageCheck.reason);
+                    return new Response(
+                        JSON.stringify({
+                            error: "USAGE_LIMIT_EXCEEDED",
+                            message: usageCheck.reason || "Daily creation limit reached",
+                            currentCount: usageCheck.currentCount,
+                            limit: usageCheck.limit,
+                            resetAt: usageCheck.resetAt
+                        }),
+                        { status: 403, headers: { "Content-Type": "application/json" } }
+                    );
+                }
+
+                // Allowed - mark to log upon successful generation
+                shouldLogCreation = true;
+            } else {
+                console.log(`[generate-section] Character ${character.id} already logged - free regeneration`);
+            }
+        }
+
         // For custom provider, use proxyConfig if provided
-        const effectiveApiKey = (provider === "custom" && proxyConfig) 
-          ? JSON.stringify(proxyConfig) 
-          : apiKey;
+        const effectiveApiKey = (provider === "custom" && proxyConfig)
+            ? JSON.stringify(proxyConfig)
+            : apiKey;
 
         const validSections = ["personality", "scenarioGreeting", "bio"];
         if (!validSections.includes(section)) {
@@ -80,6 +127,17 @@ export async function POST(request: NextRequest) {
                         JSON.stringify({ error: "Generation returned empty content" }),
                         { status: 500, headers: { "Content-Type": "application/json" } }
                     );
+                }
+
+                // Log successful creation for NEW characters only
+                if (shouldLogCreation && userId) {
+                    const logResult = await logCharacterCreation(userId, character.id, true);
+                    if (logResult.success) {
+                        console.log(`[generate-section] ✓ Logged creation for character ${character.id}`);
+                    } else {
+                        console.error(`[generate-section] ✗ Failed to log creation:`, logResult.error);
+                    }
+                    shouldLogCreation = false; // Prevent double logging
                 }
 
                 return new Response(
@@ -156,11 +214,11 @@ export async function POST(request: NextRequest) {
             if (!proxyResponse.ok) {
                 const errorText = await proxyResponse.text();
                 console.error("Proxy Streaming Error:", errorText);
-                
+
                 // Check if it's HTML error (Cloudflare 524)
                 const isHtmlError = errorText.trim().startsWith('<!DOCTYPE') || errorText.trim().startsWith('<html');
                 let errorMessage = `Proxy error (${proxyResponse.status})`;
-                
+
                 if (isHtmlError && (proxyResponse.status === 524 || errorText.includes('524: A timeout occurred') || errorText.includes('Error code 524'))) {
                     // Extract title from HTML
                     const titleMatch = errorText.match(/<title>([^<]+)<\/title>/i);
@@ -172,7 +230,7 @@ export async function POST(request: NextRequest) {
                 } else {
                     errorMessage = errorText.substring(0, 500);
                 }
-                
+
                 return new Response(
                     JSON.stringify({ error: errorMessage }),
                     { status: proxyResponse.status, headers: { "Content-Type": "application/json" } }
@@ -186,6 +244,16 @@ export async function POST(request: NextRequest) {
                     JSON.stringify({ error: "Proxy did not return a streaming response. Your proxy may not support streaming." }),
                     { status: 500, headers: { "Content-Type": "application/json" } }
                 );
+            }
+
+            // Log successful creation before streaming (as we committed to the request)
+            if (shouldLogCreation && userId) {
+                const logResult = await logCharacterCreation(userId, character.id, true);
+                if (logResult.success) {
+                    console.log(`[generate-section] ✓ Logged streaming creation for character ${character.id}`);
+                } else {
+                    console.error(`[generate-section] ✗ Failed to log streaming creation:`, logResult.error);
+                }
             }
 
             // Pipe the streaming response to the client

@@ -191,6 +191,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../app/api/debug-creation-count/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/debug-creation-count">> = Specific
+  const handler = {} as typeof import("../../app/api/debug-creation-count/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/api/debug-supabase/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/debug-supabase">> = Specific
