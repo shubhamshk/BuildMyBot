@@ -55,7 +55,7 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ### 3. PayPal Setup
 1. Create PayPal app in developer dashboard
-2. Create subscription plans (Monthly $6, Yearly $49)
+2. Create subscription plans (Monthly $9, Yearly $59)
 3. Set up webhook endpoint: `https://yourdomain.com/api/paypal/webhook`
 4. Subscribe to required webhook events
 
@@ -68,8 +68,8 @@ NEXT_PUBLIC_APP_URL=http://localhost:3000
 
 ### Plan Limits
 - **FREE**: 2 creations per 24 hours
-- **PRO_MONTHLY**: 10 creations per 24 hours ($6/month)
-- **PRO_YEARLY**: 10 creations per 24 hours ($49/year)
+- **PRO_MONTHLY**: 10 creations per 24 hours ($9/month)
+- **PRO_YEARLY**: 10 creations per 24 hours ($59/year)
 
 ### Security
 - All limits enforced on backend

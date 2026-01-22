@@ -26,12 +26,12 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
       }}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="flex items-center gap-3">
+        <Link href="/" className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400/30 to-fuchsia-400/20 flex items-center justify-center shadow-md">
             <Sparkles className="w-5 h-5 text-blue-500 dark:text-fuchsia-400 drop-shadow-[0_2px_8px_rgba(80,0,120,0.12)]" />
           </div>
           <span className="text-2xl font-extrabold tracking-tight text-neutral-900 dark:text-white drop-shadow-sm select-none">Characteria</span>
-        </div>
+        </Link>
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-2">
           <Link href="#how-it-works" className="px-3 py-2 rounded-lg text-sm font-medium text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60 transition-colors">
@@ -46,8 +46,8 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
           <Link
             href="/packs"
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive('/packs')
-                ? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/10"
-                : "text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60"
+              ? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/10"
+              : "text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60"
               }`}
           >
             Packs
@@ -87,8 +87,8 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
           <Link
             href="/packs"
             className={`px-3 py-2 rounded-lg text-base font-medium transition-colors ${isActive('/packs')
-                ? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/10"
-                : "text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60"
+              ? "text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-900/10"
+              : "text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60"
               }`}
             onClick={() => setMenuOpen(false)}
           >

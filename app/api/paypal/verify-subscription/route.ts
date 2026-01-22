@@ -5,8 +5,8 @@ import type { PlanType } from "@/lib/subscriptions/service";
 
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
-const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === "live" 
-  ? "https://api-m.paypal.com" 
+const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === "live"
+  ? "https://api-m.paypal.com"
   : "https://api-m.sandbox.paypal.com";
 
 /**
@@ -44,10 +44,10 @@ async function getPayPalAccessToken(): Promise<string> {
 export async function POST(request: NextRequest) {
   try {
     const supabase = await createClient();
-    
+
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
-    
+
     if (authError || !user) {
       return NextResponse.json(
         { error: "Unauthorized" },
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
 
     // Verify subscription with PayPal
     const accessToken = await getPayPalAccessToken();
-    
+
     const paypalResponse = await fetch(
       `${PAYPAL_BASE_URL}/v1/billing/subscriptions/${subscription.paypal_subscription_id}`,
       {
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
     }
 
     const paypalSubscription = await paypalResponse.json();
-    
+
     console.log("[Verify] PayPal subscription status:", paypalSubscription.status);
     console.log("[Verify] PayPal subscription ID:", paypalSubscription.id);
     console.log("[Verify] PayPal plan ID:", paypalSubscription.plan_id);
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
     if (paypalSubscription.status === "ACTIVE" || paypalSubscription.status === "APPROVED") {
       // Determine plan type from billing cycle
       let planType: PlanType = "PRO_MONTHLY";
-      
+
       if (paypalSubscription.plan_id) {
         try {
           const planResponse = await fetch(
@@ -122,11 +122,14 @@ export async function POST(request: NextRequest) {
               },
             }
           );
-          
+
           if (planResponse.ok) {
             const planData = await planResponse.json();
             const billingCycle = planData.billing_cycles?.[0]?.frequency;
-            if (billingCycle?.interval_unit === "YEAR") {
+
+            if (planData.name === "Ultimate Creator" || planData.name === "Ultimate Creator Access") {
+              planType = "ULTIMATE_CREATOR";
+            } else if (billingCycle?.interval_unit === "YEAR") {
               planType = "PRO_YEARLY";
             }
             console.log("[Verify] Determined plan type:", planType);
@@ -173,7 +176,7 @@ export async function POST(request: NextRequest) {
         plan_type: planType,
         status: "ACTIVE",
         message: "Subscription verified and activated!",
-        limit: 10, // Pro limit
+        limit: planType === "ULTIMATE_CREATOR" ? 100 : (planType === "PRO_YEARLY" ? 15 : 10),
       });
     }
 

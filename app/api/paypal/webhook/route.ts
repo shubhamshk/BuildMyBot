@@ -5,8 +5,8 @@ import type { PlanType } from "@/lib/subscriptions/service";
 
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
-const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === "live" 
-  ? "https://api-m.paypal.com" 
+const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === "live"
+  ? "https://api-m.paypal.com"
   : "https://api-m.sandbox.paypal.com";
 
 /**
@@ -141,8 +141,8 @@ export async function POST(request: NextRequest) {
         if (subscription) {
           // Determine plan type from subscription data or plan ID
           // Since we're creating plans dynamically, we need to check the plan details
-          let planType = "PRO_MONTHLY";
-          
+          let planType: PlanType = "PRO_MONTHLY";
+
           // Try to get plan details from PayPal to determine type
           const planIdToCheck = planId || subscription.paypal_plan_id;
           if (planIdToCheck) {
@@ -154,13 +154,19 @@ export async function POST(request: NextRequest) {
                   "Content-Type": "application/json",
                 },
               });
-              
+
               if (planResponse.ok) {
                 const planData = await planResponse.json();
                 const billingCycle = planData.billing_cycles?.[0]?.frequency;
-                if (billingCycle?.interval_unit === "YEAR") {
+
+                // Check plan name first for Ultimate Creator
+                if (planData.name === "Ultimate Creator" || planData.name === "Ultimate Creator Access") {
+                  planType = "ULTIMATE_CREATOR";
+                } else if (billingCycle?.interval_unit === "YEAR") {
                   planType = "PRO_YEARLY";
                 }
+
+                console.log(`[Webhook] Detected plan type: ${planType} from plan name: ${planData.name}`);
               }
             } catch (error) {
               console.error("Error fetching plan details:", error);
@@ -174,11 +180,12 @@ export async function POST(request: NextRequest) {
           if (planType === "PRO_MONTHLY") {
             expiresAt.setMonth(expiresAt.getMonth() + 1);
           } else {
+            // Both PRO_YEARLY and ULTIMATE_CREATOR are yearly
             expiresAt.setFullYear(expiresAt.getFullYear() + 1);
           }
 
           await updateSubscriptionServer(subscription.user_id, {
-            plan_type: planType as PlanType,
+            plan_type: planType,
             subscription_status: "ACTIVE",
             expires_at: expiresAt.toISOString(),
           });
@@ -186,12 +193,12 @@ export async function POST(request: NextRequest) {
           // Reset daily creation count to 0 so user starts fresh with Pro limits
           await supabase
             .from("usage_tracking")
-            .update({ 
+            .update({
               daily_creation_count: 0,
               last_reset_at: new Date().toISOString()
             })
             .eq("user_id", subscription.user_id);
-          
+
           console.log(`[Webhook] User ${subscription.user_id} upgraded to ${planType}, usage reset`);
         }
         break;

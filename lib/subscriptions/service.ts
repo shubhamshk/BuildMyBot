@@ -5,7 +5,7 @@
 
 import { createClient } from "@/lib/supabase/client";
 
-export type PlanType = "FREE" | "PRO_MONTHLY" | "PRO_YEARLY";
+export type PlanType = "FREE" | "PRO_MONTHLY" | "PRO_YEARLY" | "ULTIMATE_CREATOR";
 export type SubscriptionStatus = "ACTIVE" | "INACTIVE" | "CANCELLED" | "EXPIRED";
 
 export interface Subscription {
@@ -41,7 +41,8 @@ export interface UsageLimitResult {
 export const PLAN_LIMITS: Record<PlanType, number> = {
   FREE: 2,
   PRO_MONTHLY: 10,
-  PRO_YEARLY: 10,
+  PRO_YEARLY: 15,
+  ULTIMATE_CREATOR: 100,
 };
 
 /**

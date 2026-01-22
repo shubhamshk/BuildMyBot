@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { FolderCheck, Package, ShoppingBag } from "lucide-react";
 
@@ -76,6 +76,7 @@ interface NotificationData {
 
 export function SocialProofNotifications() {
     const pathname = usePathname();
+    const router = useRouter();
     const [notification, setNotification] = useState<NotificationData | null>(null);
     const dismissTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const nextNotificationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -168,6 +169,10 @@ export function SocialProofNotifications() {
         }
     };
 
+    const handleClick = () => {
+        router.push('/packs');
+    };
+
     return (
         <AnimatePresence>
             {notification && (
@@ -180,6 +185,7 @@ export function SocialProofNotifications() {
                     className="fixed bottom-6 left-6 z-[100] max-w-[340px] w-full md:w-auto cursor-pointer"
                     onMouseEnter={handleMouseEnter}
                     onMouseLeave={handleMouseLeave}
+                    onClick={handleClick}
                 >
                     <div className="
                         relative overflow-hidden

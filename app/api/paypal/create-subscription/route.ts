@@ -5,14 +5,15 @@ import { updateSubscriptionServer } from "@/lib/subscriptions/server";
 // PayPal API configuration
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
-const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === "live" 
-  ? "https://api-m.paypal.com" 
+const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === "live"
+  ? "https://api-m.paypal.com"
   : "https://api-m.sandbox.paypal.com";
 
 // Plan pricing
 const PLAN_PRICING = {
-  MONTHLY: { amount: "6.00", currency: "USD" },
-  YEARLY: { amount: "49.00", currency: "USD" },
+  MONTHLY: { amount: "9.00", currency: "USD" },
+  YEARLY: { amount: "59.00", currency: "USD" },
+  ULTIMATE: { amount: "399.00", currency: "USD" },
 };
 
 /**
@@ -79,10 +80,13 @@ async function createPayPalProduct(accessToken: string): Promise<string> {
 async function createPayPalPlan(
   accessToken: string,
   productId: string,
-  planType: "PRO_MONTHLY" | "PRO_YEARLY"
+  planType: "PRO_MONTHLY" | "PRO_YEARLY" | "ULTIMATE_CREATOR"
 ): Promise<string> {
-  const pricing = planType === "PRO_MONTHLY" ? PLAN_PRICING.MONTHLY : PLAN_PRICING.YEARLY;
-  const billingCycle = planType === "PRO_MONTHLY" 
+  const pricing = planType === "PRO_MONTHLY"
+    ? PLAN_PRICING.MONTHLY
+    : (planType === "PRO_YEARLY" ? PLAN_PRICING.YEARLY : PLAN_PRICING.ULTIMATE);
+
+  const billingCycle = planType === "PRO_MONTHLY"
     ? { interval_unit: "MONTH", interval_count: 1 }
     : { interval_unit: "YEAR", interval_count: 1 };
 
@@ -95,10 +99,12 @@ async function createPayPalPlan(
     },
     body: JSON.stringify({
       product_id: productId,
-      name: planType === "PRO_MONTHLY" ? "Pro Monthly" : "Pro Yearly",
-      description: planType === "PRO_MONTHLY" 
+      name: planType === "PRO_MONTHLY"
+        ? "Pro Monthly"
+        : (planType === "PRO_YEARLY" ? "Pro Yearly" : "Ultimate Creator"),
+      description: planType === "PRO_MONTHLY"
         ? "Monthly subscription for Characteria Pro"
-        : "Yearly subscription for Characteria Pro",
+        : (planType === "PRO_YEARLY" ? "Yearly subscription for Characteria Pro" : "Ultimate Creator Access"),
       billing_cycles: [
         {
           frequency: billingCycle,
@@ -142,7 +148,7 @@ export async function POST(request: NextRequest) {
   try {
     const { planType } = await request.json();
 
-    if (!planType || (planType !== "PRO_MONTHLY" && planType !== "PRO_YEARLY")) {
+    if (!planType || (planType !== "PRO_MONTHLY" && planType !== "PRO_YEARLY" && planType !== "ULTIMATE_CREATOR")) {
       return NextResponse.json(
         { error: "Invalid plan type" },
         { status: 400 }
@@ -171,8 +177,8 @@ export async function POST(request: NextRequest) {
     } catch (error: any) {
       console.error("Product creation error:", error);
       return NextResponse.json(
-        { 
-          error: "Failed to create PayPal product", 
+        {
+          error: "Failed to create PayPal product",
           message: error.message || "Please check your PayPal credentials and try again"
         },
         { status: 500 }
@@ -221,8 +227,8 @@ export async function POST(request: NextRequest) {
       }
       console.error("PayPal subscription creation error:", errorData);
       return NextResponse.json(
-        { 
-          error: "Failed to create PayPal subscription", 
+        {
+          error: "Failed to create PayPal subscription",
           details: errorData,
           message: errorData.message || errorData.details?.[0]?.description || "Unknown error"
         },

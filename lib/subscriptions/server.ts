@@ -29,7 +29,8 @@ export interface UsageLimitResult {
 const PLAN_LIMITS: Record<PlanType, number> = {
   FREE: 2,
   PRO_MONTHLY: 10,
-  PRO_YEARLY: 10,
+  PRO_YEARLY: 15,
+  ULTIMATE_CREATOR: 100,
 };
 
 /**

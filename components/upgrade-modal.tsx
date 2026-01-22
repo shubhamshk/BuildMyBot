@@ -128,7 +128,7 @@ export function UpgradeModal({
                 {/* Upgrade Options */}
                 <div className="space-y-4">
                   <h3 className="font-semibold text-foreground">Upgrade to Pro</h3>
-                  
+
                   {/* Monthly Plan */}
                   <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700 hover:border-violet-500/50 transition-colors">
                     <div className="flex items-start justify-between mb-3">
@@ -140,7 +140,7 @@ export function UpgradeModal({
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-lg font-bold text-foreground">$6</div>
+                        <div className="text-lg font-bold text-foreground">$9</div>
                         <div className="text-xs text-muted-foreground">per month</div>
                       </div>
                     </div>
@@ -174,9 +174,9 @@ export function UpgradeModal({
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-lg font-bold text-foreground">$49</div>
+                        <div className="text-lg font-bold text-foreground">$59</div>
                         <div className="text-xs text-muted-foreground">per year</div>
-                        <div className="text-xs text-green-400 font-semibold mt-1">Save 32%</div>
+                        <div className="text-xs text-green-400 font-semibold mt-1">Save 45%</div>
                       </div>
                     </div>
                     <button

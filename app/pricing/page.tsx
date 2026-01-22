@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
-import { Check, Sparkles, Zap, Crown, Loader2, ArrowRight } from "lucide-react";
+import { Check, Sparkles, Zap, Crown, Loader2, ArrowRight, Rocket } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getUserSubscription, checkUsageLimit } from "@/lib/subscriptions/service";
 import { createClient } from "@/lib/supabase/client";
@@ -29,17 +29,14 @@ const PLANS = [
   {
     id: "PRO_MONTHLY",
     name: "Pro Monthly",
-    price: "$6",
+    price: "$9",
     period: "per month",
     description: "Best for regular creators",
     features: [
       "10 AI creations per 24 hours",
-      "Create upto 3k tokens characters",
-      "Advanced generation features",
-      "Priority processing",
-      "Save unlimited characters",
-      "Image Generation Support",
-      "Access to premium Bots ",
+      "Create upto 2k tokens characters",
+      "Save characters",
+      "Limited Image Generation Support",
       "Email support",
     ],
     cta: "Subscribe Now",
@@ -49,16 +46,18 @@ const PLANS = [
   {
     id: "PRO_YEARLY",
     name: "Pro Yearly",
-    price: "$49",
+    price: "$59",
     period: "per year",
     description: "Best value for power users",
-    originalPrice: "$72",
-    savings: "Save 32%",
+    originalPrice: "$108",
+    savings: "Save 45%",
     features: [
-      "10 AI creations per 24 hours",
+      "15 AI creations per 24 hours",
       "Create upto 3k tokens characters",
       "Advanced generation features",
+      "Guide for Handling API keys",
       "Priority processing",
+      "Lorebook Creation Support",
       "Save unlimited characters",
       "8k Image Generation Support",
       "Access to premium Bots ",
@@ -67,6 +66,27 @@ const PLANS = [
     cta: "Subscribe Now",
     popular: false,
     icon: Crown,
+  },
+  {
+    id: "ULTIMATE_CREATOR",
+    name: "Ultimate Creator",
+    price: "$399",
+    period: "per year",
+    description: "For serious creators demanding perfection",
+    features: [
+      "Unlimited AI Creations (Fair Use)",
+      "Unlimited Api tokens for character generation", 
+      "Everything in Pro Yearly",
+      "All Image + Prompt Packs from packs page Included",
+      "Custom Character Request Service",
+      "1-on-1 Bot Optimization Support",
+      "Commercial Rights License",
+      "Prioritized Feature Requests",
+      "Private Discord Channel",
+    ],
+    cta: "Get Ultimate Access",
+    popular: false,
+    icon: Rocket,
   },
 ];
 
@@ -112,7 +132,10 @@ function PricingContent() {
         });
         if (verifyResponse.ok) {
           const verifyData = await verifyResponse.json();
-          if (verifyData.success && (verifyData.plan_type === "PRO_MONTHLY" || verifyData.plan_type === "PRO_YEARLY")) {
+          if (verifyData.success &&
+            (verifyData.plan_type === "PRO_MONTHLY" ||
+              verifyData.plan_type === "PRO_YEARLY" ||
+              verifyData.plan_type === "ULTIMATE_CREATOR")) {
             setCurrentPlan(verifyData.plan_type);
             setUsageInfo({
               currentCount: 0,
@@ -218,17 +241,17 @@ function PricingContent() {
               <Crown className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">
-              Welcome to Pro! 🎉
+              {currentPlan === "ULTIMATE_CREATOR" ? "Welcome to Ultimate! 🚀" : "Welcome to Pro! 🎉"}
             </h2>
             <p className="text-slate-400 mb-4">
-              Congratulations! You've successfully upgraded to the Pro plan.
+              Congratulations! You've successfully upgraded to the {currentPlan === "ULTIMATE_CREATOR" ? "Ultimate Creator" : "Pro"} plan.
             </p>
             <div className="bg-slate-800 rounded-lg p-4 mb-6">
               <p className="text-sm text-slate-300">
                 Your new benefits:
               </p>
               <ul className="text-sm text-violet-400 mt-2 space-y-1">
-                <li>✓ 10 AI creations per day</li>
+                <li>✓ {currentPlan === "ULTIMATE_CREATOR" ? "Unlimited AI creations" : "15 AI creations per day"}</li>
                 <li>✓ Priority processing</li>
                 <li>✓ Advanced features unlocked</li>
               </ul>
@@ -268,7 +291,7 @@ function PricingContent() {
           </motion.div>
         )}
         {/* PLANS AT TOP */}
-        <div className="grid md:grid-cols-3 gap-10 max-w-6xl mx-auto mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-[100rem] mx-auto mb-12">
           {PLANS.map((plan, index) => {
             const Icon = plan.icon;
             const isCurrentPlan = plan.id === currentPlan;
@@ -279,11 +302,10 @@ function PricingContent() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`relative rounded-3xl border-2 p-10 transition-all shadow-xl bg-white/90 dark:bg-neutral-900/80 backdrop-blur-lg ${
-                  plan.popular
-                    ? "border-blue-500 ring-2 ring-blue-200/40"
-                    : "border-neutral-200 dark:border-neutral-700"
-                }`}
+                className={`relative rounded-3xl border-2 p-6 transition-all shadow-xl bg-white/90 dark:bg-neutral-900/80 backdrop-blur-lg ${plan.popular
+                  ? "border-blue-500 ring-2 ring-blue-200/40"
+                  : "border-neutral-200 dark:border-neutral-700"
+                  }`}
                 style={{ minHeight: 520 }}
               >
                 {plan.popular && (
@@ -294,9 +316,8 @@ function PricingContent() {
                   </div>
                 )}
                 <div className="text-center mb-7">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 ${
-                    plan.popular ? "bg-blue-100 dark:bg-blue-900/40" : "bg-neutral-100 dark:bg-neutral-800"
-                  }`}>
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 ${plan.popular ? "bg-blue-100 dark:bg-blue-900/40" : "bg-neutral-100 dark:bg-neutral-800"
+                    }`}>
                     <Icon className={`w-8 h-8 ${plan.popular ? "text-blue-500" : "text-neutral-400 dark:text-neutral-500"}`} />
                   </div>
                   <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">{plan.name}</h3>
@@ -329,13 +350,12 @@ function PricingContent() {
                 <button
                   onClick={() => handleSubscribe(plan.id)}
                   disabled={isCurrentPlan || isProcessing}
-                  className={`w-full py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-lg shadow-md ${
-                    isCurrentPlan
-                      ? "bg-neutral-200 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed"
-                      : plan.popular
+                  className={`w-full py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-lg shadow-md ${isCurrentPlan
+                    ? "bg-neutral-200 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed"
+                    : plan.popular
                       ? "bg-blue-600 hover:bg-blue-700 text-white"
                       : "bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-neutral-800 dark:hover:bg-neutral-700"
-                  }`}
+                    }`}
                 >
                   {isProcessing ? (
                     <>
@@ -407,7 +427,7 @@ function PricingContent() {
                 How does the rolling 24-hour limit work?
               </h3>
               <p className="text-sm text-muted-foreground">
-                Your creation limit resets 24 hours after your first creation of the day, not at midnight. 
+                Your creation limit resets 24 hours after your first creation of the day, not at midnight.
                 This gives you more flexibility in when you can create characters.
               </p>
             </div>
@@ -416,7 +436,7 @@ function PricingContent() {
                 Can I cancel my subscription anytime?
               </h3>
               <p className="text-sm text-muted-foreground">
-                Yes, you can cancel your subscription at any time. You'll continue to have access 
+                Yes, you can cancel your subscription at any time. You'll continue to have access
                 until the end of your billing period, then you'll be moved to the Free plan.
               </p>
             </div>
@@ -425,7 +445,7 @@ function PricingContent() {
                 What happens to my characters if I downgrade?
               </h3>
               <p className="text-sm text-muted-foreground">
-                All your saved characters remain accessible. You'll just have the Free plan's 
+                All your saved characters remain accessible. You'll just have the Free plan's
                 creation limits (2 per 24 hours) instead of Pro limits.
               </p>
             </div>

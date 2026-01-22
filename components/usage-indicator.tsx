@@ -20,14 +20,14 @@ export function UsageIndicator() {
     loadUsage();
     // Refresh every 10 seconds to catch upgrades quickly
     const interval = setInterval(loadUsage, 10000);
-    
+
     // Listen for subscription update events
     const handleSubscriptionUpdate = () => {
       console.log("[UsageIndicator] Subscription update detected, refreshing...");
       loadUsage();
     };
     window.addEventListener("subscription-updated", handleSubscriptionUpdate);
-    
+
     return () => {
       clearInterval(interval);
       window.removeEventListener("subscription-updated", handleSubscriptionUpdate);
@@ -78,13 +78,12 @@ export function UsageIndicator() {
         className="fixed top-4 right-4 z-40"
       >
         <div
-          className={`rounded-xl border p-4 shadow-lg backdrop-blur-sm transition-all ${
-            isAtLimit
+          className={`rounded-xl border p-4 shadow-lg backdrop-blur-sm transition-all ${isAtLimit
               ? "bg-red-500/10 border-red-500/30"
               : isNearLimit
-              ? "bg-yellow-500/10 border-yellow-500/30"
-              : "bg-slate-900/90 border-slate-700"
-          }`}
+                ? "bg-yellow-500/10 border-yellow-500/30"
+                : "bg-slate-900/90 border-slate-700"
+            }`}
         >
           <div className="flex items-center gap-3 mb-2">
             {isAtLimit ? (
@@ -97,7 +96,15 @@ export function UsageIndicator() {
             <div className="flex-1">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-sm font-semibold text-foreground">
-                  {planType === "FREE" ? "Free Plan" : "Pro Plan"}
+                  {planType === "FREE"
+                    ? "Free Plan"
+                    : planType === "PRO_MONTHLY"
+                      ? "Pro Monthly"
+                      : planType === "PRO_YEARLY"
+                        ? "Pro Yearly"
+                        : planType === "ULTIMATE_CREATOR"
+                          ? "Ultimate Creator"
+                          : "Pro Plan"}
                 </span>
                 <span className="text-xs text-muted-foreground">
                   {usageInfo.currentCount} / {usageInfo.limit}
@@ -107,13 +114,12 @@ export function UsageIndicator() {
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.min(percentage, 100)}%` }}
-                  className={`h-1.5 rounded-full ${
-                    isAtLimit
+                  className={`h-1.5 rounded-full ${isAtLimit
                       ? "bg-red-500"
                       : isNearLimit
-                      ? "bg-yellow-500"
-                      : "bg-violet-500"
-                  }`}
+                        ? "bg-yellow-500"
+                        : "bg-violet-500"
+                    }`}
                 />
               </div>
               {isAtLimit ? (

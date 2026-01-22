@@ -6,8 +6,10 @@ This guide explains how to set up the subscription and payment system for Charac
 
 The subscription system includes:
 - **Free Plan**: 2 Characteria creations per rolling 24 hours
-- **Pro Monthly**: $6/month, 10 creations per rolling 24 hours
-- **Pro Yearly**: $49/year, 10 creations per rolling 24 hours
+- **Pro Monthly**: $9/month, 10 creations per rolling 24 hours
+
+- **Pro Yearly**: $59/year, 15 creations per rolling 24 hours
+- **Ultimate Creator**: $399/year, "Unlimited" (100) creations, includes custom services
 
 ## Database Setup
 
@@ -35,8 +37,10 @@ The subscription system includes:
 
 1. In PayPal Dashboard, go to **Products** > **Subscriptions**
 2. Create two subscription plans:
-   - **Monthly Plan**: $6/month
-   - **Yearly Plan**: $49/year
+   - **Monthly Plan**: $9/month
+
+   - **Yearly Plan**: $59/year
+   - **Ultimate Plan**: $399/year
 3. Copy the **Plan IDs** (they start with `P-`)
 
 ### 3. Set Up Webhook
