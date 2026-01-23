@@ -52,6 +52,15 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
           >
             Packs
           </Link>
+          <Link
+            href="/vault"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${isActive('/vault')
+              ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/10"
+              : "text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60"
+              }`}
+          >
+            Vault
+          </Link>
           <ThemeToggle />
           <APIKeyIndicator />
           <AuthButton />
@@ -93,6 +102,16 @@ export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
             onClick={() => setMenuOpen(false)}
           >
             Packs
+          </Link>
+          <Link
+            href="/vault"
+            className={`px-3 py-2 rounded-lg text-base font-medium transition-colors ${isActive('/vault')
+              ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/10"
+              : "text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60"
+              }`}
+            onClick={() => setMenuOpen(false)}
+          >
+            Vault
           </Link>
           <ThemeToggle />
           <Link

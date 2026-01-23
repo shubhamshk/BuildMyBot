@@ -31,9 +31,9 @@ export interface ModelConfig {
 
 export const MODEL_CONFIGS: Record<APIProvider, ModelConfig> = {
   openai: {
-    default: "gpt-4o-mini",
-    long: "gpt-4o",
-    fallback: "gpt-3.5-turbo",
+    default: "gpt-5-turbo", // Enable GPT-5 for all clients
+    long: "gpt-5",
+    fallback: "gpt-4o",
   },
   gemini: {
     default: "gemini-2.0-flash",
@@ -41,9 +41,9 @@ export const MODEL_CONFIGS: Record<APIProvider, ModelConfig> = {
     long: "gemini-2.0-flash",
   },
   openrouter: {
-    default: "openai/gpt-4o-mini",
-    long: "openai/gpt-4o",
-    fallback: "openai/gpt-3.5-turbo",
+    default: "openai/gpt-5-turbo",
+    long: "openai/gpt-5",
+    fallback: "openai/gpt-4o",
   },
   huggingface: {
     default: "meta-llama/Llama-3.1-8B-Instruct",

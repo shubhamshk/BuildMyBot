@@ -1,6 +1,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { packs, services, specialPacks } from "@/lib/packs/data";
+import { vaultPacks, creatorVaultPack } from "@/data/vaultPacks";
 
 // PayPal API configuration
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
         const { itemId, email, description } = requestData;
 
         // Find the item in packs or services
-        const item = [...packs, ...services, ...specialPacks].find((p) => p.id === itemId);
+        const item = [...packs, ...services, ...specialPacks, ...vaultPacks, creatorVaultPack].find((p) => p.id === itemId);
 
         if (!item) {
             return NextResponse.json(
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
         }
 
         const price = item.price.toString();
-        const itemName = item.title;
+        const itemName = (item as any).title || (item as any).name;
 
         // Get PayPal Token
         const accessToken = await getPayPalAccessToken();
