@@ -13,7 +13,7 @@ export const vaultPacks: VaultPack[] = [
         id: "pack-1",
         name: "Dont tell Your sis Part -2",
         originalBotName: "Dont tell Your sis Part -2",
-        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1706644059/bot-preview-1_gqys8b.jpg", // Placeholder or generic image
+        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1769186040/t_BSjdy5YJXvmcsfhX_upscayl_2x_upscayl-standard-4x_tbcrsl.png", // Placeholder or generic image
         features: [
             "Expanded personality",
             "New scenario route",
@@ -27,7 +27,7 @@ export const vaultPacks: VaultPack[] = [
         id: "pack-2",
         name: "Rika ,Your Little Sister Bully - Part-2",
         originalBotName: "Rika ,Your Little Sister Bully - Part-2",
-        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1706644059/bot-preview-2_fhr32a.jpg",
+        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1769186156/TA-2026-01-22-22-04-49-_artist_ma-3986721967_upscayl_2x_upscayl-standard-4x_n5hzp9.png",
         features: [
             "Expanded personality",
             "New scenario route",
@@ -41,7 +41,7 @@ export const vaultPacks: VaultPack[] = [
         id: "pack-3",
         name: "Sis And Dad part-2",
         originalBotName: "Sis And Dad part-2",
-        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1706644059/bot-preview-3_kj239s.jpg",
+        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1769186235/TA-2026-01-23-14-32-14-1girl_solo-4049177660_yxffve.png",
         features: [
             "Expanded personality",
             "New scenario route",
@@ -55,7 +55,7 @@ export const vaultPacks: VaultPack[] = [
         id: "pack-4",
         name: "Mom and bro part-2",
         originalBotName: "Mom and bro part-2",
-        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1706644059/bot-preview-4_m329s.jpg",
+        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1769186337/TA-2026-01-02-21-39-34-_masterpie-2441467277_ozu8mv.png",
         features: [
             "Expanded personality",
             "New scenario route",
@@ -69,7 +69,7 @@ export const vaultPacks: VaultPack[] = [
         id: "pack-5",
         name: "Any other pack you want",
         originalBotName: "Any other pack you want",
-        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1706644059/bot-preview-5_nm29s.jpg",
+        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326694/TA-2026-01-13-02-59-04-_artist_ma-526226082_ubrlun.png",
         features: [
             "Expanded personality",
             "New scenario route",

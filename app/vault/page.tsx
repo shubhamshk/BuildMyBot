@@ -223,7 +223,7 @@ function PackCard({ pack, onUnlock }: { pack: VaultPack; onUnlock: () => void })
                 {pack.previewImage && !pack.previewImage.includes("placeholder") && (
                     <div className="absolute inset-0">
                         {/* Using img for direct external URLs without next.config setup if needed, otherwise Image */}
-                        <img src={pack.previewImage} alt={pack.name} className="w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" />
+                        <img src={pack.previewImage} alt={pack.name} className="w-full h-full object-cover object-top opacity-60 group-hover:opacity-100 transition-opacity" />
                     </div>
                 )}
 
