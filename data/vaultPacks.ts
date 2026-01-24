@@ -11,9 +11,9 @@ export interface VaultPack {
 export const vaultPacks: VaultPack[] = [
     {
         id: "pack-1",
-        name: "Dont tell Your sis Part -2",
-        originalBotName: "Dont tell Your sis Part -2",
-        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1769186040/t_BSjdy5YJXvmcsfhX_upscayl_2x_upscayl-standard-4x_tbcrsl.png", // Placeholder or generic image
+        name: "Who killed him part 2 ",
+        originalBotName: "who killed him part-2",
+        previewImage: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1769276505/3_xr1o1t.png", // Placeholder or generic image
         features: [
             "Expanded personality",
             "New scenario route",
