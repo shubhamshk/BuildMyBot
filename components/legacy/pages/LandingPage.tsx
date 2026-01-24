@@ -32,7 +32,7 @@ const LandingPage: React.FC = () => {
             className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full glass border-primary/20 mb-8 sm:mb-12 shadow-xl"
           >
             <div className="size-2 rounded-full bg-pink-500 animate-pulse shadow-[0_0_10px_#ec4899]" />
-            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-pink-500">AniSoul Engine V4.0 Now Live</span>
+            <span className="text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] text-pink-500">Characteria Engine V4.0 Now Live</span>
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
@@ -100,7 +100,7 @@ const LandingPage: React.FC = () => {
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-16 md:gap-24 items-center mb-24 md:mb-40">
             <motion.div {...fadeInUp}>
-              <h2 className="text-4xl sm:text-6xl font-black tracking-tighter italic mb-8 uppercase">Why Choose AniSoul?</h2>
+              <h2 className="text-4xl sm:text-6xl font-black tracking-tighter italic mb-8 uppercase">Why Choose Characteria?</h2>
               <p className="text-lg text-slate-500 dark:text-slate-400 leading-relaxed mb-10 max-w-xl">
                 Experience the future of anime persona creation. Our platform now features AI-powered auto-fill, subscription plans, and a next-level generator for legendary characters.
               </p>
@@ -140,7 +140,7 @@ const LandingPage: React.FC = () => {
           <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-pink-500/10 blur-[150px] rounded-full -ml-80 -mb-80" />
           <h2 className="text-5xl sm:text-8xl font-black text-white mb-8 relative z-10 italic tracking-tighter">Ready to Forge?</h2>
           <p className="text-white/80 text-lg sm:text-2xl max-w-2xl mx-auto mb-16 relative z-10 leading-relaxed">
-            Join thousands of creators using AniSoul to build, enhance, and share their anime personas. Your masterpiece is just a click away.
+            Join thousands of creators using Characteria to build, enhance, and share their anime personas. Your masterpiece is just a click away.
           </p>
           <button
             onClick={() => navigate('/wizard/basics')}
@@ -150,14 +150,13 @@ const LandingPage: React.FC = () => {
           </button>
         </motion.div>
       </section>
-      </section>
 
       <footer className="py-24 border-t border-white/5 px-4 text-center bg-gradient-to-r from-primary/10 via-pink-100 to-purple-100 dark:from-primary/20 dark:via-slate-900 dark:to-purple-950">
         <div className="flex justify-center items-center gap-2 mb-8">
           <div className="size-8 rounded-lg bg-primary flex items-center justify-center text-white">
             <span className="material-symbols-outlined text-sm">magic_button</span>
           </div>
-          <h4 className="font-black uppercase tracking-tighter text-xl">AniSoul</h4>
+          <h4 className="font-black uppercase tracking-tighter text-xl">Characteria</h4>
         </div>
         <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.5em] mb-4">Masterpiece Generation Labs © 2026</p>
         <div className="flex justify-center gap-8 text-[10px] font-bold uppercase tracking-widest text-slate-500">

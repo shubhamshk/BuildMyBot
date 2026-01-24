@@ -43,7 +43,7 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       {/* Floating Discord Button */}
       <a
-        href="https://discord.gg/VTYuMkdX"
+        href="https://discord.gg/6dSpxjSkfG"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Join us on Discord"
