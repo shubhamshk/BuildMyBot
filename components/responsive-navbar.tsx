@@ -6,7 +6,7 @@ import { AuthButton } from "@/components/auth-button";
 import { APIKeyIndicator } from "@/components/api-key-indicator";
 import { Sparkles, ShoppingBag, LayoutGrid, GraduationCap, Crown, Zap } from "lucide-react";
 
-export function ResponsiveNavbar({ scrolled }: { scrolled: boolean }) {
+export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
 

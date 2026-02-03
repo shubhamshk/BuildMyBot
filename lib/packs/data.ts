@@ -5,6 +5,10 @@ export interface Pack {
     description: string;
     price: number;
     image?: string; // For future use if we have images
+    images?: string[]; // Support for multiple images
+    features?: string[]; // Support for feature lists
+    tag?: string;
+    highlight?: boolean;
 }
 
 export interface Service {
@@ -19,11 +23,12 @@ export interface Service {
 
 export interface SpecialPack extends Pack {
     subtitle: string;
-    features: string[];
+    features: string[]; // Required for SpecialPack
     goal: string;
 }
 
 export const packs: Pack[] = [
+    // Existing packs
     {
         id: "romance-prompt-pack",
         title: "Romance Image + Prompt Pack",
@@ -43,10 +48,110 @@ export const packs: Pack[] = [
         price: 7,
     },
     {
+        // aka nsfw-safe-prompt-pack in UI, checking ID match... UI uses 'nsfw-safe-prompt-pack'. 
+        // We will add the UI version below to be safe, or rename this one if unused. 
+        // Keeping this for safety, but UI uses 'nsfw-safe-prompt-pack'.
         id: "nsfw-safe-pack",
         title: "NSFW-Safe Image + Prompt Pack",
         description: "Tasteful and safe prompts designed for more mature themes without crossing boundaries.",
         price: 9,
+    },
+
+    // Family Packs
+    {
+        id: "mom-pack",
+        title: "Mom Bot Pack + Images",
+        description: "5 caring, strict, and loving mother figures.",
+        price: 29,
+        features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"]
+    },
+    {
+        id: "sister-pack",
+        title: "Sister Bot Pack + Images",
+        description: "5 dynamic sister archetypes for roleplay.",
+        price: 29,
+        features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"]
+    },
+    {
+        id: "family-roleplay",
+        title: "Family Roleplay Bot Pack + Images",
+        description: "Complete household dynamic with 10 bots.",
+        price: 49,
+        features: ["10 Interactive Bots", "Interconnected Lore", "Image Collection", "Exclusive Images"],
+        tag: "Best Value",
+        highlight: true
+    },
+
+    // NSFW Free Image Packs
+    {
+        id: "mom-safe-images",
+        title: "Mom NSFW Free Images",
+        description: "High-quality, safe-for-work images of Mom characters.",
+        price: 9,
+        features: ["50+ Safe Images", "High Resolution", "Variety of Poses", "No Explicit Content"]
+    },
+    {
+        id: "sister-safe-images",
+        title: "Sister NSFW Free Images",
+        description: "High-quality, safe-for-work images of Sister characters.",
+        price: 9,
+        features: ["50+ Safe Images", "High Resolution", "Anime & Realistic", "No Explicit Content"]
+    },
+    {
+        id: "family-safe-images",
+        title: "Family NSFW Free Images",
+        description: "Complete family collection in a safe, wholesome format.",
+        price: 9,
+        features: ["100+ Safe Images", "Group Scenes", "High Resolution", "Wholesome Themes"]
+    },
+    {
+        id: "nsfw-safe-prompt-pack", // Matching the UI ID
+        title: "NSFW-Safe Image + Prompt Pack",
+        description: "Tasteful and safe prompts designed for more mature themes without crossing boundaries.",
+        price: 9,
+        features: ["Tasteful Prompts", "Mature Themes (Safe)", "Artistic Guidance", "Avoid Filters"]
+    },
+
+    // Special Combo Packs
+    {
+        id: "bot-image",
+        title: "Full Bot + Image Pack",
+        description: "Characters with 50+ images each.",
+        price: 59,
+        features: ["5 Premium Bots", "250+ HD Images", "Consistent Faces", "Gallery Mode Access"]
+    },
+    {
+        id: "bot-prompt",
+        title: "Full Bot + Prompt Pack",
+        description: "Bots + The prompts to render them.",
+        price: 69,
+        features: ["Source Prompts Included", "Midjourney Guide", "Stable Diffusion LoRAs", "Commercial Use"],
+        tag: "For Creators"
+    },
+    {
+        id: "world-pack",
+        title: "Full Roleplay World",
+        description: "An entire universe in a box.",
+        price: 99,
+        features: ["20+ Linked Characters", "World Lore Bible", "Map Descriptions", "Campaign System"],
+        highlight: true,
+        tag: "Ultimate"
+    },
+
+    // Custom Request Packs
+    {
+        id: "custom-bot-pack",
+        title: "5 Custom Bot Creation Pack",
+        description: "Request any 5 bots you want. No limitations on personality or images.",
+        price: 29,
+        features: ["5 Custom Bots Request", "Any User Defined Personality", "Custom Image Generation", "Priority Creation Support"]
+    },
+    {
+        id: "custom-image-pack",
+        title: "Unlimited Custom Image Pack",
+        description: "Custom images of any character or type you want. No limitations.",
+        price: 19,
+        features: ["Unlimited Image Requests", "Any Character / Style", "High Resolution Generations", "No Content Limitations"]
     },
 ];
 
