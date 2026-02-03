@@ -4,89 +4,66 @@ export const dynamic = "force-dynamic";
 
 import { useState, useEffect, Suspense } from "react";
 import { motion } from "framer-motion";
-import { Check, Sparkles, Zap, Crown, Loader2, ArrowRight, Rocket } from "lucide-react";
+import { Check, Sparkles, Zap, Crown, Loader2, ArrowRight, ArrowLeft } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { getUserSubscription, checkUsageLimit } from "@/lib/subscriptions/service";
 import { createClient } from "@/lib/supabase/client";
 
 const PLANS = [
   {
     id: "FREE",
-    name: "Free",
+    name: "Explorer",
     price: "$0",
     period: "forever",
-    description: "Perfect for trying out the platform",
+    description: "Browse the marketplace and taste the future.",
     features: [
-      "2 AI creations per 24 hours",
-      "Create upto 1k tokens characters",
-      "Basic character generation",
-      "Community support",
+      "Browse unlimited bots & packs",
+      "Access to free starter bots",
+      "View public image galleries",
+      "Basic community support",
     ],
-    cta: "Current Plan",
+    cta: "Start Exploring",
     popular: false,
     icon: Sparkles,
   },
   {
     id: "PRO_MONTHLY",
-    name: "Pro Monthly",
-    price: "$9",
+    name: "Collector's Club",
+    price: "$19",
     period: "per month",
-    description: "Best for regular creators",
+    description: "Fresh premium content delivered every month.",
     features: [
-      "10 AI creations per 24 hours",
-      "Create upto 2k tokens characters",
-      "Save characters",
-      "Limited Image Generation Support",
-      "Email support",
+      "Access to 5 Premium Bot Drops / month",
+      "1 Exclusive 'Spicy' Image Pack / month",
+      "Early access to Trending Characters",
+      "Vote on next month's themes",
+      "High-res image downloads (4K)",
     ],
-    cta: "Subscribe Now",
+    cta: "Join the Club",
     popular: true,
     icon: Zap,
   },
   {
     id: "PRO_YEARLY",
-    name: "Pro Yearly",
-    price: "$59",
+    name: "VIP Syndicate",
+    price: "$79",
     period: "per year",
-    description: "Best value for power users",
-    originalPrice: "$108",
-    savings: "Save 45%",
+    description: "The ultimate vault key for serious collectors.",
+    originalPrice: "$228",
+    savings: "Save 65%",
     features: [
-      "15 AI creations per 24 hours",
-      "Create upto 3k tokens characters",
-      "Advanced generation features",
-      "Guide for Handling API keys",
-      "Priority processing",
-      "Lorebook Creation Support",
-      "Save unlimited characters",
-      "8k Image Generation Support",
-      "Access to premium Bots ",
-      "Personal Support for Creating Bots"
+      "Everything in Collector's Club",
+      "Acress to bot craetion Courses , tools and guides ", 
+      "UNLIMITED access to all past & future bots",
+      "Complete 'Spicy' Image Vault Access",
+      "1 Custom Bot Request per month (Made for YOU)",
+      "Priority Access to new 'Uncensored' models",
+      "Private Discord VIP Lounge",
     ],
-    cta: "Subscribe Now",
+    cta: "Become a VIP",
     popular: false,
     icon: Crown,
-  },
-  {
-    id: "ULTIMATE_CREATOR",
-    name: "Ultimate Creator",
-    price: "$399",
-    period: "per year",
-    description: "For serious creators demanding perfection",
-    features: [
-      "Unlimited AI Creations (Fair Use)",
-      "Unlimited Api tokens for character generation", 
-      "Everything in Pro Yearly",
-      "All Image + Prompt Packs from packs page Included",
-      "Custom Character Request Service",
-      "1-on-1 Bot Optimization Support",
-      "Commercial Rights License",
-      "Prioritized Feature Requests",
-      "Private Discord Channel",
-    ],
-    cta: "Get Ultimate Access",
-    popular: false,
-    icon: Rocket,
   },
 ];
 
@@ -134,8 +111,7 @@ function PricingContent() {
           const verifyData = await verifyResponse.json();
           if (verifyData.success &&
             (verifyData.plan_type === "PRO_MONTHLY" ||
-              verifyData.plan_type === "PRO_YEARLY" ||
-              verifyData.plan_type === "ULTIMATE_CREATOR")) {
+              verifyData.plan_type === "PRO_YEARLY")) {
             setCurrentPlan(verifyData.plan_type);
             setUsageInfo({
               currentCount: 0,
@@ -241,17 +217,17 @@ function PricingContent() {
               <Crown className="w-8 h-8 text-white" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">
-              {currentPlan === "ULTIMATE_CREATOR" ? "Welcome to Ultimate! 🚀" : "Welcome to Pro! 🎉"}
+              Welcome to Pro! 🎉
             </h2>
             <p className="text-slate-400 mb-4">
-              Congratulations! You've successfully upgraded to the {currentPlan === "ULTIMATE_CREATOR" ? "Ultimate Creator" : "Pro"} plan.
+              Congratulations! You've successfully upgraded to the Pro plan.
             </p>
             <div className="bg-slate-800 rounded-lg p-4 mb-6">
               <p className="text-sm text-slate-300">
                 Your new benefits:
               </p>
               <ul className="text-sm text-violet-400 mt-2 space-y-1">
-                <li>✓ {currentPlan === "ULTIMATE_CREATOR" ? "Unlimited AI creations" : "15 AI creations per day"}</li>
+                <li>✓ 15 AI creations per day</li>
                 <li>✓ Priority processing</li>
                 <li>✓ Advanced features unlocked</li>
               </ul>
@@ -265,112 +241,139 @@ function PricingContent() {
           </motion.div>
         </div>
       )}
+      <div className="absolute top-0 left-0 right-0 h-[500px] bg-amber-500/10 blur-[120px] -z-10 pointer-events-none" />
       <div className="max-w-7xl mx-auto">
+        {/* Back Button */}
+        <div className="mb-8 pt-4 px-4">
+          <Link href="/" className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group">
+            <div className="p-2 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+              <ArrowLeft className="w-5 h-5" />
+            </div>
+            <span className="font-medium">Back to Home</span>
+          </Link>
+        </div>
+
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-            Choose Your Plan
+          <h1 className="text-4xl md:text-6xl font-black text-foreground mb-6 tracking-tight">
+            Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-600">Power</span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Unlock the full potential of AI character creation with our flexible plans
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            Unlock the full potential of AI character creation with our flexible plans.
+            Upgrade anytime as your needs grow.
           </p>
         </motion.div>
+
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 max-w-2xl mx-auto"
           >
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
               {error}
             </div>
           </motion.div>
         )}
-        {/* PLANS AT TOP */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-[100rem] mx-auto mb-12">
+
+        {/* PLANS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto mb-20 px-4">
           {PLANS.map((plan, index) => {
             const Icon = plan.icon;
             const isCurrentPlan = plan.id === currentPlan;
             const isProcessing = processing === plan.id;
+
             return (
               <motion.div
                 key={plan.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className={`relative rounded-3xl border-2 p-6 transition-all shadow-xl bg-white/90 dark:bg-neutral-900/80 backdrop-blur-lg ${plan.popular
-                  ? "border-blue-500 ring-2 ring-blue-200/40"
-                  : "border-neutral-200 dark:border-neutral-700"
+                className={`relative rounded-[2rem] p-8 transition-all duration-300 flex flex-col ${plan.popular
+                  ? "bg-neutral-900/80 border-2 border-amber-500/50 shadow-[0_0_40px_rgba(245,158,11,0.2)] md:-mt-8 md:mb-8 z-10 scale-105 md:scale-100"
+                  : "bg-neutral-900/40 border border-white/10 hover:border-amber-500/30 hover:bg-neutral-900/60"
                   }`}
-                style={{ minHeight: 520 }}
               >
                 {plan.popular && (
-                  <div className="absolute -top-5 left-1/2 -translate-x-1/2">
-                    <span className="bg-blue-600 text-white px-5 py-1.5 rounded-full text-base font-semibold shadow-lg">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <span className="bg-gradient-to-r from-amber-500 to-orange-600 text-black px-4 py-1 rounded-full text-sm font-bold shadow-lg shadow-amber-900/20 uppercase tracking-wide">
                       Most Popular
                     </span>
                   </div>
                 )}
-                <div className="text-center mb-7">
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl mb-4 ${plan.popular ? "bg-blue-100 dark:bg-blue-900/40" : "bg-neutral-100 dark:bg-neutral-800"
+
+                <div className="mb-8">
+                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-colors ${plan.popular
+                    ? "bg-amber-500/20 text-amber-400"
+                    : "bg-white/5 text-neutral-400 group-hover:text-amber-400"
                     }`}>
-                    <Icon className={`w-8 h-8 ${plan.popular ? "text-blue-500" : "text-neutral-400 dark:text-neutral-500"}`} />
+                    <Icon className="w-7 h-7" />
                   </div>
-                  <h3 className="text-2xl font-bold text-neutral-900 dark:text-white mb-2">{plan.name}</h3>
-                  <div className="mb-2">
-                    <span className="text-4xl font-bold text-neutral-900 dark:text-white">{plan.price}</span>
+
+                  <h3 className="text-xl font-medium text-neutral-400 mb-2">{plan.name}</h3>
+                  <div className="flex items-baseline gap-1 mb-2">
+                    <span className="text-5xl font-bold text-white tracking-tight">{plan.price}</span>
                     {plan.period !== "forever" && (
-                      <span className="text-neutral-500 dark:text-neutral-300">/{plan.period}</span>
+                      <span className="text-neutral-500 font-medium">{plan.period.replace("per ", "/")}</span>
                     )}
                   </div>
+
                   {plan.originalPrice && (
-                    <div className="flex items-center justify-center gap-2 mb-2">
-                      <span className="text-sm text-neutral-400 line-through">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-neutral-600 line-through decoration-neutral-600">
                         {plan.originalPrice}
                       </span>
-                      <span className="text-sm font-semibold text-green-500">
+                      <span className="text-xs font-bold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded">
                         {plan.savings}
                       </span>
                     </div>
                   )}
-                  <p className="text-base text-neutral-600 dark:text-neutral-300">{plan.description}</p>
+
+                  <p className="text-sm text-neutral-400 leading-relaxed min-h-[40px]">
+                    {plan.description}
+                  </p>
                 </div>
-                <ul className="space-y-3 mb-8">
+
+                <ul className="space-y-4 mb-8 flex-grow">
                   {plan.features.map((feature, idx) => (
-                    <li key={idx} className="flex items-start gap-3">
-                      <Check className="w-5 h-5 text-blue-500 flex-shrink-0 mt-0.5" />
-                      <span className="text-base text-neutral-800 dark:text-neutral-200">{feature}</span>
+                    <li key={idx} className="flex items-start gap-3 text-sm text-neutral-300">
+                      <div className="mt-1 w-4 h-4 rounded-full bg-amber-500/20 flex items-center justify-center flex-shrink-0">
+                        <Check className="w-2.5 h-2.5 text-amber-500" />
+                      </div>
+                      <span className="leading-snug">{feature}</span>
                     </li>
                   ))}
                 </ul>
+
                 <button
                   onClick={() => handleSubscribe(plan.id)}
                   disabled={isCurrentPlan || isProcessing}
-                  className={`w-full py-3 rounded-xl font-semibold transition-all flex items-center justify-center gap-2 text-lg shadow-md ${isCurrentPlan
-                    ? "bg-neutral-200 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed"
+                  className={`w-full py-4 rounded-xl font-bold transition-all flex items-center justify-center gap-2 transform active:scale-95 ${isCurrentPlan
+                    ? "bg-white/5 text-neutral-500 cursor-not-allowed border border-white/5"
                     : plan.popular
-                      ? "bg-blue-600 hover:bg-blue-700 text-white"
-                      : "bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                      ? "bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black shadow-lg shadow-amber-900/20"
+                      : "bg-white text-black hover:bg-neutral-200"
                     }`}
                 >
                   {isProcessing ? (
                     <>
-                      <Loader2 className="w-5 h-5 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" />
                       Processing...
                     </>
                   ) : isCurrentPlan ? (
                     <>
-                      <Check className="w-5 h-5" />
-                      Current Plan
+                      <Check className="w-4 h-4" />
+                      Active Plan
                     </>
                   ) : (
                     <>
                       {plan.cta}
-                      <ArrowRight className="w-5 h-5" />
+                      <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </button>
@@ -378,79 +381,6 @@ function PricingContent() {
             );
           })}
         </div>
-        {/* USAGE BELOW PLANS */}
-        {usageInfo && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-12 max-w-2xl mx-auto"
-          >
-            <div className="bg-white/90 dark:bg-neutral-900/80 rounded-2xl p-6 border border-neutral-200 dark:border-neutral-700 shadow-md backdrop-blur-lg">
-              <h3 className="text-lg font-semibold text-neutral-900 dark:text-white mb-4">
-                Your Usage Today
-              </h3>
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-neutral-500 dark:text-neutral-300">Creations used</span>
-                  <span className="text-neutral-900 dark:text-white font-semibold">
-                    {usageInfo.currentCount} / {usageInfo.limit}
-                  </span>
-                </div>
-                <div className="w-full bg-neutral-200 dark:bg-neutral-800 rounded-full h-2.5">
-                  <motion.div
-                    initial={{ width: 0 }}
-                    animate={{ width: `${(usageInfo.currentCount / usageInfo.limit) * 100}%` }}
-                    className="bg-blue-500 h-2.5 rounded-full"
-                  />
-                </div>
-                <p className="text-sm text-neutral-500 dark:text-neutral-400">
-                  Resets in {Math.ceil(
-                    (new Date(usageInfo.resetAt).getTime() - new Date().getTime()) / (1000 * 60 * 60)
-                  )} hours
-                </p>
-              </div>
-            </div>
-          </motion.div>
-        )}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="mt-16 max-w-3xl mx-auto"
-        >
-          <h2 className="text-2xl font-bold text-foreground mb-8 text-center">
-            Frequently Asked Questions
-          </h2>
-          <div className="space-y-6">
-            <div className="bg-slate-900 rounded-xl p-6 border border-slate-700">
-              <h3 className="font-semibold text-foreground mb-2">
-                How does the rolling 24-hour limit work?
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Your creation limit resets 24 hours after your first creation of the day, not at midnight.
-                This gives you more flexibility in when you can create characters.
-              </p>
-            </div>
-            <div className="bg-slate-900 rounded-xl p-6 border border-slate-700">
-              <h3 className="font-semibold text-foreground mb-2">
-                Can I cancel my subscription anytime?
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                Yes, you can cancel your subscription at any time. You'll continue to have access
-                until the end of your billing period, then you'll be moved to the Free plan.
-              </p>
-            </div>
-            <div className="bg-slate-900 rounded-xl p-6 border border-slate-700">
-              <h3 className="font-semibold text-foreground mb-2">
-                What happens to my characters if I downgrade?
-              </h3>
-              <p className="text-sm text-muted-foreground">
-                All your saved characters remain accessible. You'll just have the Free plan's
-                creation limits (2 per 24 hours) instead of Pro limits.
-              </p>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </div>
   );
