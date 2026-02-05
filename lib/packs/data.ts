@@ -162,7 +162,7 @@ export const services: Service[] = [
         description: "A fully fleshed-out character based on your specifications. Includes backstory, personality, appearance prompts, and a custom generated character image.",
         price: 10,
         deliveryTime: "24-48 hours",
-        image: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326742/TA-2026-01-13-14-46-25-_artist_ma-735908093_gafs9j.png",
+        image: "https://ik.imagekit.io/tcxzbwccr/t_eUbzWr7C349v92sr.webp",
     },
     {
         id: "multi-character-story",
@@ -170,7 +170,7 @@ export const services: Service[] = [
         description: "A set of characters with intertwined backstories and a world setting. Includes custom images for each character and designed interactions.",
         price: 25,
         deliveryTime: "3-5 days",
-        image: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326739/TA-2026-01-13-15-07-52-_artist_ma-2968179715_zxkzfi.png",
+        image: "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-03-22-07-48-first-pers-2939673392_upscayl_4x_upscayl-standard-4x.png",
     },
     {
         id: "advanced-niche-request",
@@ -179,7 +179,7 @@ export const services: Service[] = [
         price: 50,
         priceLabel: "50+",
         deliveryTime: "Agreed upon review",
-        image: "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-12-54-27-_artist_ma-1728647033_cho5ek.png",
+        image: "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-03-11-41-1girl,solo-521248144.png",
     },
 ];
 

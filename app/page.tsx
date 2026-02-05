@@ -50,24 +50,24 @@ export default function Home() {
           <div className="hero-slideshow-track flex h-full items-start" style={{ width: '350%' }}>
             {(() => {
               const images = [
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326742/TA-2026-01-13-14-46-25-_artist_ma-735908093_gafs9j.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326741/TA-2026-01-13-14-58-30-_artist_ma-271327577_efkpoq.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-12-54-27-_artist_ma-1728647033_cho5ek.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326739/TA-2026-01-13-15-07-52-_artist_ma-2968179715_zxkzfi.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326738/TA-2026-01-13-03-07-26-_artist_ma-307256307_jrcumn.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326738/TA-2026-01-13-11-55-06-_artist_ma-1864865991_zdfzoq.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326694/TA-2026-01-13-03-07-23-_artist_ma-1647098690_i8ocnz.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326700/TA-2026-01-13-14-54-16-_artist_ma-4111183455_bgdw7w.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326694/TA-2026-01-13-02-46-01-_artist_ma-2239987079_xf5jyh.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326737/TA-2026-01-13-11-58-10-_artist_ma-1420471242_pwkrpx.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326737/TA-2026-01-13-02-48-24-_artist_ma-3268805038_n9ztvj.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-14-50-21-_artist_ma-3351602457_1_nmshjr.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326693/TA-2026-01-13-02-38-38-_artist_ma-3962069391_v8mzt4.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326702/TA-2026-01-13-15-06-54-_artist_ma-2605565792_wmrg4p.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-14-35-50-_artist_ma-2060442952_dujkrv.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326700/TA-2026-01-13-14-53-32-_artist_ma-132961706_tkmwx9.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326698/TA-2026-01-13-12-05-07-_artist_ma-1444115690_wbekaf.png",
-                "https://res.cloudinary.com/dkwxxfewv/image/upload/v1768326692/TA-2026-01-13-02-57-58-_artist_ma-1970745954_f2h9h8.png",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-53-32-(artist_ma-132961706.png?updatedAt=1770284763760",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-35-50-(artist_ma-2060442952.png?updatedAt=1770284763099",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-03-07-23-(artist_ma-1647098690.png?updatedAt=1770284741539",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-59-04-(artist_ma-526226082.png?updatedAt=1770284748791",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-38-38-(artist_ma-3962069391.png?updatedAt=1770284761909",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-42-27-(artist_ma-1635821493.png?updatedAt=1770284745598",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-15-06-54-(artist_ma-2605565792.png?updatedAt=1770284760436",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-12-54-27-(artist_ma-1728647033.png?updatedAt=1770284758508",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-43-32-(artist_ma-2822207232.png?updatedAt=1770284757872",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-15-07-52-(artist_ma-2968179715.png?updatedAt=1770284757151",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-46-01-(artist_ma-2239987079.png?updatedAt=1770284754592",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-54-16-(artist_ma-4111183455.png?updatedAt=1770284753742",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-46-25-(artist_ma-735908093.png?updatedAt=1770284750832",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-03-07-26-(artist_ma-307256307.png?updatedAt=1770284742972",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-40-54-(artist_ma-2265619227.png?updatedAt=1770284740441",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-48-24-(artist_ma-3268805038.png?updatedAt=1770284731298",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-57-58-(artist_ma-1970745954.png?updatedAt=1770284730512",
+                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-12-05-07-(artist_ma-1444115690.png?updatedAt=1770284727418",
               ];
               const allImages = [...images, ...images];
               return (
@@ -115,7 +115,7 @@ export default function Home() {
             className="text-4xl md:text-6xl font-black mb-6 leading-tight tracking-tight"
           >
             <span className="text-white drop-shadow-xl">
-              The Ultimate 
+              The Ultimate
             </span>
             <br />
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-amber-300 via-amber-500 to-amber-600 drop-shadow-[0_2px_24px_rgba(245,158,11,0.5)]">

@@ -34,6 +34,8 @@ const packCategories: PackCategory[] = [
                 price: 29,
                 features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"],
                 images: [
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-01-53-38-POVfrombed-1411758745(1)_upscayl_2x_upscayl-standard-4x.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-12-51-matureMILF-841614612_upscayl_4x_upscayl-standard-4x.png",
                     "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133984/t_eUbzWr7C349v92sr_eodvfp.webp",
                     "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134164/TA-2026-01-21-18-22-52-score_9_sc-2449781985_bl9aos.png",
                     "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135024/t_EQXTRWTmUgqGwyUF_upscayl_2x_upscayl-standard-4x_kagwpz.png",
@@ -47,8 +49,9 @@ const packCategories: PackCategory[] = [
                 price: 29,
                 features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"],
                 images: [
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770136775/TA-2026-02-02-00-35-01-highlydeta-2134375126_gzwl5g.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133919/TA-2026-02-01-19-01-12-animestyle-442315157_eik8jq.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-19-01-12-animestyle-442315157.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-35-01-highlydeta-2134375126.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-18-57-45-animestyle-1988660763.png",
                     "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133937/TA-2026-01-29-09-35-53-animestyle-4228064067_frxmko.png",
                     "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133983/t_XPLx9iigGee7M9rB_1_bxwcd3.webp"
                 ]
@@ -62,6 +65,13 @@ const packCategories: PackCategory[] = [
                 tag: "Best Value",
                 highlight: true,
                 images: [
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-29-16-03-18-(artist_ma-1599522622.png",
+                    "https://ik.imagekit.io/tcxzbwccr/t_eUbzWr7C349v92sr.webp",
+                    "https://ik.imagekit.io/tcxzbwccr/t_XWuBYzKyGT9kDy3D.webp",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-03-22-07-48-first-pers-2939673392_upscayl_4x_upscayl-standard-4x.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-27-10-22-12-(artist_ma-2812263224.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-31-22-56-24-(artist_ma-2122214158.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-03-11-41-1girl,solo-521248144.png",
                     "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135958/TA-2026-02-02-00-12-45-matureMILF-1334124762_ckrzn4.png",
                     "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135899/TA-2026-02-02-01-53-38-POVfrombed-1411758745_1__upscayl_2x_upscayl-standard-4x_dredzv.png",
                     "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134156/t_GkCnTjunfZ3Hwcu2_upscayl_2x_upscayl-standard-4x_z5jxry.png",
@@ -81,10 +91,10 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["50+ Safe Images", "High Resolution", "Variety of Poses", "No Explicit Content"],
                 images: [
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-01-53-38-POVfrombed-1411758745(1)_upscayl_2x_upscayl-standard-4x.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-12-51-matureMILF-841614612_upscayl_4x_upscayl-standard-4x.png",
                     "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133984/t_eUbzWr7C349v92sr_eodvfp.webp",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134164/TA-2026-01-21-18-22-52-score_9_sc-2449781985_bl9aos.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135024/t_EQXTRWTmUgqGwyUF_upscayl_2x_upscayl-standard-4x_kagwpz.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135054/TA-2026-01-11-22-49-23-masterpiec-2368326371_yqxt8i.png"
+                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134164/TA-2026-01-21-18-22-52-score_9_sc-2449781985_bl9aos.png"
                 ]
             },
             {
@@ -94,9 +104,10 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["50+ Safe Images", "High Resolution", "Anime & Realistic", "No Explicit Content"],
                 images: [
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133919/TA-2026-02-01-19-01-12-animestyle-442315157_eik8jq.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133937/TA-2026-01-29-09-35-53-animestyle-4228064067_frxmko.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133983/t_XPLx9iigGee7M9rB_1_bxwcd3.webp"
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-19-01-12-animestyle-442315157.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-35-01-highlydeta-2134375126.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-18-57-45-animestyle-1988660763.png",
+                    "https://ik.imagekit.io/tcxzbwccr/t_XWuBYzKyGT9kDy3D.webp"
                 ]
             },
             {
@@ -106,11 +117,11 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["100+ Safe Images", "Group Scenes", "High Resolution", "Wholesome Themes"],
                 images: [
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135899/TA-2026-02-02-01-53-38-POVfrombed-1411758745_1__upscayl_2x_upscayl-standard-4x_dredzv.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135958/TA-2026-02-02-00-12-45-matureMILF-1334124762_ckrzn4.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134156/t_GkCnTjunfZ3Hwcu2_upscayl_2x_upscayl-standard-4x_z5jxry.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134131/t_DtuRNjTSZ5Fp96D3_lvlwu4.webp",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133984/t_eUbzWr7C349v92sr_eodvfp.webp"
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-29-16-03-18-(artist_ma-1599522622.png",
+                    "https://ik.imagekit.io/tcxzbwccr/t_eUbzWr7C349v92sr.webp",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-03-22-07-48-first-pers-2939673392_upscayl_4x_upscayl-standard-4x.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-27-10-22-12-(artist_ma-2812263224.png",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-31-22-56-24-(artist_ma-2122214158.png"
                 ]
             },
             {
@@ -120,10 +131,10 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["Tasteful Prompts", "Mature Themes (Safe)", "Artistic Guidance", "Avoid Filters"],
                 images: [
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134156/t_GkCnTjunfZ3Hwcu2_upscayl_2x_upscayl-standard-4x_z5jxry.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134131/t_DtuRNjTSZ5Fp96D3_lvlwu4.webp",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134043/TA-2026-01-26-19-50-40-masterpiec-3871801966_gvkv6e.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133984/t_Q73Lpr9rJkkfBrow_lbnw7l.webp"
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-03-11-41-1girl,solo-521248144.png",
+                    "https://ik.imagekit.io/tcxzbwccr/t_XPLx9iigGee7M9rB_1_bxwcd3.webp",
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-29-09-35-53-animestyle-4228064067_frxmko.png",
+                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134043/TA-2026-01-26-19-50-40-masterpiec-3871801966_gvkv6e.png"
                 ]
             },
         ],
