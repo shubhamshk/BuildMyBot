@@ -4,6 +4,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, ArrowRight, Sparkles, Star, Zap, Crown } from "lucide-react";
 import { EmailBeforePaymentModal } from "@/components/modals/EmailBeforePaymentModal";
+import { createClient } from "@/lib/supabase/client";
+import { LoginRequiredModal } from "@/components/login-required-modal";
 
 // Define Pack Interface
 interface PackItem {
@@ -28,10 +30,10 @@ const packCategories: PackCategory[] = [
         title: "Family Packs",
         packs: [
             {
-                id: "mom-pack",
+                id: "mom/milf-pack",
                 title: "Mom Bot Pack + Images",
                 description: "5 caring, strict, and loving mother figures.",
-                price: 29,
+                price: 5,
                 features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"],
                 images: [
                     "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-01-53-38-POVfrombed-1411758745(1)_upscayl_2x_upscayl-standard-4x.png",
@@ -46,7 +48,7 @@ const packCategories: PackCategory[] = [
                 id: "sister-pack",
                 title: "Sister Bot Pack + Images",
                 description: "5 dynamic sister archetypes for roleplay.",
-                price: 29,
+                price: 5,
                 features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"],
                 images: [
                     "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-19-01-12-animestyle-442315157.png",
@@ -60,7 +62,7 @@ const packCategories: PackCategory[] = [
                 id: "family-roleplay",
                 title: "Family Roleplay Bot Pack + Images",
                 description: "Complete household dynamic with 10 bots.",
-                price: 49,
+                price: 10,
                 features: ["10 Interactive Bots", "Interconnected Lore", "Image Collection", "Exclusive Images"],
                 tag: "Best Value",
                 highlight: true,
@@ -89,7 +91,7 @@ const packCategories: PackCategory[] = [
                 title: "Mom NSFW Free Images",
                 description: "High-quality, safe-for-work images of Mom characters.",
                 price: 9,
-                features: ["50+ Safe Images", "High Resolution", "Variety of Poses", "No Explicit Content"],
+                features: ["best Images collection", "High Resolution", "Variety of Poses", "No Explicit Content"],
                 images: [
                     "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-01-53-38-POVfrombed-1411758745(1)_upscayl_2x_upscayl-standard-4x.png",
                     "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-12-51-matureMILF-841614612_upscayl_4x_upscayl-standard-4x.png",
@@ -102,7 +104,7 @@ const packCategories: PackCategory[] = [
                 title: "Sister NSFW Free Images",
                 description: "High-quality, safe-for-work images of Sister characters.",
                 price: 9,
-                features: ["50+ Safe Images", "High Resolution", "Anime & Realistic", "No Explicit Content"],
+                features: ["best Images collection", "High Resolution", "Anime & Realistic", "No Explicit Content"],
                 images: [
                     "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-19-01-12-animestyle-442315157.png",
                     "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-35-01-highlydeta-2134375126.png",
@@ -115,7 +117,7 @@ const packCategories: PackCategory[] = [
                 title: "Family NSFW Free Images",
                 description: "Complete family collection in a safe, wholesome format.",
                 price: 9,
-                features: ["100+ Safe Images", "Group Scenes", "High Resolution", "Wholesome Themes"],
+                features: ["best Images collection", "Group Scenes", "High Resolution", "Wholesome Themes"],
                 images: [
                     "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-29-16-03-18-(artist_ma-1599522622.png",
                     "https://ik.imagekit.io/tcxzbwccr/t_eUbzWr7C349v92sr.webp",
@@ -147,14 +149,14 @@ const packCategories: PackCategory[] = [
                 id: "bot-image",
                 title: "Full Bot + Image Pack",
                 description: "Characters with 50+ images each.",
-                price: 59,
+                price: 29,
                 features: ["5 Premium Bots", "250+ HD Images", "Consistent Faces", "Gallery Mode Access"],
             },
             {
                 id: "bot-prompt",
                 title: "Full Bot + Prompt Pack",
                 description: "Bots + The prompts to render them.",
-                price: 69,
+                price: 29,
                 features: ["Source Prompts Included", "Midjourney Guide", "Stable Diffusion LoRAs", "Commercial Use"],
                 tag: "For Creators",
             },
@@ -162,7 +164,7 @@ const packCategories: PackCategory[] = [
                 id: "world-pack",
                 title: "Full Roleplay World",
                 description: "An entire universe in a box.",
-                price: 99,
+                price: 59,
                 features: ["20+ Linked Characters", "World Lore Bible", "Map Descriptions", "Campaign System"],
                 highlight: true,
                 tag: "Ultimate",
@@ -181,10 +183,10 @@ const packCategories: PackCategory[] = [
             },
             {
                 id: "custom-image-pack",
-                title: "Unlimited Custom Image Pack",
-                description: "Custom images of any character or type you want. No limitations.",
+                title: "1 Custom Image Pack",
+                description: "1 Custom image of any character or type you want.",
                 price: 19,
-                features: ["Unlimited Image Requests", "Any Character / Style", "High Resolution Generations", "No Content Limitations"],
+                features: ["1 Custom Image Request", "Any Character / Style", "High Resolution Generations", "No Content Limitations"],
             },
         ],
     },
@@ -193,8 +195,17 @@ const packCategories: PackCategory[] = [
 export function PacksSection() {
     const [selectedPack, setSelectedPack] = useState<PackItem | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
 
-    const handleBuy = (pack: PackItem) => {
+    const handleBuy = async (pack: PackItem) => {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            setLoginModalOpen(true);
+            return;
+        }
+
         const modalItem = {
             id: pack.id,
             title: pack.title,
@@ -366,6 +377,11 @@ export function PacksSection() {
                     item={selectedPack}
                 />
             )}
+
+            <LoginRequiredModal
+                isOpen={loginModalOpen}
+                onClose={() => setLoginModalOpen(false)}
+            />
         </section>
     );
 }

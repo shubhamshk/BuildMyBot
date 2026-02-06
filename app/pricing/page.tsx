@@ -30,10 +30,11 @@ const PLANS = [
   {
     id: "PRO_MONTHLY",
     name: "Collector's Club",
-    price: "$19",
+    price: "$9",
     period: "per month",
     description: "Fresh premium content delivered every month.",
     features: [
+      "VIP Access to janitor voice bot for 1 Month",
       "Access to 5 Premium Bot Drops / month",
       "1 Exclusive 'Spicy' Image Pack / month",
       "Early access to Trending Characters",
@@ -47,14 +48,15 @@ const PLANS = [
   {
     id: "PRO_YEARLY",
     name: "VIP Syndicate",
-    price: "$79",
+    price: "$39",
     period: "per year",
     description: "The ultimate vault key for serious collectors.",
-    originalPrice: "$228",
+    originalPrice: "$108",
     savings: "Save 65%",
     features: [
+      "VIP Access to Janitor Voice Bot for 1 year + 6 months free",
       "Everything in Collector's Club",
-      "Acress to bot craetion Courses , tools and guides ", 
+      "Access to bot creation Courses, tools and guides",
       "UNLIMITED access to all past & future bots",
       "Complete 'Spicy' Image Vault Access",
       "1 Custom Bot Request per month (Made for YOU)",

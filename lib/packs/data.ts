@@ -62,21 +62,21 @@ export const packs: Pack[] = [
         id: "mom-pack",
         title: "Mom Bot Pack + Images",
         description: "5 caring, strict, and loving mother figures.",
-        price: 29,
+        price: 5,
         features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"]
     },
     {
         id: "sister-pack",
         title: "Sister Bot Pack + Images",
         description: "5 dynamic sister archetypes for roleplay.",
-        price: 29,
+        price: 5,
         features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"]
     },
     {
         id: "family-roleplay",
         title: "Family Roleplay Bot Pack + Images",
         description: "Complete household dynamic with 10 bots.",
-        price: 49,
+        price: 10,
         features: ["10 Interactive Bots", "Interconnected Lore", "Image Collection", "Exclusive Images"],
         tag: "Best Value",
         highlight: true
@@ -117,14 +117,14 @@ export const packs: Pack[] = [
         id: "bot-image",
         title: "Full Bot + Image Pack",
         description: "Characters with 50+ images each.",
-        price: 59,
+        price: 29,
         features: ["5 Premium Bots", "250+ HD Images", "Consistent Faces", "Gallery Mode Access"]
     },
     {
         id: "bot-prompt",
         title: "Full Bot + Prompt Pack",
         description: "Bots + The prompts to render them.",
-        price: 69,
+        price: 29,
         features: ["Source Prompts Included", "Midjourney Guide", "Stable Diffusion LoRAs", "Commercial Use"],
         tag: "For Creators"
     },
@@ -132,7 +132,7 @@ export const packs: Pack[] = [
         id: "world-pack",
         title: "Full Roleplay World",
         description: "An entire universe in a box.",
-        price: 99,
+        price: 59,
         features: ["20+ Linked Characters", "World Lore Bible", "Map Descriptions", "Campaign System"],
         highlight: true,
         tag: "Ultimate"
@@ -148,10 +148,10 @@ export const packs: Pack[] = [
     },
     {
         id: "custom-image-pack",
-        title: "Unlimited Custom Image Pack",
-        description: "Custom images of any character or type you want. No limitations.",
+        title: "1 Custom Image Pack",
+        description: "1 Custom image of any character or type you want.",
         price: 19,
-        features: ["Unlimited Image Requests", "Any Character / Style", "High Resolution Generations", "No Content Limitations"]
+        features: ["1 Custom Image Request", "Any Character / Style", "High Resolution Generations", "No Content Limitations"]
     },
 ];
 
@@ -235,5 +235,14 @@ export const specialPacks: SpecialPack[] = [
             "Fully fledged detailed lorebook creation guide"
         ],
         goal: "Give you a ready-to-use, high-quality foundation with professional-level polish."
+    },
+    {
+        id: "voice-extension-v1",
+        title: "Cinematic Voice Extension",
+        description: "Unlock cinematic voice capabilities for your Janitor AI bots instantly.",
+        price: 9,
+        subtitle: "Unlock cinematic voice capabilities for your Janitor AI bots instantly.",
+        features: ["Cinematic Voice", "Instant Unlock"],
+        goal: "Enhance your bot experience with voice."
     }
 ];

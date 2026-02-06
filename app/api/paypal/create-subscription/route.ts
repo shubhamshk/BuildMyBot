@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { updateSubscriptionServer } from "@/lib/subscriptions/server";
+import { packs, specialPacks } from "@/lib/packs/data";
 
 // PayPal API configuration
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
@@ -10,7 +12,7 @@ const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === "live"
   : "https://api-m.sandbox.paypal.com";
 
 // Plan pricing
-const PLAN_PRICING = {
+const PLAN_PRICING: Record<string, { amount: string, currency: string }> = {
   MONTHLY: { amount: "9.00", currency: "USD" },
   YEARLY: { amount: "59.00", currency: "USD" },
   ULTIMATE: { amount: "399.00", currency: "USD" },
@@ -80,16 +82,11 @@ async function createPayPalProduct(accessToken: string): Promise<string> {
 async function createPayPalPlan(
   accessToken: string,
   productId: string,
-  planType: "PRO_MONTHLY" | "PRO_YEARLY" | "ULTIMATE_CREATOR"
+  name: string,
+  description: string,
+  price: string,
+  intervalUnit: "MONTH" | "YEAR" = "MONTH"
 ): Promise<string> {
-  const pricing = planType === "PRO_MONTHLY"
-    ? PLAN_PRICING.MONTHLY
-    : (planType === "PRO_YEARLY" ? PLAN_PRICING.YEARLY : PLAN_PRICING.ULTIMATE);
-
-  const billingCycle = planType === "PRO_MONTHLY"
-    ? { interval_unit: "MONTH", interval_count: 1 }
-    : { interval_unit: "YEAR", interval_count: 1 };
-
   const response = await fetch(`${PAYPAL_BASE_URL}/v1/billing/plans`, {
     method: "POST",
     headers: {
@@ -99,22 +96,21 @@ async function createPayPalPlan(
     },
     body: JSON.stringify({
       product_id: productId,
-      name: planType === "PRO_MONTHLY"
-        ? "Pro Monthly"
-        : (planType === "PRO_YEARLY" ? "Pro Yearly" : "Ultimate Creator"),
-      description: planType === "PRO_MONTHLY"
-        ? "Monthly subscription for Characteria Pro"
-        : (planType === "PRO_YEARLY" ? "Yearly subscription for Characteria Pro" : "Ultimate Creator Access"),
+      name: name,
+      description: description,
       billing_cycles: [
         {
-          frequency: billingCycle,
+          frequency: {
+            interval_unit: intervalUnit,
+            interval_count: 1,
+          },
           tenure_type: "REGULAR",
           sequence: 1,
           total_cycles: 0, // Infinite cycles
           pricing_scheme: {
             fixed_price: {
-              value: pricing.amount,
-              currency_code: pricing.currency,
+              value: price,
+              currency_code: "USD",
             },
           },
         },
@@ -123,7 +119,7 @@ async function createPayPalPlan(
         auto_bill_outstanding: true,
         setup_fee: {
           value: "0",
-          currency_code: pricing.currency,
+          currency_code: "USD",
         },
         setup_fee_failure_action: "CONTINUE",
         payment_failure_threshold: 3,
@@ -148,11 +144,54 @@ export async function POST(request: NextRequest) {
   try {
     const { planType } = await request.json();
 
-    if (!planType || (planType !== "PRO_MONTHLY" && planType !== "PRO_YEARLY" && planType !== "ULTIMATE_CREATOR")) {
+    if (!planType) {
       return NextResponse.json(
-        { error: "Invalid plan type" },
+        { error: "Invalid plan type or pack ID" },
         { status: 400 }
       );
+    }
+
+    // Check if it's a known Plan
+    let amount = "";
+    let name = "";
+    let description = "";
+    let interval: "MONTH" | "YEAR" = "MONTH";
+    let isPack = false;
+
+    if (planType === "PRO_MONTHLY") {
+      amount = PLAN_PRICING.MONTHLY.amount;
+      name = "Pro Monthly";
+      description = "Monthly subscription for Characteria Pro";
+    } else if (planType === "PRO_YEARLY") {
+      amount = PLAN_PRICING.YEARLY.amount;
+      name = "Pro Yearly";
+      description = "Yearly subscription for Characteria Pro";
+      interval = "YEAR";
+    } else if (planType === "ULTIMATE_CREATOR") {
+      amount = PLAN_PRICING.ULTIMATE.amount;
+      name = "Ultimate Creator";
+      description = "Ultimate Creator Access";
+    } else {
+      // Check if it's a Pack
+      const pack = packs.find(p => p.id === planType) || specialPacks.find(p => p.id === planType);
+      if (pack) {
+        amount = pack.price.toString();
+        // Ensure 2 decimal places
+        if (!amount.includes(".")) amount += ".00";
+        else {
+          const parts = amount.split(".");
+          if (parts[1].length === 1) amount += "0";
+        }
+
+        name = pack.title;
+        description = `Subscription to ${pack.title}`;
+        isPack = true;
+      } else {
+        return NextResponse.json(
+          { error: "Invalid plan type or pack ID" },
+          { status: 400 }
+        );
+      }
     }
 
     // Check authentication
@@ -170,7 +209,6 @@ export async function POST(request: NextRequest) {
     const accessToken = await getPayPalAccessToken();
 
     // Create product
-    // Note: PayPal may return an existing product if one with the same name exists
     let productId: string;
     try {
       productId = await createPayPalProduct(accessToken);
@@ -186,7 +224,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Create plan dynamically
-    const planId = await createPayPalPlan(accessToken, productId, planType);
+    const planId = await createPayPalPlan(accessToken, productId, name, description, amount, interval);
 
     // Create subscription
     const subscriptionResponse = await fetch(`${PAYPAL_BASE_URL}/v1/billing/subscriptions`, {
@@ -238,11 +276,30 @@ export async function POST(request: NextRequest) {
 
     const subscriptionData = await subscriptionResponse.json();
 
-    // Store subscription ID in database (temporary, will be confirmed via webhook)
-    await updateSubscriptionServer(user.id, {
-      paypal_subscription_id: subscriptionData.id,
-      paypal_plan_id: planId,
-    });
+    if (isPack) {
+      // Record pack subscription
+      const adminSupabase = createAdminClient();
+      const { error: packError } = await adminSupabase
+        .from("user_pack_subscriptions")
+        .insert({
+          user_id: user.id,
+          pack_id: planType,
+          paypal_subscription_id: subscriptionData.id,
+          paypal_plan_id: planId,
+          status: "PENDING"
+        });
+
+      if (packError) {
+        console.error("Failed to record pack subscription:", packError);
+        // We continue anyway, so the user can pay. Webhook will likely reconcile or we rely on logs.
+      }
+    } else {
+      // Store regular subscription
+      await updateSubscriptionServer(user.id, {
+        paypal_subscription_id: subscriptionData.id,
+        paypal_plan_id: planId,
+      });
+    }
 
     // Return approval URL
     const approvalUrl = subscriptionData.links?.find(

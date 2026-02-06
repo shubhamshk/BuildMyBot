@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Mic } from "lucide-react";
 import { FaDiscord } from "react-icons/fa";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { ResponsiveNavbar } from "@/components/responsive-navbar";
@@ -45,7 +45,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center px-6 pt-32 pb-16 overflow-hidden">
         {/* Animated Background Slideshow */}
-        <div className="absolute left-0 right-0 top-16 bottom-0 z-0 overflow-hidden opacity-50 mask-image-gradient">
+        <div className="absolute left-0 right-0 top-16 bottom-0 z-0 overflow-hidden opacity-80 mask-image-gradient">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background z-10" />
           <div className="hero-slideshow-track flex h-full items-start" style={{ width: '350%' }}>
             {(() => {
@@ -152,6 +152,21 @@ export default function Home() {
               className="px-8 py-4 rounded-xl font-bold flex items-center gap-2 group bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all backdrop-blur-sm"
             >
               Open The Vault
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="flex justify-center mt-6"
+          >
+            <Link
+              href="/voice"
+              className="px-10 py-3 rounded-full font-bold text-sm md:text-base flex items-center gap-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-[0_0_30px_rgba(124,58,237,0.4)] transition-all transform hover:scale-105 border border-white/10"
+            >
+              <Mic className="w-5 h-5" />
+              Get voice in janitor bot
             </Link>
           </motion.div>
 

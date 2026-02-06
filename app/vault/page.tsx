@@ -8,6 +8,8 @@ import { ResponsiveNavbar } from "@/components/responsive-navbar";
 import { motion } from "framer-motion";
 import { Zap, ArrowRight, Loader2 } from "lucide-react";
 import { EmailBeforePaymentModal } from "@/components/modals/EmailBeforePaymentModal";
+import { createClient } from "@/lib/supabase/client";
+import { LoginRequiredModal } from "@/components/login-required-modal";
 
 function VaultContent() {
     const searchParams = useSearchParams();
@@ -20,6 +22,7 @@ function VaultContent() {
     const [buyModalOpen, setBuyModalOpen] = useState(false);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [selectedPack, setSelectedPack] = useState<any>(null);
+    const [loginModalOpen, setLoginModalOpen] = useState(false);
 
     useEffect(() => {
         const success = searchParams.get("success");
@@ -38,7 +41,13 @@ function VaultContent() {
     };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleBuy = (pack: any) => {
+    const handleBuy = async (pack: any) => {
+        const supabase = createClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+            setLoginModalOpen(true);
+            return;
+        }
         const modalItem = {
             id: pack.id,
             title: pack.name,
@@ -142,6 +151,8 @@ function VaultContent() {
                     item={selectedPack}
                 />
             )}
+
+            <LoginRequiredModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
         </>
     );
 }

@@ -41,20 +41,23 @@ export function EmailBeforePaymentModal({ isOpen, onClose, item }: EmailBeforePa
         setStatus("processing");
 
         try {
-            const response = await fetch("/api/paypal/create-order", {
+            const response = await fetch("/api/paypal/create-subscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    itemId: item.id,
-                    email: email,
-                    description: `Special Pack: ${item.title}`
+                    planType: item.id
                 }),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Failed to create payment order");
+                if (response.status === 401) {
+                    // Redirect to login if unauthorized
+                    window.location.href = `/auth/signin?redirect=${encodeURIComponent(window.location.pathname)}`;
+                    return;
+                }
+                throw new Error(data.error || "Failed to create subscription");
             }
 
             if (data.approvalUrl) {
