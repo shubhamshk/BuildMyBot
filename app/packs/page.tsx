@@ -15,9 +15,24 @@ function PacksContent() {
         status: "success" | "canceled";
     }>({ open: false, status: "success" });
 
+    const [itemName, setItemName] = useState("");
+
     useEffect(() => {
         const success = searchParams.get("success");
         const canceled = searchParams.get("canceled");
+        const plan = searchParams.get("plan");
+
+        // Simple mapping or decoding if plan ID is passed. 
+        // For better UX, we could map ID to Name, but for now we fallback to "Pack".
+        // The URL params might contain the Plan ID or Plan Name depending on how we construct redirect.
+        // Assuming we might want to pass name in URL or just generic.
+        // Let's rely on backend redirect to possibly include name, or just generic.
+        // Actually, let's try to map generic IDs if possible or just use what we have.
+        if (plan) {
+            // Optional: Map common IDs to readability if needed, or just format
+            const formattedName = plan.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            setItemName(formattedName);
+        }
 
         if (success === "true") {
             setModalState({ open: true, status: "success" });
@@ -44,6 +59,7 @@ function PacksContent() {
                 isOpen={modalState.open}
                 status={modalState.status}
                 onClose={handleClose}
+                itemName={itemName || "Pack"}
             />
         </>
     );

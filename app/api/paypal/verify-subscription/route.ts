@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { updateSubscriptionServer } from "@/lib/subscriptions/server";
 import type { PlanType } from "@/lib/subscriptions/service";
 
@@ -43,7 +44,8 @@ async function getPayPalAccessToken(): Promise<string> {
  */
 export async function POST(request: NextRequest) {
   try {
-    const supabase = await createClient();
+    const supabase = await createClient(); // Authenticated client for user check
+    const adminSupabase = createAdminClient(); // Admin client for table updates
 
     // Get current user
     const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -55,32 +57,75 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const accessToken = await getPayPalAccessToken();
+
+    // 1. Check User Pack Subscriptions (Pending)
+    const { data: pendingPackSubs } = await adminSupabase
+      .from("user_pack_subscriptions")
+      .select("*")
+      .eq("user_id", user.id)
+      .eq("status", "PENDING");
+
+    if (pendingPackSubs && pendingPackSubs.length > 0) {
+      for (const packSub of pendingPackSubs) {
+        if (!packSub.paypal_subscription_id) continue;
+
+        try {
+          const paypalResponse = await fetch(
+            `${PAYPAL_BASE_URL}/v1/billing/subscriptions/${packSub.paypal_subscription_id}`,
+            {
+              headers: {
+                "Authorization": `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          if (paypalResponse.ok) {
+            const paypalData = await paypalResponse.json();
+            if (paypalData.status === "ACTIVE" || paypalData.status === "APPROVED") {
+              // Activate Pack Subscription
+              await adminSupabase
+                .from("user_pack_subscriptions")
+                .update({
+                  status: "ACTIVE",
+                  updated_at: new Date().toISOString()
+                })
+                .eq("id", packSub.id);
+
+              console.log(`[Verify] Activated pack subscription ${packSub.id} for user ${user.id}`);
+
+              return NextResponse.json({
+                success: true,
+                plan_type: packSub.pack_id,
+                status: "ACTIVE",
+                message: "Pack subscription activated!",
+              });
+            }
+          }
+        } catch (err) {
+          console.error(`[Verify] Error checking pack sub ${packSub.id}:`, err);
+        }
+      }
+    }
+
+    // 2. Check Regular Subscription (Legacy/Plan Logic)
     // Get user's subscription from database
-    const { data: subscription, error: subError } = await supabase
+    const { data: subscription } = await supabase
       .from("subscriptions")
       .select("*")
       .eq("user_id", user.id)
       .single();
 
-    if (subError || !subscription) {
-      return NextResponse.json(
-        { error: "No subscription found" },
-        { status: 404 }
-      );
-    }
-
-    // If no PayPal subscription ID, nothing to verify
-    if (!subscription.paypal_subscription_id) {
+    if (!subscription || !subscription.paypal_subscription_id) {
+      // If we found no pack subs and no regular subs, return 404 or just success:false
       return NextResponse.json({
         success: false,
-        message: "No PayPal subscription to verify",
-        plan_type: subscription.plan_type,
+        message: "No pending subscriptions found to verify",
       });
     }
 
-    // Verify subscription with PayPal
-    const accessToken = await getPayPalAccessToken();
-
+    // Verify regular subscription with PayPal
     const paypalResponse = await fetch(
       `${PAYPAL_BASE_URL}/v1/billing/subscriptions/${subscription.paypal_subscription_id}`,
       {
@@ -92,8 +137,6 @@ export async function POST(request: NextRequest) {
     );
 
     if (!paypalResponse.ok) {
-      const errorData = await paypalResponse.json();
-      console.error("PayPal verification error:", errorData);
       return NextResponse.json(
         { error: "Failed to verify subscription with PayPal" },
         { status: 500 }
@@ -103,8 +146,6 @@ export async function POST(request: NextRequest) {
     const paypalSubscription = await paypalResponse.json();
 
     console.log("[Verify] PayPal subscription status:", paypalSubscription.status);
-    console.log("[Verify] PayPal subscription ID:", paypalSubscription.id);
-    console.log("[Verify] PayPal plan ID:", paypalSubscription.plan_id);
 
     // Check if subscription is active
     if (paypalSubscription.status === "ACTIVE" || paypalSubscription.status === "APPROVED") {
@@ -132,7 +173,6 @@ export async function POST(request: NextRequest) {
             } else if (billingCycle?.interval_unit === "YEAR") {
               planType = "PRO_YEARLY";
             }
-            console.log("[Verify] Determined plan type:", planType);
           }
         } catch (error) {
           console.error("Error fetching plan details:", error);
@@ -155,7 +195,7 @@ export async function POST(request: NextRequest) {
       });
 
       // Reset usage count for new Pro user
-      const { error: usageError } = await supabase
+      await adminSupabase
         .from("usage_tracking")
         .upsert({
           user_id: user.id,
@@ -164,10 +204,6 @@ export async function POST(request: NextRequest) {
         }, {
           onConflict: "user_id"
         });
-
-      if (usageError) {
-        console.error("[Verify] Error resetting usage:", usageError);
-      }
 
       console.log(`[Verify] User ${user.id} upgraded to ${planType}, usage reset to 0`);
 

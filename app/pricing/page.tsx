@@ -111,17 +111,20 @@ function PricingContent() {
         });
         if (verifyResponse.ok) {
           const verifyData = await verifyResponse.json();
-          if (verifyData.success &&
-            (verifyData.plan_type === "PRO_MONTHLY" ||
-              verifyData.plan_type === "PRO_YEARLY")) {
+          if (verifyData.success) {
             setCurrentPlan(verifyData.plan_type);
             setUsageInfo({
               currentCount: 0,
               limit: verifyData.limit || 10,
               resetAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
             });
+
+            // Only show Pro success modal for Pro plans
+            if (verifyData.plan_type?.includes("PRO")) {
+              setShowSuccessModal(true);
+            }
+
             setIsPolling(false);
-            setShowSuccessModal(true);
             window.dispatchEvent(new CustomEvent("subscription-updated"));
             router.replace("/pricing");
             return;

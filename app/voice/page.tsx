@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Mic, Sparkles, Wand2, PlayCircle, Fingerprint, Volume2, ArrowRight } from "lucide-react";
 import { ResponsiveNavbar } from "@/components/responsive-navbar";
@@ -9,9 +9,37 @@ import { ExtensionPaymentModal } from "@/components/modals/ExtensionPaymentModal
 import { createClient } from "@/lib/supabase/client";
 import { LoginRequiredModal } from "@/components/login-required-modal";
 
-export default function VoicePage() {
+import { PaymentStatusModal } from "@/components/modals/PaymentSuccessModal";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+function VoiceContent() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loginModalOpen, setLoginModalOpen] = useState(false);
+
+    // Payment Success Logic
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const [paymentModalState, setPaymentModalState] = useState<{
+        open: boolean;
+        status: "success" | "canceled";
+    }>({ open: false, status: "success" });
+
+    useEffect(() => {
+        const success = searchParams.get("success");
+        const canceled = searchParams.get("canceled");
+
+        if (success === "true") {
+            setPaymentModalState({ open: true, status: "success" });
+        } else if (canceled === "true") {
+            setPaymentModalState({ open: true, status: "canceled" });
+        }
+    }, [searchParams]);
+
+    const handlePaymentClose = () => {
+        setPaymentModalState(prev => ({ ...prev, open: false }));
+        router.replace("/voice", { scroll: false });
+    };
 
     const handleGetExtension = async () => {
         const supabase = createClient();
@@ -255,6 +283,13 @@ export default function VoicePage() {
 
             <ExtensionPaymentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
             <LoginRequiredModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
+
+            <PaymentStatusModal
+                isOpen={paymentModalState.open}
+                status={paymentModalState.status}
+                onClose={handlePaymentClose}
+                itemName="Cinematic Voice Extension"
+            />
         </div>
     );
 }
@@ -302,3 +337,11 @@ function FeatureCard({ icon, title, description }: { icon: React.ReactNode, titl
     )
 }
 
+
+export default function VoicePage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-[#050505] flex items-center justify-center text-white">Loading...</div>}>
+            <VoiceContent />
+        </Suspense>
+    );
+}

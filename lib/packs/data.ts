@@ -59,7 +59,7 @@ export const packs: Pack[] = [
 
     // Family Packs
     {
-        id: "mom-pack",
+        id: "mom/milf-pack",
         title: "Mom Bot Pack + Images",
         description: "5 caring, strict, and loving mother figures.",
         price: 5,

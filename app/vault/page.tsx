@@ -142,6 +142,7 @@ function VaultContent() {
                 isOpen={modalState.open}
                 status={modalState.status}
                 onClose={handleClose}
+                itemName={selectedPack?.name || "Vault Pack"}
             />
 
             {buyModalOpen && selectedPack && (

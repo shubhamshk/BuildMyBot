@@ -8,9 +8,10 @@ interface PaymentStatusModalProps {
     isOpen: boolean;
     onClose: () => void;
     status: "success" | "canceled";
+    itemName?: string;
 }
 
-export function PaymentStatusModal({ isOpen, onClose, status }: PaymentStatusModalProps) {
+export function PaymentStatusModal({ isOpen, onClose, status, itemName }: PaymentStatusModalProps) {
     const router = useRouter();
 
     if (!isOpen) return null;
@@ -70,7 +71,14 @@ export function PaymentStatusModal({ isOpen, onClose, status }: PaymentStatusMod
                                     className="text-neutral-300 mb-8 leading-relaxed"
                                 >
                                     {isSuccess
-                                        ? "Thank you for your purchase. Your pack content is being prepared and will be sent to your email address within the next few hours."
+                                        ? (
+                                            <>
+                                                Thanks for purchasing <span className="text-white font-bold">{itemName || "your pack"}</span>!
+                                                <div className="mt-4 text-sm text-neutral-400">
+                                                    The pack will be delivered to your email address within a few hours.
+                                                </div>
+                                            </>
+                                        )
                                         : "The payment process was canceled. No charges were made. You can try again whenever you're ready."
                                     }
                                 </motion.p>
@@ -80,12 +88,14 @@ export function PaymentStatusModal({ isOpen, onClose, status }: PaymentStatusMod
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.4 }}
-                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 mb-8 flex items-start gap-3"
+                                        className="w-full bg-white/5 border border-white/10 rounded-xl p-4 mb-8 space-y-3"
                                     >
-                                        <Mail className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
-                                        <p className="text-xs text-left text-neutral-400">
-                                            Please check your spam/junk folder if you don't see an email from <span className="text-white font-semibold">Characteria</span> shortly.
-                                        </p>
+                                        <div className="flex items-start gap-3">
+                                            <Mail className="w-5 h-5 text-amber-500 mt-0.5 shrink-0" />
+                                            <p className="text-xs text-left text-neutral-400">
+                                                If you have any queries, join our <a href="#" className="text-amber-400 hover:text-amber-300 underline">Discord server</a> or mail us at <a href="mailto:designbyshk@gmail.com" className="text-white hover:text-neutral-200 underline">designbyshk@gmail.com</a>.
+                                            </p>
+                                        </div>
                                     </motion.div>
                                 ) : (
                                     <motion.div
