@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useCallback } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { Mic, Sparkles, Wand2, PlayCircle, Fingerprint, Volume2, ArrowRight } from "lucide-react";
 import { ResponsiveNavbar } from "@/components/responsive-navbar";
@@ -25,16 +25,51 @@ function VoiceContent() {
         status: "success" | "canceled";
     }>({ open: false, status: "success" });
 
+    const [verifying, setVerifying] = useState(false);
+
+    const verifyPurchase = useCallback(async () => {
+        if (verifying) return;
+        setVerifying(true);
+        try {
+            console.log("Starting purchase verification...");
+            // Poll for verification success - 5 attempts
+            for (let i = 0; i < 5; i++) {
+                const res = await fetch("/api/paypal/verify-subscription", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) {
+                        console.log("Purchase verified successfully:", data);
+                        // Refresh router to update any server components if needed
+                        router.refresh();
+                        return; // Exit on success
+                    }
+                }
+                // Wait 2 seconds before retry
+                await new Promise(r => setTimeout(r, 2000));
+            }
+            console.log("Verification polling finished without confirmation (could be pending).");
+        } catch (error) {
+            console.error("Verification error:", error);
+        } finally {
+            setVerifying(false);
+        }
+    }, [verifying, router]);
+
     useEffect(() => {
         const success = searchParams.get("success");
         const canceled = searchParams.get("canceled");
 
         if (success === "true") {
             setPaymentModalState({ open: true, status: "success" });
+            verifyPurchase();
         } else if (canceled === "true") {
             setPaymentModalState({ open: true, status: "canceled" });
         }
-    }, [searchParams]);
+    }, [searchParams, verifyPurchase]);
 
     const handlePaymentClose = () => {
         setPaymentModalState(prev => ({ ...prev, open: false }));

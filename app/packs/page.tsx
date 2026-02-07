@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { PaymentStatusModal } from "@/components/modals/PaymentSuccessModal";
 import { PacksSection } from "@/components/packs-section";
@@ -16,18 +16,45 @@ function PacksContent() {
     }>({ open: false, status: "success" });
 
     const [itemName, setItemName] = useState("");
+    const [verifying, setVerifying] = useState(false);
+
+    const verifyPurchase = useCallback(async () => {
+        if (verifying) return;
+        setVerifying(true);
+        try {
+            console.log("Starting purchase verification...");
+            // Poll for verification success - 5 attempts
+            for (let i = 0; i < 5; i++) {
+                const res = await fetch("/api/paypal/verify-subscription", {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.success) {
+                        console.log("Purchase verified successfully:", data);
+                        // Refresh router to update any server components if needed
+                        router.refresh();
+                        return; // Exit on success
+                    }
+                }
+                // Wait 2 seconds before retry
+                await new Promise(r => setTimeout(r, 2000));
+            }
+            console.log("Verification polling finished without confirmation (could be pending).");
+        } catch (error) {
+            console.error("Verification error:", error);
+        } finally {
+            setVerifying(false);
+        }
+    }, [verifying, router]);
 
     useEffect(() => {
         const success = searchParams.get("success");
         const canceled = searchParams.get("canceled");
         const plan = searchParams.get("plan");
 
-        // Simple mapping or decoding if plan ID is passed. 
-        // For better UX, we could map ID to Name, but for now we fallback to "Pack".
-        // The URL params might contain the Plan ID or Plan Name depending on how we construct redirect.
-        // Assuming we might want to pass name in URL or just generic.
-        // Let's rely on backend redirect to possibly include name, or just generic.
-        // Actually, let's try to map generic IDs if possible or just use what we have.
         if (plan) {
             // Optional: Map common IDs to readability if needed, or just format
             const formattedName = plan.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
@@ -36,10 +63,13 @@ function PacksContent() {
 
         if (success === "true") {
             setModalState({ open: true, status: "success" });
+            // Verify the purchase in the background to ensure DB status is updated
+            verifyPurchase();
         } else if (canceled === "true") {
             setModalState({ open: true, status: "canceled" });
         }
-    }, [searchParams]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [searchParams, verifyPurchase]);
 
     const handleClose = () => {
         setModalState(prev => ({ ...prev, open: false }));

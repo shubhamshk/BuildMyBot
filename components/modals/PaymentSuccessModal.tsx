@@ -64,7 +64,7 @@ export function PaymentStatusModal({ isOpen, onClose, status, itemName }: Paymen
                                     <div className={`h-1 w-16 bg-gradient-to-r ${isSuccess ? 'from-transparent via-amber-500 to-transparent' : 'from-transparent via-red-500 to-transparent'} mx-auto mb-6`} />
                                 </motion.div>
 
-                                <motion.p
+                                <motion.div
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ delay: 0.3 }}
@@ -81,7 +81,7 @@ export function PaymentStatusModal({ isOpen, onClose, status, itemName }: Paymen
                                         )
                                         : "The payment process was canceled. No charges were made. You can try again whenever you're ready."
                                     }
-                                </motion.p>
+                                </motion.div>
 
                                 {isSuccess ? (
                                     <motion.div
