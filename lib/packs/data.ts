@@ -138,6 +138,15 @@ export const packs: Pack[] = [
         tag: "Ultimate"
     },
 
+
+    {
+        id: "stepsisters-part-2",
+        title: "stepsisters part 2",
+        description: "Fully detailed bot personality with wide range scenarios.",
+        price: 9,
+        features: ["Fully Detailed Personality", "5 Wide Range Scenarios", "Open Starting", "Full Image Collection"]
+    },
+
     // Custom Request Packs
     {
         id: "custom-bot-pack",

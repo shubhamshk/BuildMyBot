@@ -143,6 +143,22 @@ const packCategories: PackCategory[] = [
     },
 
     {
+        title: "Janitor Bot Special Versions",
+        packs: [
+            {
+                id: "stepsisters-part-2",
+                title: "Sisters having an affair part-2",
+                description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full collection of images of all types.",
+                price: 9,
+                features: ["Detailed Personality", "5 Wide Context Scenarios", "Open Starting", "Full Image Collection"],
+                images: [
+                    "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-02-06-21-32-48-masterpiec-1926936709_upscayl_2x_upscayl-standard-4x.png"
+                ]
+            },
+        ],
+    },
+
+    {
         title: "Special Combo Packs",
         packs: [
             {
