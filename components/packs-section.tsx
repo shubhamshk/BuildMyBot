@@ -146,6 +146,16 @@ const packCategories: PackCategory[] = [
         title: "Janitor Bot Special Versions",
         packs: [
             {
+                id: "mom-friend-part-2",
+                title: "Mom Friends Pool Party Part-2",
+                description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full detailed lorebook and 8k images of all types.",
+                price: 9,
+                features: ["Detailed Personality", "5 Wide Context Scenarios", "Full Detailed Lorebook", "8k Images Collection"],
+                images: [
+                    "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-02-07-21-11-43-bestqualit-546016909(1).png"
+                ]
+            },
+            {
                 id: "stepsisters-part-2",
                 title: "Sisters having an affair part-2",
                 description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full collection of images of all types.",

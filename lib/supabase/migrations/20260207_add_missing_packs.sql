@@ -1,5 +1,7 @@
 -- Insert missing packs including stepsisters-part-2 and special packs
 INSERT INTO packs (id, title, description, price, features, category) VALUES
+('mom-friend-part-2', 'Mom Friends Pool Party Part-2', 'A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full detailed lorebook and 8k images of all types.', 9.00, ARRAY['Detailed Personality', '5 Wide Context Scenarios', 'Full Detailed Lorebook', '8k Images Collection'], 'Special Packs'),
+
 -- Stepsisters Part 2
 ('stepsisters-part-2', 'stepsisters part 2', 'Fully detailed bot personality with wide range scenarios.', 9.00, ARRAY['Fully Detailed Personality', '5 Wide Range Scenarios', 'Open Starting', 'Full Image Collection'], 'Family Packs'),
 
