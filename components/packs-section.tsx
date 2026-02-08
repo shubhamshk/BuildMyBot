@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, ArrowRight, Sparkles, Star, Zap, Crown } from "lucide-react";
 import { EmailBeforePaymentModal } from "@/components/modals/EmailBeforePaymentModal";
+import { CustomRequestModal } from "@/components/modals/CustomRequestModal";
 import { createClient } from "@/lib/supabase/client";
 import { LoginRequiredModal } from "@/components/login-required-modal";
 
@@ -143,6 +144,7 @@ const packCategories: PackCategory[] = [
     },
 
     {
+
         title: "Janitor Bot Special Versions",
         packs: [
             {
@@ -164,6 +166,23 @@ const packCategories: PackCategory[] = [
                 images: [
                     "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-02-06-21-32-48-masterpiec-1926936709_upscayl_2x_upscayl-standard-4x.png"
                 ]
+            },
+            {
+                id: "caring-stepsister-part-2",
+                title: "Caring Stepsister Part-2",
+                description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full detailed lorebook and 8k images of all types.",
+                price: 9,
+                features: ["Detailed Personality", "5 Wide Context Scenarios", "Full Detailed Lorebook", "8k Images Collection"],
+                images: [
+                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-19-01-12-animestyle-442315157.png"
+                ]
+            },
+            {
+                id: "custom-pack-collection-request",
+                title: "Ask for Custom Pack Collection",
+                description: "Request a custom pack collection. Type your request and we will make it.",
+                price: 9,
+                features: ["Custom Collection Request", "Any Theme/Genre", "Priority Support", "Satisfaction Guaranteed"],
             },
         ],
     },
@@ -221,6 +240,7 @@ const packCategories: PackCategory[] = [
 export function PacksSection() {
     const [selectedPack, setSelectedPack] = useState<PackItem | null>(null);
     const [modalOpen, setModalOpen] = useState(false);
+    const [customRequestModalOpen, setCustomRequestModalOpen] = useState(false);
     const [loginModalOpen, setLoginModalOpen] = useState(false);
 
     const handleBuy = async (pack: PackItem) => {
@@ -243,6 +263,16 @@ export function PacksSection() {
 
         // @ts-ignore
         setSelectedPack(modalItem);
+
+        if (pack.id === "custom-pack-collection-request") {
+            setCustomRequestModalOpen(true);
+        } else {
+            setModalOpen(true);
+        }
+    };
+
+    const handleCustomRequestConfirm = () => {
+        setCustomRequestModalOpen(false);
         setModalOpen(true);
     };
 
@@ -399,6 +429,16 @@ export function PacksSection() {
                 <EmailBeforePaymentModal
                     isOpen={modalOpen}
                     onClose={() => setModalOpen(false)}
+                    // @ts-ignore
+                    item={selectedPack}
+                />
+            )}
+
+            {customRequestModalOpen && selectedPack && (
+                <CustomRequestModal
+                    isOpen={customRequestModalOpen}
+                    onClose={() => setCustomRequestModalOpen(false)}
+                    onConfirm={handleCustomRequestConfirm}
                     // @ts-ignore
                     item={selectedPack}
                 />
