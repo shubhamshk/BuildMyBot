@@ -141,10 +141,31 @@ export const packs: Pack[] = [
 
     {
         id: "stepsisters-part-2",
-        title: "stepsisters part 2",
-        description: "Fully detailed bot personality with wide range scenarios.",
+        title: "Sisters having an affair part-2",
+        description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full collection of images of all types.",
         price: 9,
         features: ["Fully Detailed Personality", "5 Wide Range Scenarios", "Open Starting", "Full Image Collection"]
+    },
+    {
+        id: "mom-friend-part-2",
+        title: "Mom Friends Pool Party Part-2",
+        description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full detailed lorebook and 8k images of all types.",
+        price: 9,
+        features: ["Detailed Personality", "5 Wide Context Scenarios", "Full Detailed Lorebook", "8k Images Collection"]
+    },
+    {
+        id: "caring-stepsister-part-2",
+        title: "Caring Stepsister Part-2",
+        description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full detailed lorebook and 8k images of all types.",
+        price: 9,
+        features: ["Detailed Personality", "5 Wide Context Scenarios", "Full Detailed Lorebook", "8k Images Collection"]
+    },
+    {
+        id: "custom-pack-collection-request",
+        title: "Ask for Custom Pack Collection",
+        description: "Request a custom pack collection. Type your request and we will make it.",
+        price: 9,
+        features: ["Custom Collection Request", "Any Theme/Genre", "Priority Support", "Satisfaction Guaranteed"]
     },
 
     // Custom Request Packs

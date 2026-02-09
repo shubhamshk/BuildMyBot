@@ -14,7 +14,7 @@ const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === "live"
 // Plan pricing
 const PLAN_PRICING: Record<string, { amount: string, currency: string }> = {
   MONTHLY: { amount: "9.00", currency: "USD" },
-  YEARLY: { amount: "59.00", currency: "USD" },
+  YEARLY: { amount: "39.00", currency: "USD" },
   ULTIMATE: { amount: "399.00", currency: "USD" },
 };
 
@@ -250,16 +250,16 @@ export async function POST(request: NextRequest) {
             payee_preferred: "IMMEDIATE_PAYMENT_REQUIRED",
           },
           return_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://characteria.me"}${planType.startsWith("PRO_")
-              ? "/pricing"
-              : planType === "voice-extension-v1"
-                ? "/voice"
-                : "/packs"
+            ? "/pricing"
+            : planType === "voice-extension-v1"
+              ? "/voice"
+              : "/packs"
             }?success=true&plan=${planType}`,
           cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://characteria.me"}${planType.startsWith("PRO_")
-              ? "/pricing"
-              : planType === "voice-extension-v1"
-                ? "/voice"
-                : "/packs"
+            ? "/pricing"
+            : planType === "voice-extension-v1"
+              ? "/voice"
+              : "/packs"
             }?canceled=true`,
         },
       }),
