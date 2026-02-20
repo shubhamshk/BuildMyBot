@@ -39,6 +39,32 @@ export default function Home() {
         />
       </a>
 
+      {/* Floating Discount Logo */}
+      <a
+        href="#premium-family-roleplay-discount"
+        onClick={(e) => {
+          e.preventDefault();
+          const target = document.getElementById("premium-family-roleplay-discount");
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "center" });
+          }
+        }}
+        className="fixed bottom-6 right-6 md:bottom-8 md:right-8 xl:bottom-12 xl:right-12 z-[100] group flex items-center gap-3 bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 hover:from-red-500 hover:to-amber-400 transition-all p-3 md:px-5 md:py-3 rounded-full shadow-[0_0_30px_rgba(245,158,11,0.6)] border border-amber-300/50 cursor-pointer transform hover:-translate-y-1 hover:scale-105"
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-red-600 via-orange-500 to-amber-500 rounded-full animate-ping opacity-20 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none" />
+        <div className="relative z-10 flex items-center justify-center bg-white/20 rounded-full p-1.5 backdrop-blur-sm">
+          <span className="text-xl leading-none drop-shadow-md">🎁</span>
+        </div>
+        <div className="relative z-10 hidden sm:flex flex-col">
+          <span className="font-black text-[10px] md:text-xs uppercase tracking-widest text-red-100 drop-shadow-md leading-none mb-0.5">
+            Limited Time
+          </span>
+          <span className="font-extrabold text-white text-xs md:text-sm drop-shadow-lg leading-none">
+            Special Offer!
+          </span>
+        </div>
+      </a>
+
       {/* Responsive Navigation */}
       <ResponsiveNavbar scrolled={scrolled} />
 
@@ -47,27 +73,20 @@ export default function Home() {
         {/* Animated Background Slideshow */}
         <div className="absolute left-0 right-0 top-16 bottom-0 z-0 overflow-hidden opacity-80 mask-image-gradient">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background z-10" />
-          <div className="hero-slideshow-track flex h-full items-start" style={{ width: '350%' }}>
+          <div className="hero-slideshow-track flex h-full items-start" style={{ width: '200%' }}>
             {(() => {
               const images = [
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-53-32-(artist_ma-132961706.png?updatedAt=1770284763760",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-35-50-(artist_ma-2060442952.png?updatedAt=1770284763099",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-03-07-23-(artist_ma-1647098690.png?updatedAt=1770284741539",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-59-04-(artist_ma-526226082.png?updatedAt=1770284748791",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-38-38-(artist_ma-3962069391.png?updatedAt=1770284761909",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-42-27-(artist_ma-1635821493.png?updatedAt=1770284745598",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-15-06-54-(artist_ma-2605565792.png?updatedAt=1770284760436",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-12-54-27-(artist_ma-1728647033.png?updatedAt=1770284758508",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-43-32-(artist_ma-2822207232.png?updatedAt=1770284757872",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-15-07-52-(artist_ma-2968179715.png?updatedAt=1770284757151",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-46-01-(artist_ma-2239987079.png?updatedAt=1770284754592",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-54-16-(artist_ma-4111183455.png?updatedAt=1770284753742",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-46-25-(artist_ma-735908093.png?updatedAt=1770284750832",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-03-07-26-(artist_ma-307256307.png?updatedAt=1770284742972",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-14-40-54-(artist_ma-2265619227.png?updatedAt=1770284740441",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-48-24-(artist_ma-3268805038.png?updatedAt=1770284731298",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-02-57-58-(artist_ma-1970745954.png?updatedAt=1770284730512",
-                "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-01-13-12-05-07-(artist_ma-1444115690.png?updatedAt=1770284727418",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340551/TA-2026-01-13-03-07-26-_artist_ma-307256307_lcqyy6.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340550/TA-2026-01-13-11-54-14-_artist_ma-3018215985_xd3p7k.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340545/TA-2026-01-13-02-59-04-_artist_ma-526226082_gmmhye.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340549/TA-2026-01-13-15-07-52-_artist_ma-2968179715_imyzm1.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340548/TA-2026-01-13-14-53-32-_artist_ma-132961706_o7j9dq.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340549/TA-2026-01-13-02-57-58-_artist_ma-1970745954_onbuu1.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340546/TA-2026-01-13-14-46-25-_artist_ma-735908093_n32wlf.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340548/TA-2026-01-13-14-58-30-_artist_ma-271327577_v7ucn8.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340547/TA-2026-01-13-14-50-21-_artist_ma-3351602457_1_z19wh5.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
+                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340545/TA-2026-01-13-02-48-24-_artist_ma-3268805038_nwnjwv.png",
               ];
               const allImages = [...images, ...images];
               return (

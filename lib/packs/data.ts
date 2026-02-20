@@ -9,6 +9,8 @@ export interface Pack {
     features?: string[]; // Support for feature lists
     tag?: string;
     highlight?: boolean;
+    originalPrice?: number;
+    discountTimer?: boolean;
 }
 
 export interface Service {
@@ -63,14 +65,22 @@ export const packs: Pack[] = [
         title: "Mom Bot Pack + Images",
         description: "5 caring, strict, and loving mother figures.",
         price: 5,
-        features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"]
+        features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"],
+        images: [
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png",
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611117/TA-2026-01-26-19-52-26-masterpiec-3063664377_gopkx6.png"
+        ]
     },
     {
         id: "sister-pack",
         title: "Sister Bot Pack + Images",
         description: "5 dynamic sister archetypes for roleplay.",
         price: 5,
-        features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"]
+        features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"],
+        images: [
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp",
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610899/TA-2026-01-24-13-36-38-1womenhots-406331419_ckqv1l.png"
+        ]
     },
     {
         id: "family-roleplay",
@@ -79,7 +89,29 @@ export const packs: Pack[] = [
         price: 10,
         features: ["10 Interactive Bots", "Interconnected Lore", "Image Collection", "Exclusive Images"],
         tag: "Best Value",
-        highlight: true
+        highlight: true,
+        images: [
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png"
+        ]
+    },
+
+    // New 24hr Premium Offer Pack
+    {
+        id: "premium-family-roleplay-discount",
+        title: "Family Roleplay Bot Pack + Images Premium Edition",
+        description: "Premium 8k images block with nice images and complete bot setups.",
+        price: 39,
+        originalPrice: 59,
+        discountTimer: true,
+        features: ["Premium 8k Images (150+ images)", "Nice images", "10 Premium bots with images + personality", "Demand 1 bot creation"],
+        tag: "Special Offer",
+        highlight: true,
+        images: [
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
+        ]
     },
 
     // NSFW Free Image Packs
@@ -97,13 +129,7 @@ export const packs: Pack[] = [
         price: 9,
         features: ["50+ Safe Images", "High Resolution", "Anime & Realistic", "No Explicit Content"]
     },
-    {
-        id: "family-safe-images",
-        title: "Family NSFW Free Images",
-        description: "Complete family collection in a safe, wholesome format.",
-        price: 9,
-        features: ["100+ Safe Images", "Group Scenes", "High Resolution", "Wholesome Themes"]
-    },
+
     {
         id: "nsfw-safe-prompt-pack", // Matching the UI ID
         title: "NSFW-Safe Image + Prompt Pack",
@@ -192,7 +218,7 @@ export const services: Service[] = [
         description: "A fully fleshed-out character based on your specifications. Includes backstory, personality, appearance prompts, and a custom generated character image.",
         price: 10,
         deliveryTime: "24-48 hours",
-        image: "https://ik.imagekit.io/tcxzbwccr/t_eUbzWr7C349v92sr.webp",
+        image: "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp",
     },
     {
         id: "multi-character-story",
@@ -200,7 +226,7 @@ export const services: Service[] = [
         description: "A set of characters with intertwined backstories and a world setting. Includes custom images for each character and designed interactions.",
         price: 25,
         deliveryTime: "3-5 days",
-        image: "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-03-22-07-48-first-pers-2939673392_upscayl_4x_upscayl-standard-4x.png",
+        image: "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
     },
     {
         id: "advanced-niche-request",
@@ -209,7 +235,7 @@ export const services: Service[] = [
         price: 50,
         priceLabel: "50+",
         deliveryTime: "Agreed upon review",
-        image: "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-03-11-41-1girl,solo-521248144.png",
+        image: "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png",
     },
 ];
 

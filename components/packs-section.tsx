@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CheckCircle2, ArrowRight, Sparkles, Star, Zap, Crown } from "lucide-react";
 import { EmailBeforePaymentModal } from "@/components/modals/EmailBeforePaymentModal";
@@ -14,6 +14,8 @@ interface PackItem {
     title: string;
     description: string;
     price: number;
+    originalPrice?: number;
+    discountTimer?: boolean;
     features: string[];
     tag?: string;
     highlight?: boolean;
@@ -37,12 +39,9 @@ const packCategories: PackCategory[] = [
                 price: 5,
                 features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"],
                 images: [
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-01-53-38-POVfrombed-1411758745(1)_upscayl_2x_upscayl-standard-4x.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-12-51-matureMILF-841614612_upscayl_4x_upscayl-standard-4x.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133984/t_eUbzWr7C349v92sr_eodvfp.webp",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134164/TA-2026-01-21-18-22-52-score_9_sc-2449781985_bl9aos.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135024/t_EQXTRWTmUgqGwyUF_upscayl_2x_upscayl-standard-4x_kagwpz.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135054/TA-2026-01-11-22-49-23-masterpiec-2368326371_yqxt8i.png"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611117/TA-2026-01-26-19-52-26-masterpiec-3063664377_gopkx6.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp"
                 ]
             },
             {
@@ -52,11 +51,9 @@ const packCategories: PackCategory[] = [
                 price: 5,
                 features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"],
                 images: [
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-19-01-12-animestyle-442315157.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-35-01-highlydeta-2134375126.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-18-57-45-animestyle-1988660763.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133937/TA-2026-01-29-09-35-53-animestyle-4228064067_frxmko.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133983/t_XPLx9iigGee7M9rB_1_bxwcd3.webp"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610899/TA-2026-01-24-13-36-38-1womenhots-406331419_ckqv1l.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png"
                 ]
             },
             {
@@ -68,18 +65,9 @@ const packCategories: PackCategory[] = [
                 tag: "Best Value",
                 highlight: true,
                 images: [
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-29-16-03-18-(artist_ma-1599522622.png",
-                    "https://ik.imagekit.io/tcxzbwccr/t_eUbzWr7C349v92sr.webp",
-                    "https://ik.imagekit.io/tcxzbwccr/t_XWuBYzKyGT9kDy3D.webp",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-03-22-07-48-first-pers-2939673392_upscayl_4x_upscayl-standard-4x.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-27-10-22-12-(artist_ma-2812263224.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-31-22-56-24-(artist_ma-2122214158.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-03-11-41-1girl,solo-521248144.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135958/TA-2026-02-02-00-12-45-matureMILF-1334124762_ckrzn4.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770135899/TA-2026-02-02-01-53-38-POVfrombed-1411758745_1__upscayl_2x_upscayl-standard-4x_dredzv.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134156/t_GkCnTjunfZ3Hwcu2_upscayl_2x_upscayl-standard-4x_z5jxry.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134131/t_DtuRNjTSZ5Fp96D3_lvlwu4.webp",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133984/t_eUbzWr7C349v92sr_eodvfp.webp"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
                 ]
             },
         ],
@@ -88,16 +76,30 @@ const packCategories: PackCategory[] = [
         title: "NSFW Free Image Packs",
         packs: [
             {
+                id: "premium-family-roleplay-discount",
+                title: "Family Roleplay Bot Pack + Images Premium Edition",
+                description: "Premium 8k images block with nice images and complete bot setups.",
+                price: 39,
+                originalPrice: 59,
+                discountTimer: true,
+                features: ["Premium 8k Images (150+ images)", "Nice images", "10 Premium bots with images + personality", "Demand 1 bot creation"],
+                tag: "Special Offer",
+                highlight: true,
+                images: [
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
+                ]
+            },
+            {
                 id: "mom-safe-images",
                 title: "Mom NSFW Free Images",
                 description: "High-quality, safe-for-work images of Mom characters.",
                 price: 9,
                 features: ["best Images collection", "High Resolution", "Variety of Poses", "No Explicit Content"],
                 images: [
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-01-53-38-POVfrombed-1411758745(1)_upscayl_2x_upscayl-standard-4x.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-12-51-matureMILF-841614612_upscayl_4x_upscayl-standard-4x.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770133984/t_eUbzWr7C349v92sr_eodvfp.webp",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134164/TA-2026-01-21-18-22-52-score_9_sc-2449781985_bl9aos.png"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611117/TA-2026-01-26-19-52-26-masterpiec-3063664377_gopkx6.png"
                 ]
             },
             {
@@ -107,26 +109,11 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["best Images collection", "High Resolution", "Anime & Realistic", "No Explicit Content"],
                 images: [
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-19-01-12-animestyle-442315157.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-00-35-01-highlydeta-2134375126.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-18-57-45-animestyle-1988660763.png",
-                    "https://ik.imagekit.io/tcxzbwccr/t_XWuBYzKyGT9kDy3D.webp"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610899/TA-2026-01-24-13-36-38-1womenhots-406331419_ckqv1l.png"
                 ]
             },
-            {
-                id: "family-safe-images",
-                title: "Family NSFW Free Images",
-                description: "Complete family collection in a safe, wholesome format.",
-                price: 9,
-                features: ["best Images collection", "Group Scenes", "High Resolution", "Wholesome Themes"],
-                images: [
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-29-16-03-18-(artist_ma-1599522622.png",
-                    "https://ik.imagekit.io/tcxzbwccr/t_eUbzWr7C349v92sr.webp",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-03-22-07-48-first-pers-2939673392_upscayl_4x_upscayl-standard-4x.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-27-10-22-12-(artist_ma-2812263224.png",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-31-22-56-24-(artist_ma-2122214158.png"
-                ]
-            },
+
             {
                 id: "nsfw-safe-prompt-pack",
                 title: "NSFW-Safe Image + Prompt Pack",
@@ -134,10 +121,9 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["Tasteful Prompts", "Mature Themes (Safe)", "Artistic Guidance", "Avoid Filters"],
                 images: [
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-02-03-11-41-1girl,solo-521248144.png",
-                    "https://ik.imagekit.io/tcxzbwccr/t_XPLx9iigGee7M9rB_1_bxwcd3.webp",
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-01-29-09-35-53-animestyle-4228064067_frxmko.png",
-                    "https://res.cloudinary.com/dkwxxfewv/image/upload/v1770134043/TA-2026-01-26-19-50-40-masterpiec-3871801966_gvkv6e.png"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611117/TA-2026-01-26-19-52-26-masterpiec-3063664377_gopkx6.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png"
                 ]
             },
         ],
@@ -154,7 +140,7 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["Detailed Personality", "5 Wide Context Scenarios", "Full Detailed Lorebook", "8k Images Collection"],
                 images: [
-                    "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-02-07-21-11-43-bestqualit-546016909(1).png"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png"
                 ]
             },
             {
@@ -164,7 +150,7 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["Detailed Personality", "5 Wide Context Scenarios", "Open Starting", "Full Image Collection"],
                 images: [
-                    "https://ik.imagekit.io/tcxzbwccr/upscayl_png_upscayl-standard-4x_4x/TA-2026-02-06-21-32-48-masterpiec-1926936709_upscayl_2x_upscayl-standard-4x.png"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
                 ]
             },
             {
@@ -174,7 +160,7 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["Detailed Personality", "5 Wide Context Scenarios", "Full Detailed Lorebook", "8k Images Collection"],
                 images: [
-                    "https://ik.imagekit.io/tcxzbwccr/TA-2026-02-01-19-01-12-animestyle-442315157.png"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp"
                 ]
             },
             {
@@ -236,6 +222,33 @@ const packCategories: PackCategory[] = [
         ],
     },
 ];
+
+function DiscountTimer() {
+    const [timeLeft, setTimeLeft] = useState(24 * 60 * 60);
+
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => (prev > 0 ? prev - 1 : 0));
+        }, 1000);
+        return () => clearInterval(timer);
+    }, []);
+
+    const hours = Math.floor(timeLeft / 3600);
+    const minutes = Math.floor((timeLeft % 3600) / 60);
+    const seconds = timeLeft % 60;
+
+    return (
+        <div className="flex items-center gap-2 mt-3 bg-gradient-to-r from-red-500/10 to-orange-500/10 border border-red-500/20 px-3 py-1.5 rounded-full w-fit shadow-[0_0_15px_-3px_rgba(239,68,68,0.3)]">
+            <span className="text-red-500 text-[10px] md:text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+                <Zap className="w-3 h-3" />
+                Special Offer Ends In:
+            </span>
+            <span className="text-red-400 font-mono text-xs md:text-sm font-black tracking-widest drop-shadow-md">
+                {String(hours).padStart(2, '0')}:{String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
+            </span>
+        </div>
+    );
+}
 
 export function PacksSection() {
     const [selectedPack, setSelectedPack] = useState<PackItem | null>(null);
@@ -458,20 +471,33 @@ function PackCard({ pack, index, onBuy, isCompact }: { pack: PackItem; index: nu
 
     return (
         <motion.div
+            id={pack.id}
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.1 }}
-            className="h-full"
+            className={`h-full relative ${pack.discountTimer ? 'z-20' : 'z-10'}`}
         >
+            {/* External Badge for Discount Timer Packs */}
+            {isHighlight && pack.discountTimer && (
+                <div className="absolute -top-4 -right-2 md:-right-4 z-40">
+                    <div className="bg-gradient-to-r from-amber-400 to-orange-500 text-[#3d1a00] text-[11px] md:text-xs font-black px-4 py-1.5 rounded-full flex items-center gap-1 shadow-[0_8px_20px_rgba(245,158,11,0.6)] border border-amber-200 uppercase tracking-widest transform hover:scale-105 transition-transform">
+                        <Star className="w-4 h-4 fill-current" />
+                        {pack.tag}
+                    </div>
+                </div>
+            )}
+
             <motion.div
                 className={`
           group relative h-full flex flex-col
           rounded-2xl md:rounded-3xl overflow-hidden
           transition-all duration-500
-          ${isHighlight
-                        ? 'border border-amber-500/50 shadow-[0_0_40px_-10px_rgba(245,158,11,0.3)]'
-                        : 'border border-white/10 hover:border-amber-500/30'
+          ${pack.discountTimer
+                        ? 'border-2 border-amber-500 shadow-[0_0_60px_-15px_rgba(245,158,11,0.6)]'
+                        : isHighlight
+                            ? 'border border-amber-500/50 shadow-[0_0_40px_-10px_rgba(245,158,11,0.3)]'
+                            : 'border border-white/10 hover:border-amber-500/30'
                     }
         `}
                 whileHover={{
@@ -487,17 +513,18 @@ function PackCard({ pack, index, onBuy, isCompact }: { pack: PackItem; index: nu
                             alt={pack.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-[#0a0a0a]/80 backdrop-blur-sm group-hover:bg-[#0a0a0a]/70 transition-colors duration-500" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/50 to-transparent opacity-90" />
+                        <div className="absolute inset-0 bg-[#0a0a0a]/80 backdrop-blur-[2px] group-hover:bg-[#0a0a0a]/60 transition-colors duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent opacity-90" />
                     </div>
                 ) : (
                     <div className="absolute inset-0 bg-[#0a0a0a]/90 backdrop-blur-xl z-0" />
                 )}
 
                 {/* Glow Effects (on top of background but behind text) */}
-                <div className={`absolute inset-0 z-0 bg-gradient-to-br ${isHighlight ? 'from-amber-500/10 via-transparent to-violet-500/10' : 'from-white/5 via-transparent to-white/5'} opacity-100 transition-opacity duration-500 mix-blend-overlay pointer-events-none`} />
+                <div className={`absolute inset-0 z-0 bg-gradient-to-br ${isHighlight ? 'from-amber-500/20 via-transparent to-violet-500/10' : 'from-white/5 via-transparent to-white/5'} opacity-100 transition-opacity duration-500 mix-blend-overlay pointer-events-none`} />
 
-                {isHighlight && (
+                {/* Inner Badge for standard highlights */}
+                {isHighlight && !pack.discountTimer && (
                     <div className="absolute top-0 right-0 p-4 z-20">
                         <div className="bg-amber-500 text-black text-[10px] md:text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg">
                             <Sparkles className="w-3 h-3" />
@@ -517,10 +544,14 @@ function PackCard({ pack, index, onBuy, isCompact }: { pack: PackItem; index: nu
                     </div>
 
                     <div className="mb-6">
-                        <div className="flex items-baseline gap-1">
+                        <div className="flex items-baseline gap-2">
                             <span className={`text-2xl ${isCompact ? 'md:text-2xl' : 'md:text-3xl'} font-bold text-white drop-shadow-md`}>${pack.price}</span>
+                            {pack.originalPrice && (
+                                <span className="text-neutral-500 text-sm md:text-base font-bold line-through drop-shadow-sm">${pack.originalPrice}</span>
+                            )}
                             <span className="text-neutral-400 text-xs md:text-sm">/ pack</span>
                         </div>
+                        {pack.discountTimer && <DiscountTimer />}
                     </div>
 
                     <div className="flex-grow space-y-2 md:space-y-3 mb-6 md:mb-8">

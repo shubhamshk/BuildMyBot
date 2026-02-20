@@ -33,6 +33,11 @@
   * {
     @apply border-border;
   }
+
+  html {
+    font-size: 15px;
+  }
+
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
@@ -62,13 +67,14 @@
   0% {
     transform: translateX(0);
   }
+
   100% {
     transform: translateX(-50%);
   }
 }
 
 .hero-slideshow-track {
-  animation: slideLeft 60s linear infinite;
+  animation: slideLeft 30s linear infinite;
   will-change: transform;
 }
 
@@ -82,6 +88,6 @@
 /* Mobile optimization: slower animation */
 @media (max-width: 768px) {
   .hero-slideshow-track {
-    animation-duration: 80s;
+    animation-duration: 70s;
   }
 }
