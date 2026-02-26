@@ -46,16 +46,16 @@ export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
             Family Packs
           </Link>
 
-          <Link
-            href="/courses"
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isActive('/courses')
+          {/* <Link
+            href="/sample-bots"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isActive('/sample-bots')
               ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10"
               : "text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60"
               }`}
           >
             <GraduationCap className="w-4 h-4" />
-            Bot Creation
-          </Link>
+            Sample Bots
+          </Link> */}
           <Link
             href="/voice"
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isActive('/voice')
@@ -115,14 +115,14 @@ export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
             Family Packs
           </Link>
 
-          <Link
-            href="/courses"
+          {/* <Link
+            href="/sample-bots"
             className="px-3 py-2 rounded-lg text-base font-medium text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-colors flex items-center gap-2"
             onClick={() => setMenuOpen(false)}
           >
             <GraduationCap className="w-4 h-4" />
-            Courses
-          </Link>
+            Sample Bots
+          </Link> */}
           <Link
             href="/voice"
             className="px-3 py-2 rounded-lg text-base font-medium text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-colors flex items-center gap-2"

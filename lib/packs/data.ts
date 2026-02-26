@@ -88,7 +88,7 @@ export const packs: Pack[] = [
         description: "Complete household dynamic with 10 bots.",
         price: 10,
         features: ["10 Interactive Bots", "Interconnected Lore", "Image Collection", "Exclusive Images"],
-        tag: "Best Value",
+        tag: "Best Selling",
         highlight: true,
         images: [
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
@@ -105,7 +105,7 @@ export const packs: Pack[] = [
         originalPrice: 59,
         discountTimer: true,
         features: ["Premium 8k Images (150+ images)", "Nice images", "10 Premium bots with images + personality", "Demand 1 bot creation"],
-        tag: "Special Offer",
+        tag: "Best Value",
         highlight: true,
         images: [
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
@@ -136,6 +136,20 @@ export const packs: Pack[] = [
         description: "Tasteful and safe prompts designed for more mature themes without crossing boundaries.",
         price: 9,
         features: ["Tasteful Prompts", "Mature Themes (Safe)", "Artistic Guidance", "Avoid Filters"]
+    },
+    {
+        id: "affair-bot-pack",
+        title: "She is having an affair , full bot + images",
+        description: "A fully detailed bot personality section with an affair scenario and full image collection.",
+        price: 10,
+        originalPrice: 19,
+        discountTimer: true,
+        features: ["Detailed Personality", "Affair Scenario", "Open Starting", "Full Image Collection"],
+        tag: "Today's Special Pack",
+        highlight: true,
+        images: [
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1772128439/TA-2026-02-26-19-56-55-Intimatepa-1328197427_asi3q7.png"
+        ]
     },
 
     // Special Combo Packs

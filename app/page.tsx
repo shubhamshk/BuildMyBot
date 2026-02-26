@@ -180,13 +180,20 @@ export default function Home() {
             transition={{ delay: 0.5, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="flex justify-center mt-6"
           >
-            <Link
-              href="/voice"
-              className="px-10 py-3 rounded-full font-bold text-sm md:text-base flex items-center gap-3 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-[0_0_30px_rgba(124,58,237,0.4)] transition-all transform hover:scale-105 border border-white/10"
+            <a
+              href="#affair-bot-pack"
+              onClick={(e) => {
+                e.preventDefault();
+                const target = document.getElementById("affair-bot-pack");
+                if (target) {
+                  target.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+              }}
+              className="px-10 py-3 rounded-full font-bold text-sm md:text-base flex items-center gap-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white shadow-[0_0_30px_rgba(225,29,72,0.4)] transition-all transform hover:scale-105 border border-white/10"
             >
-              <Mic className="w-5 h-5" />
-              Get voice in janitor bot
-            </Link>
+              <Sparkles className="w-5 h-5" />
+              Today's Special Bot Packs
+            </a>
           </motion.div>
 
           <motion.div

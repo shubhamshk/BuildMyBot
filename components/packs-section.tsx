@@ -62,6 +62,22 @@ const packCategories: PackCategory[] = [
                 description: "Complete household dynamic with 10 bots.",
                 price: 10,
                 features: ["10 Interactive Bots", "Interconnected Lore", "Image Collection", "Exclusive Images"],
+                tag: "Best Selling",
+                highlight: true,
+                images: [
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
+                ]
+            },
+            {
+                id: "premium-family-roleplay-discount",
+                title: "Family Roleplay Bot Pack + Images Premium Edition",
+                description: "Premium 8k images block with nice images and complete bot setups.",
+                price: 39,
+                originalPrice: 59,
+                discountTimer: true,
+                features: ["Premium 8k Images (150+ images)", "Nice images", "10 Premium bots with images + personality", "Demand 1 bot creation"],
                 tag: "Best Value",
                 highlight: true,
                 images: [
@@ -73,22 +89,20 @@ const packCategories: PackCategory[] = [
         ],
     },
     {
-        title: "NSFW Free Image Packs",
+        title: "NSFW Free Image + bot Packs",
         packs: [
             {
-                id: "premium-family-roleplay-discount",
-                title: "Family Roleplay Bot Pack + Images Premium Edition",
-                description: "Premium 8k images block with nice images and complete bot setups.",
-                price: 39,
-                originalPrice: 59,
+                id: "affair-bot-pack",
+                title: "She is having an affair , full bot + images",
+                description: "A fully detailed bot personality section with an affair scenario and full image collection.",
+                price: 10,
+                originalPrice: 19,
                 discountTimer: true,
-                features: ["Premium 8k Images (150+ images)", "Nice images", "10 Premium bots with images + personality", "Demand 1 bot creation"],
-                tag: "Special Offer",
+                features: ["Detailed Personality", "Affair Scenario", "Open Starting", "Full Image Collection"],
+                tag: "Today's Special Pack",
                 highlight: true,
                 images: [
-                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
-                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
-                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1772128439/TA-2026-02-26-19-56-55-Intimatepa-1328197427_asi3q7.png"
                 ]
             },
             {
