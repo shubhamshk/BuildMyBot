@@ -182,6 +182,24 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../app/ultimate-pack/details/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/ultimate-pack/details">> = Specific
+  const handler = {} as typeof import("../../app/ultimate-pack/details/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/ultimate-pack/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/ultimate-pack">> = Specific
+  const handler = {} as typeof import("../../app/ultimate-pack/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/vault/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/vault">> = Specific

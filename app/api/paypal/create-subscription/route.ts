@@ -142,7 +142,7 @@ async function createPayPalPlan(
  */
 export async function POST(request: NextRequest) {
   try {
-    const { planType } = await request.json();
+    const { planType, customAmount } = await request.json();
 
     if (!planType) {
       return NextResponse.json(
@@ -175,7 +175,7 @@ export async function POST(request: NextRequest) {
       // Check if it's a Pack
       const pack = packs.find(p => p.id === planType) || specialPacks.find(p => p.id === planType);
       if (pack) {
-        amount = pack.price.toString();
+        amount = customAmount ? customAmount.toString() : pack.price.toString();
         // Ensure 2 decimal places
         if (!amount.includes(".")) amount += ".00";
         else {

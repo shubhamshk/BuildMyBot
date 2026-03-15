@@ -1,4 +1,3 @@
-
 export interface Pack {
     id: string;
     title: string;
@@ -139,12 +138,12 @@ export const packs: Pack[] = [
     },
     {
         id: "affair-bot-pack",
-        title: "She is having an affair , full bot + images",
-        description: "A fully detailed bot personality section with an affair scenario and full image collection.",
-        price: 10,
-        originalPrice: 19,
+        title: "full NSFW-Safe Image + Prompt Pack",
+        description: "A comprehensive collection of high-quality NSFW-safe images paired with detailed rendering prompts.",
+        price: 15,
+        originalPrice: 25,
         discountTimer: true,
-        features: ["Detailed Personality", "Affair Scenario", "Open Starting", "Full Image Collection"],
+        features: ["NSFW-Safe Images", "High-Quality Images", "Access to full Private Discord Server", "priority Access to new Updates"],
         tag: "Today's Special Pack",
         highlight: true,
         images: [
@@ -152,30 +151,21 @@ export const packs: Pack[] = [
         ]
     },
 
-    // Special Combo Packs
-    {
-        id: "bot-image",
-        title: "Full Bot + Image Pack",
-        description: "Characters with 50+ images each.",
-        price: 29,
-        features: ["5 Premium Bots", "250+ HD Images", "Consistent Faces", "Gallery Mode Access"]
-    },
-    {
-        id: "bot-prompt",
-        title: "Full Bot + Prompt Pack",
-        description: "Bots + The prompts to render them.",
-        price: 29,
-        features: ["Source Prompts Included", "Midjourney Guide", "Stable Diffusion LoRAs", "Commercial Use"],
-        tag: "For Creators"
-    },
+    // Super Saver Pack
     {
         id: "world-pack",
-        title: "Full Roleplay World",
-        description: "An entire universe in a box.",
-        price: 59,
-        features: ["20+ Linked Characters", "World Lore Bible", "Map Descriptions", "Campaign System"],
+        title: "Ultimate Collection Pack",
+        description: "The ultimate all-in-one mega bundle — get instant lifetime access to everything the platform has to offer. Includes 10,000+ high-resolution 8K images, all assets from every other pack combined, Janitor AI voice-enabled extension, private Discord channel access, custom image generation support, AI bot generation tools, and personal priority support. One pack. Everything. Forever.",
+        price: 99,
+        originalPrice: 149,
+        discountTimer: true,
+        features: ["10K+ High-Resolution 8K Images", "All Pack Assets Combined in One Bundle", "Private Discord Channels Access", "Janitor AI Voice-Enabled Extension", "Personal Priority Support for Any Bots", "Custom Image Generation Support", "AI Bot Generation Tools Included", "Lifetime Access to All Resources"],
         highlight: true,
-        tag: "Ultimate"
+        tag: "🔥 Limited Offer",
+        images: [
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1773594134/TA-2026-03-08-22-36-56-rawsensual-2523615903_gdxpnw.png",
+            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1772128439/TA-2026-02-26-19-56-55-Intimatepa-1328197427_asi3q7.png"
+        ]
     },
 
 

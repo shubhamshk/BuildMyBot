@@ -133,14 +133,14 @@ const packsToSync = [
         category: 'NSFW Free Image Packs'
     },
 
-    // Special Combo Packs
+    // Super Saver Pack
     {
         id: "bot-image",
         title: "Full Bot + Image Pack",
         description: "Characters with 50+ images each.",
         price: 29,
         features: ["5 Premium Bots", "250+ HD Images", "Consistent Faces", "Gallery Mode Access"],
-        category: 'Special Combo Packs'
+        category: 'Super Saver Pack'
     },
     {
         id: "bot-prompt",
@@ -148,7 +148,7 @@ const packsToSync = [
         description: "Bots + The prompts to render them.",
         price: 29,
         features: ["Source Prompts Included", "Midjourney Guide", "Stable Diffusion LoRAs", "Commercial Use"],
-        category: 'Special Combo Packs'
+        category: 'Super Saver Pack'
     },
     {
         id: "world-pack",
@@ -156,7 +156,7 @@ const packsToSync = [
         description: "An entire universe in a box.",
         price: 59,
         features: ["20+ Linked Characters", "World Lore Bible", "Map Descriptions", "Campaign System"],
-        category: 'Special Combo Packs'
+        category: 'Super Saver Pack'
     },
 
     // Special Packs / Courses (Missing in DB mostly)

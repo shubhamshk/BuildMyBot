@@ -33,9 +33,9 @@ INSERT INTO packs (id, title, description, price, features, image_list, category
 ('sister-safe-images', 'Sister NSFW Free Images', 'High-quality, safe-for-work images of Sister characters.', 9.00, ARRAY['best Images collection', 'High Resolution', 'Anime & Realistic', 'No Explicit Content'], NULL, 'NSFW Free Image Packs'),
 ('family-safe-images', 'Family NSFW Free Images', 'Complete family collection in a safe, wholesome format.', 9.00, ARRAY['best Images collection', 'Group Scenes', 'High Resolution', 'Wholesome Themes'], NULL, 'NSFW Free Image Packs'),
 ('nsfw-safe-prompt-pack', 'NSFW-Safe Image + Prompt Pack', 'Tasteful and safe prompts.', 9.00, ARRAY['Tasteful Prompts', 'Mature Themes (Safe)', 'Artistic Guidance', 'Avoid Filters'], NULL, 'NSFW Free Image Packs'),
-('bot-image', 'Full Bot + Image Pack', 'Characters with 50+ images each.', 29.00, ARRAY['5 Premium Bots', '250+ HD Images', 'Consistent Faces', 'Gallery Mode Access'], NULL, 'Special Combo Packs'),
-('bot-prompt', 'Full Bot + Prompt Pack', 'Bots + The prompts to render them.', 29.00, ARRAY['Source Prompts Included', 'Midjourney Guide', 'Stable Diffusion LoRAs', 'Commercial Use'], NULL, 'Special Combo Packs'),
-('world-pack', 'Full Roleplay World', 'An entire universe in a box.', 59.00, ARRAY['20+ Linked Characters', 'World Lore Bible', 'Map Descriptions', 'Campaign System'], NULL, 'Special Combo Packs'),
+('bot-image', 'Full Bot + Image Pack', 'Characters with 50+ images each.', 29.00, ARRAY['5 Premium Bots', '250+ HD Images', 'Consistent Faces', 'Gallery Mode Access'], NULL, 'Super Saver Pack'),
+('bot-prompt', 'Full Bot + Prompt Pack', 'Bots + The prompts to render them.', 29.00, ARRAY['Source Prompts Included', 'Midjourney Guide', 'Stable Diffusion LoRAs', 'Commercial Use'], NULL, 'Super Saver Pack'),
+('world-pack', 'Full Roleplay World', 'An entire universe in a box.', 59.00, ARRAY['20+ Linked Characters', 'World Lore Bible', 'Map Descriptions', 'Campaign System'], NULL, 'Super Saver Pack'),
 ('custom-bot-pack', '5 Custom Bot Creation Pack', 'Request any 5 bots you want.', 29.00, ARRAY['5 Custom Bots Request', 'Any User Defined Personality', 'Custom Image Generation', 'Priority Creation Support'], NULL, 'Custom Request Packs'),
 ('custom-image-pack', '1 Custom Image Pack', '1 Custom image of any character or type you want.', 19.00, ARRAY['1 Custom Image Request', 'Any Character / Style', 'High Resolution Generations', 'No Content Limitations'], NULL, 'Custom Request Packs')
 ON CONFLICT (id) DO UPDATE SET

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle2, ArrowRight, Sparkles, Star, Zap, Crown } from "lucide-react";
 import { EmailBeforePaymentModal } from "@/components/modals/EmailBeforePaymentModal";
@@ -93,12 +95,12 @@ const packCategories: PackCategory[] = [
         packs: [
             {
                 id: "affair-bot-pack",
-                title: "She is having an affair , full bot + images",
-                description: "A fully detailed bot personality section with an affair scenario and full image collection.",
-                price: 10,
-                originalPrice: 19,
+                title: "full NSFW-Safe Image + Prompt Pack",
+                description: "A comprehensive collection of high-quality NSFW-safe images paired with detailed rendering prompts.",
+                price: 15,
+                originalPrice: 25,
                 discountTimer: true,
-                features: ["Detailed Personality", "Affair Scenario", "Open Starting", "Full Image Collection"],
+                features: ["NSFW-Safe Images", "High-Quality Images", "Access to full Private Discord Server", "priority Access to new Updates"],
                 tag: "Today's Special Pack",
                 highlight: true,
                 images: [
@@ -144,7 +146,27 @@ const packCategories: PackCategory[] = [
     },
 
     {
+        title: "Super Saver Pack",
+        packs: [
+            {
+                id: "world-pack",
+                title: "Ultimate Collection Pack",
+                description: "The ultimate all-in-one mega bundle — get instant lifetime access to everything the platform has to offer. Includes 10,000+ high-resolution 8K images, all assets from every other pack combined, Janitor AI voice-enabled extension, private Discord channel access, custom image generation support, AI bot generation tools, and personal priority support. One pack. Everything. Forever.",
+                price: 99,
+                originalPrice: 149,
+                discountTimer: true,
+                features: ["10K+ High-Resolution 8K Images", "All Pack Assets Combined in One Bundle", "Private Discord Channels Access", "Janitor AI Voice-Enabled Extension", "Personal Priority Support for Any Bots", "Custom Image Generation Support", "AI Bot Generation Tools Included", "Lifetime Access to All Resources"],
+                highlight: true,
+                tag: "🔥 Limited Offer",
+                images: [
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1773594134/TA-2026-03-08-22-36-56-rawsensual-2523615903_gdxpnw.png",
+                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1772128439/TA-2026-02-26-19-56-55-Intimatepa-1328197427_asi3q7.png"
+                ]
+            },
+        ],
+    },
 
+    {
         title: "Janitor Bot Special Versions",
         packs: [
             {
@@ -187,35 +209,7 @@ const packCategories: PackCategory[] = [
         ],
     },
 
-    {
-        title: "Special Combo Packs",
-        packs: [
-            {
-                id: "bot-image",
-                title: "Full Bot + Image Pack",
-                description: "Characters with 50+ images each.",
-                price: 29,
-                features: ["5 Premium Bots", "250+ HD Images", "Consistent Faces", "Gallery Mode Access"],
-            },
-            {
-                id: "bot-prompt",
-                title: "Full Bot + Prompt Pack",
-                description: "Bots + The prompts to render them.",
-                price: 29,
-                features: ["Source Prompts Included", "Midjourney Guide", "Stable Diffusion LoRAs", "Commercial Use"],
-                tag: "For Creators",
-            },
-            {
-                id: "world-pack",
-                title: "Full Roleplay World",
-                description: "An entire universe in a box.",
-                price: 59,
-                features: ["20+ Linked Characters", "World Lore Bible", "Map Descriptions", "Campaign System"],
-                highlight: true,
-                tag: "Ultimate",
-            },
-        ],
-    },
+
     {
         title: "Custom Request Packs",
         packs: [
@@ -270,7 +264,14 @@ export function PacksSection() {
     const [customRequestModalOpen, setCustomRequestModalOpen] = useState(false);
     const [loginModalOpen, setLoginModalOpen] = useState(false);
 
+    const router = useRouter();
+
     const handleBuy = async (pack: PackItem) => {
+        if (pack.id === "world-pack") {
+            router.push("/ultimate-pack");
+            return;
+        }
+
         const supabase = createClient();
         const { data: { user } } = await supabase.auth.getUser();
 
@@ -422,6 +423,108 @@ export function PacksSection() {
                             );
                         }
 
+                        if (category.title === "Super Saver Pack") {
+                            const pack = category.packs[0];
+                            return (
+                                <div key={category.title} className="relative py-4">
+                                    {/* Section Heading — centered */}
+                                    <div className="flex items-center justify-center gap-4 mb-10">
+                                        <div className="h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent w-16 md:w-48" />
+                                        <motion.h3
+                                            initial={{ opacity: 0, y: 10 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            className="text-2xl md:text-4xl font-black text-center text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-amber-400 to-amber-200 uppercase tracking-wider drop-shadow-[0_0_20px_rgba(245,158,11,0.5)]"
+                                        >
+                                            ⚡ Super Saver Pack
+                                        </motion.h3>
+                                        <div className="h-[1px] bg-gradient-to-r from-transparent via-amber-500/50 to-transparent w-16 md:w-48" />
+                                    </div>
+
+                                    {/* Hero Card — centered, wide */}
+                                    <div className="max-w-3xl mx-auto relative">
+                                        {/* Pulsing premium outer glow */}
+                                        <div className="absolute -inset-[3px] bg-gradient-to-br from-amber-400 via-orange-500 to-purple-600 rounded-[2rem] opacity-70 blur-lg animate-pulse pointer-events-none z-0" />
+                                        <div className="absolute -inset-[1px] bg-gradient-to-br from-amber-400 via-orange-500 to-purple-600 rounded-[2rem] opacity-60 z-0" />
+
+                                        <motion.div
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            whileInView={{ opacity: 1, scale: 1 }}
+                                            viewport={{ once: true }}
+                                            whileHover={{ y: -6, transition: { duration: 0.3 } }}
+                                            className="relative z-10 rounded-[1.9rem] overflow-hidden bg-[#080808] border border-amber-500/30 shadow-[0_0_80px_-10px_rgba(245,158,11,0.5)]"
+                                        >
+                                            {/* Background image */}
+                                            {pack.images && pack.images[0] && (
+                                                <div className="absolute inset-0 z-0">
+                                                    <img
+                                                        src={pack.images[0]}
+                                                        alt={pack.title}
+                                                        className="w-full h-full object-cover opacity-30"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-[#080808] via-[#080808]/80 to-[#080808]/40" />
+                                                </div>
+                                            )}
+
+                                            {/* Grid texture */}
+                                            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none z-0" />
+
+                                            <div className="relative z-10 p-8 md:p-12 text-center">
+                                                {/* Badge */}
+                                                <div className="flex justify-center mb-5">
+                                                    <span className="bg-gradient-to-r from-amber-400 to-orange-500 text-black text-xs font-black px-5 py-2 rounded-full flex items-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.6)] uppercase tracking-widest">
+                                                        <Crown className="w-3.5 h-3.5" />
+                                                        {pack.tag}
+                                                    </span>
+                                                </div>
+
+                                                {/* Title */}
+                                                <h4 className="text-3xl md:text-5xl font-extrabold text-white mb-4 drop-shadow-[0_2px_16px_rgba(245,158,11,0.4)]">
+                                                    {pack.title}
+                                                </h4>
+
+                                                {/* Description */}
+                                                <p className="text-neutral-300 text-sm md:text-base leading-relaxed max-w-xl mx-auto mb-6">
+                                                    {pack.description}
+                                                </p>
+
+                                                {/* Features grid */}
+                                                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-8">
+                                                    {pack.features.map((feature, i) => (
+                                                        <div key={i} className="flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 px-3 py-2.5 rounded-xl text-left">
+                                                            <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                                                            <span className="text-neutral-200 text-xs font-medium">{feature}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+
+                                                {/* Price + timer */}
+                                                <div className="flex flex-col items-center gap-3 mb-8">
+                                                    <div className="flex items-baseline gap-3 justify-center">
+                                                        <span className="text-5xl md:text-6xl font-black text-white drop-shadow-[0_2px_12px_rgba(245,158,11,0.5)]">${pack.price}</span>
+                                                        {pack.originalPrice && (
+                                                            <span className="text-neutral-500 text-xl font-bold line-through">${pack.originalPrice}</span>
+                                                        )}
+                                                        <span className="text-neutral-400 text-sm">/ pack</span>
+                                                    </div>
+                                                    <DiscountTimer />
+                                                </div>
+
+                                                {/* CTA */}
+                                                <button
+                                                    onClick={() => handleBuy(pack)}
+                                                    className="w-full max-w-sm mx-auto py-4 rounded-2xl font-black text-base flex items-center justify-center gap-2 bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-300 hover:to-orange-400 text-black shadow-[0_0_40px_rgba(245,158,11,0.5)] hover:shadow-[0_0_60px_rgba(245,158,11,0.7)] transition-all transform hover:scale-[1.03]"
+                                                >
+                                                    Unlock Everything Now
+                                                    <ArrowRight className="w-5 h-5" />
+                                                </button>
+                                            </div>
+                                        </motion.div>
+                                    </div>
+                                </div>
+                            );
+                        }
+
                         // Default Render for other categories
                         return (
                             <div key={category.title} id={category.title === "Family Packs" ? "family-packs" : undefined}>
@@ -433,7 +536,7 @@ export function PacksSection() {
                                 >
                                     {category.title}
                                 </motion.h3>
-                                <div className={`grid grid-cols-1 md:grid-cols-2 ${category.packs.length >= 4 ? 'lg:grid-cols-4' : 'lg:grid-cols-3'} gap-6 md:gap-8`}>
+                                <div className={`grid grid-cols-1 md:grid-cols-2 ${category.packs.length >= 4 ? 'lg:grid-cols-4' : category.packs.length === 2 ? 'lg:grid-cols-2 max-w-4xl mx-auto' : 'lg:grid-cols-3'} gap-6 md:gap-8`}>
                                     {category.packs.map((pack, index) => (
                                         <PackCard
                                             key={pack.id}
@@ -502,6 +605,10 @@ function PackCard({ pack, index, onBuy, isCompact }: { pack: PackItem; index: nu
                 </div>
             )}
 
+            {pack.id === "world-pack" && (
+                <div className="absolute -inset-[2px] bg-gradient-to-br from-amber-400 via-orange-500 to-purple-600 rounded-[1.25rem] md:rounded-[1.75rem] opacity-40 blur-md z-0 animate-pulse pointer-events-none" />
+            )}
+            
             <motion.div
                 className={`
           group relative h-full flex flex-col
@@ -509,13 +616,15 @@ function PackCard({ pack, index, onBuy, isCompact }: { pack: PackItem; index: nu
           transition-all duration-500
           ${pack.discountTimer
                         ? 'border-2 border-amber-500 shadow-[0_0_60px_-15px_rgba(245,158,11,0.6)]'
-                        : isHighlight
-                            ? 'border border-amber-500/50 shadow-[0_0_40px_-10px_rgba(245,158,11,0.3)]'
-                            : 'border border-white/10 hover:border-amber-500/30'
+                        : pack.id === "world-pack"
+                            ? 'border-2 border-amber-500 shadow-[0_0_50px_rgba(245,158,11,0.3)]'
+                            : isHighlight
+                                ? 'border border-amber-500/50 shadow-[0_0_40px_-10px_rgba(245,158,11,0.3)]'
+                                : 'border border-white/10 hover:border-amber-500/30'
                     }
         `}
                 whileHover={{
-                    y: -8,
+                    y: pack.id === "world-pack" ? -12 : -8,
                     transition: { duration: 0.3 }
                 }}
             >
@@ -581,15 +690,23 @@ function PackCard({ pack, index, onBuy, isCompact }: { pack: PackItem; index: nu
                         onClick={onBuy}
                         className={`
               w-full py-3 md:py-3.5 rounded-xl font-bold text-sm md:text-base flex items-center justify-center gap-2 transition-all duration-300 relative z-20
-              ${isHighlight
+              ${isHighlight && pack.id !== "world-pack"
                                 ? 'bg-amber-500 hover:bg-amber-400 text-black shadow-lg shadow-amber-500/20'
-                                : 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10'
+                                : pack.id === "world-pack"
+                                    ? 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-black shadow-[0_0_30px_rgba(245,158,11,0.4)]'
+                                    : 'bg-white/10 hover:bg-white/20 text-white backdrop-blur-md border border-white/10'
                             }
             `}
                     >
                         Unlock Now
                         <ArrowRight className="w-4 h-4" />
                     </button>
+
+                    {pack.id === "world-pack" && (
+                        <Link href="/ultimate-pack/details" className="mt-3 w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all bg-white/5 hover:bg-white/10 text-white border border-white/10 relative z-20 backdrop-blur-sm shadow-[0_4px_10px_rgba(0,0,0,0.5)]">
+                            See what's inside this pack
+                        </Link>
+                    )}
                 </div>
             </motion.div>
         </motion.div>
