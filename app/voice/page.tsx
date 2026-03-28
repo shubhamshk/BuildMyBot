@@ -2,21 +2,14 @@
 
 import { useState, Suspense, useCallback } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { Mic, Sparkles, Wand2, PlayCircle, Fingerprint, Volume2, ArrowRight } from "lucide-react";
+import { Mic, Sparkles, Wand2, PlayCircle, Fingerprint, Volume2 } from "lucide-react";
 import { ResponsiveNavbar } from "@/components/responsive-navbar";
-import Link from "next/link";
-import { ExtensionPaymentModal } from "@/components/modals/ExtensionPaymentModal";
-import { createClient } from "@/lib/supabase/client";
-import { LoginRequiredModal } from "@/components/login-required-modal";
 
 import { PaymentStatusModal } from "@/components/modals/PaymentSuccessModal";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 function VoiceContent() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [loginModalOpen, setLoginModalOpen] = useState(false);
-
     // Payment Success Logic
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -76,14 +69,8 @@ function VoiceContent() {
         router.replace("/voice", { scroll: false });
     };
 
-    const handleGetExtension = async () => {
-        const supabase = createClient();
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) {
-            setLoginModalOpen(true);
-            return;
-        }
-        setIsModalOpen(true);
+    const handleGetExtension = () => {
+        window.location.href = "https://www.voicemybot.site/";
     };
     const { scrollY } = useScroll();
     const y1 = useTransform(scrollY, [0, 500], [0, 200]);
@@ -161,13 +148,6 @@ function VoiceContent() {
                                 </span>
                                 <div className="absolute inset-0 bg-gradient-to-r from-violet-200 to-indigo-200 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                             </button>
-                            <Link
-                                href="/pricing"
-                                className="px-8 py-4 rounded-2xl font-bold text-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all backdrop-blur-md flex items-center gap-2 group"
-                            >
-                                View Pricing
-                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </Link>
                         </motion.div>
 
                         {/* Video Player Section - Lowered & Glassmorphic */}
@@ -315,9 +295,6 @@ function VoiceContent() {
                     </div>
                 </div>
             </section>
-
-            <ExtensionPaymentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-            <LoginRequiredModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} />
 
             <PaymentStatusModal
                 isOpen={paymentModalState.open}
