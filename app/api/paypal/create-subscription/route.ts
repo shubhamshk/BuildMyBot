@@ -142,7 +142,7 @@ async function createPayPalPlan(
  */
 export async function POST(request: NextRequest) {
   try {
-    const { planType, customAmount } = await request.json();
+    const { planType, customAmount, email } = await request.json();
 
     if (!planType) {
       return NextResponse.json(
@@ -207,6 +207,54 @@ export async function POST(request: NextRequest) {
 
     // Get PayPal access token
     const accessToken = await getPayPalAccessToken();
+
+    // If it's a pack, use the faster Orders API for one-time payment
+    if (isPack) {
+      const orderPayload = {
+        intent: "CAPTURE",
+        purchase_units: [{
+          reference_id: planType,
+          description: description,
+          amount: { currency_code: "USD", value: amount },
+          custom_id: JSON.stringify({ email: email || user.email, planType, description: description }),
+        }],
+        payer: { email_address: email || user.email },
+        application_context: {
+          brand_name: "Characteria",
+          user_action: "PAY_NOW",
+          return_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://characteria.me"}${planType === "voice-extension-v1" ? "/voice" : "/packs"}?success=true&plan=${planType}`,
+          cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://characteria.me"}${planType === "voice-extension-v1" ? "/voice" : "/packs"}?canceled=true`,
+        }
+      };
+
+      const orderResponse = await fetch(`${PAYPAL_BASE_URL}/v2/checkout/orders`, {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(orderPayload)
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error("Failed to create PayPal order for pack");
+      }
+
+      const orderData = await orderResponse.json();
+      const approvalUrl = orderData.links?.find((link: any) => link.rel === "approve")?.href;
+
+      // Record pack order pseudo-subscription
+      const adminSupabase = createAdminClient();
+      await adminSupabase.from("user_pack_subscriptions").insert({
+        user_id: user.id,
+        pack_id: planType,
+        paypal_subscription_id: orderData.id,
+        paypal_plan_id: "order",
+        status: "PENDING"
+      });
+
+      return NextResponse.json({ subscriptionId: orderData.id, approvalUrl });
+    }
 
     // Create product
     let productId: string;
@@ -286,30 +334,11 @@ export async function POST(request: NextRequest) {
 
     const subscriptionData = await subscriptionResponse.json();
 
-    if (isPack) {
-      // Record pack subscription
-      const adminSupabase = createAdminClient();
-      const { error: packError } = await adminSupabase
-        .from("user_pack_subscriptions")
-        .insert({
-          user_id: user.id,
-          pack_id: planType,
-          paypal_subscription_id: subscriptionData.id,
-          paypal_plan_id: planId,
-          status: "PENDING"
-        });
-
-      if (packError) {
-        console.error("Failed to record pack subscription:", packError);
-        // We continue anyway, so the user can pay. Webhook will likely reconcile or we rely on logs.
-      }
-    } else {
-      // Store regular subscription
-      await updateSubscriptionServer(user.id, {
-        paypal_subscription_id: subscriptionData.id,
-        paypal_plan_id: planId,
-      });
-    }
+    // Store regular subscription
+    await updateSubscriptionServer(user.id, {
+      paypal_subscription_id: subscriptionData.id,
+      paypal_plan_id: planId,
+    });
 
     // Return approval URL
     const approvalUrl = subscriptionData.links?.find(

@@ -45,7 +45,9 @@ export function EmailBeforePaymentModal({ isOpen, onClose, item }: EmailBeforePa
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    planType: item.id
+                    planType: item.id,
+                    email: email,
+                    description: `Purchase of ${item.title}`
                 }),
             });
 

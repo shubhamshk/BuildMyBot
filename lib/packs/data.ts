@@ -213,6 +213,22 @@ export const packs: Pack[] = [
         price: 19,
         features: ["1 Custom Image Request", "Any Character / Style", "High Resolution Generations", "No Content Limitations"]
     },
+
+    // New Bots Page Packs
+    {
+        id: "janitor-ai-special",
+        title: "Janitor AI Special Version",
+        description: "The Ultimate 10-Bot Collection. Includes 10 Exclusive Janitor AI Bots, Enhanced 8K Resolution Images, Fully Updated Scenarios, and Advanced Personality Sections.",
+        price: 79,
+        features: ["10 Exclusive Janitor AI Bots", "Enhanced 8K Resolution Images", "Fully Updated Scenarios", "Advanced Personality Sections", "Ready for Immediate Use"]
+    },
+    {
+        id: "custom-bot-request",
+        title: "Custom Bot Creator Pack",
+        description: "Ask for Any 5 Custom Bots. Tailored Personalities & Lore, Custom Scenarios Built for You, Exclusive Ownership.",
+        price: 59,
+        features: ["Request Any 5 Custom Bots", "Tailored Personalities & Lore", "Custom Scenarios Built for You", "Exclusive Ownership & Prompt", "Priority Delivery Time"]
+    },
 ];
 
 export const services: Service[] = [
