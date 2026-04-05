@@ -69,11 +69,11 @@ export default function Home() {
       <ResponsiveNavbar scrolled={scrolled} />
 
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center px-6 pt-32 pb-16 overflow-hidden">
+      <section className="relative min-h-[50vh] md:min-h-[90vh] flex items-center justify-center px-4 md:px-6 pt-24 md:pt-32 pb-12 md:pb-16 overflow-hidden">
         {/* Animated Background Slideshow */}
         <div className="absolute left-0 right-0 top-16 bottom-0 z-0 overflow-hidden opacity-80 mask-image-gradient">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background z-10" />
-          <div className="hero-slideshow-track flex h-full items-start" style={{ width: '200%' }}>
+          <div className="hero-slideshow-track flex h-full items-start w-[400%] sm:w-[300%] lg:w-[200%]">
             {(() => {
               const images = [
                 "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340551/TA-2026-01-13-03-07-26-_artist_ma-307256307_lcqyy6.png",
@@ -90,11 +90,11 @@ export default function Home() {
               ];
               const allImages = [...images, ...images];
               return (
-                <div className="flex h-[500px]" style={{ width: '100%' }}>
+                <div className="flex h-[250px] sm:h-[350px] md:h-[500px] w-full">
                   {allImages.map((url, idx) => (
                     <div
                       key={`img-gallery-${idx}`}
-                      className="flex-shrink-0 h-full px-2"
+                      className="flex-shrink-0 h-full px-1 md:px-2"
                       style={{ width: `${100 / images.length}%` }}
                     >
                       <img
@@ -167,10 +167,10 @@ export default function Home() {
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
-              href="/vault"
+              href="/donation"
               className="px-8 py-4 rounded-xl font-bold flex items-center gap-2 group bg-white/10 hover:bg-white/20 text-white border border-white/10 transition-all backdrop-blur-sm"
             >
-              Open The Vault
+              Support & Donate
             </Link>
           </motion.div>
 

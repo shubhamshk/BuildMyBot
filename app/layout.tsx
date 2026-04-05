@@ -1,12 +1,14 @@
-
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Lato, Inter } from "next/font/google"; // keeping Inter just in case but switching to Lato
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SocialProofNotifications } from "@/components/social-proof-notifications";
 import { CharacterProvider } from "@/context/CharacterContext";
 
-const inter = Inter({ subsets: ["latin"] });
+const lato = Lato({ 
+  weight: ["100", "300", "400", "700", "900"],
+  subsets: ["latin"] 
+});
 
 export const metadata: Metadata = {
     title: "Characteria",
@@ -28,7 +30,7 @@ export default function RootLayout({
             <head>
                 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6739868173955553" crossOrigin="anonymous"></script>
             </head>
-            <body className={inter.className}>
+            <body className={lato.className}>
                 <ThemeProvider
                     attribute="class"
                     defaultTheme="dark"

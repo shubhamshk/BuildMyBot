@@ -110,6 +110,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../app/donation/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/donation">> = Specific
+  const handler = {} as typeof import("../../app/donation/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/generator/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/generator">> = Specific
@@ -303,6 +312,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/capture-order">> = Specific
   const handler = {} as typeof import("../../app/api/paypal/capture-order/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/paypal/create-donation/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/create-donation">> = Specific
+  const handler = {} as typeof import("../../app/api/paypal/create-donation/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check
