@@ -243,14 +243,21 @@ export async function POST(request: NextRequest) {
       const orderData = await orderResponse.json();
       const approvalUrl = orderData.links?.find((link: any) => link.rel === "approve")?.href;
 
-      // Record pack order pseudo-subscription
+      // Record a PENDING purchase in the purchases table.
+      // Status will be updated to COMPLETED when capture-order is called after PayPal redirect.
       const adminSupabase = createAdminClient();
-      await adminSupabase.from("user_pack_subscriptions").insert({
+      await adminSupabase.from("purchases").insert({
         user_id: user.id,
-        pack_id: planType,
-        paypal_subscription_id: orderData.id,
-        paypal_plan_id: "order",
-        status: "PENDING"
+        email: email || user.email || "",
+        item_id: planType,
+        item_name: name,
+        amount: parseFloat(amount),
+        currency: "USD",
+        paypal_order_id: orderData.id,
+        paypal_status: "PENDING",
+      }).then(({ error }) => {
+        if (error) console.error("[create-subscription] Failed to record purchase:", error.message);
+        else console.log(`[create-subscription] ✅ Pending purchase recorded for order ${orderData.id}`);
       });
 
       return NextResponse.json({ subscriptionId: orderData.id, approvalUrl });

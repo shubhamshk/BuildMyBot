@@ -344,10 +344,28 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
   type __Unused = __Check
 }
 
+// Validate ../../app/api/paypal/create-pack-subscription/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/create-pack-subscription">> = Specific
+  const handler = {} as typeof import("../../app/api/paypal/create-pack-subscription/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/api/paypal/create-subscription/route.ts
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/create-subscription">> = Specific
   const handler = {} as typeof import("../../app/api/paypal/create-subscription/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/paypal/verify-pack-subscription/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/verify-pack-subscription">> = Specific
+  const handler = {} as typeof import("../../app/api/paypal/verify-pack-subscription/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

@@ -19,30 +19,29 @@ function PacksContent() {
     const [verifying, setVerifying] = useState(false);
 
     /**
-     * Capture a one-time PayPal order after redirect.
-     * PayPal appends ?token=ORDER_ID&PayerID=XXX to the return URL.
-     * We must call /api/paypal/capture-order to actually debit the buyer.
+     * Verify a recurring pack subscription after PayPal redirect.
+     * PayPal adds ?subscription_id=I-XXXXX to the return URL for billing subscriptions.
      */
-    const captureOrder = useCallback(async (orderId: string, plan: string) => {
+    const verifyPackSubscription = useCallback(async (subscriptionId: string) => {
         if (verifying) return;
         setVerifying(true);
         try {
-            console.log("Capturing PayPal order:", orderId);
-            const res = await fetch("/api/paypal/capture-order", {
+            console.log("Verifying pack subscription:", subscriptionId);
+            const res = await fetch("/api/paypal/verify-pack-subscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ orderId, itemId: plan }),
+                body: JSON.stringify({ subscriptionId }),
             });
 
             const data = await res.json();
-            if (data.status === "COMPLETED" || data.captureId) {
-                console.log("✅ Pack purchase captured & saved to DB:", data);
+            if (data.success) {
+                console.log("✅ Pack subscription verified & active:", data);
                 router.refresh();
             } else {
-                console.warn("⚠️ Capture returned unexpected status:", data);
+                console.warn("⚠️ Subscription not yet active:", data.status);
             }
         } catch (error) {
-            console.error("❌ Capture error:", error);
+            console.error("❌ Verification error:", error);
         } finally {
             setVerifying(false);
         }
@@ -51,20 +50,34 @@ function PacksContent() {
     useEffect(() => {
         const success = searchParams.get("success");
         const canceled = searchParams.get("canceled");
-        const plan = searchParams.get("plan") || "";
-        // PayPal appends token (order ID) and PayerID on redirect
+        const pack = searchParams.get("pack") || "";
+        // PayPal adds subscription_id for recurring billing subscriptions
+        const subscriptionId = searchParams.get("subscription_id");
+        // Legacy: token for one-time orders
         const token = searchParams.get("token");
 
-        if (plan) {
-            const formattedName = plan.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+        if (pack) {
+            const formattedName = pack.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
             setItemName(formattedName);
         }
 
         if (success === "true") {
             setModalState({ open: true, status: "success" });
-            // Capture the order to actually debit the buyer and record in DB
-            if (token) {
-                captureOrder(token, plan);
+            if (subscriptionId) {
+                // Recurring billing subscription — verify with PayPal
+                verifyPackSubscription(subscriptionId);
+            } else if (token) {
+                // One-time order capture (legacy fallback)
+                fetch("/api/paypal/capture-order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ orderId: token, itemId: pack }),
+                }).then(r => r.json()).then(d => {
+                    if (d.status === "COMPLETED") {
+                        console.log("✅ One-time order captured:", d);
+                        router.refresh();
+                    }
+                }).catch(console.error);
             }
         } else if (canceled === "true") {
             setModalState({ open: true, status: "canceled" });

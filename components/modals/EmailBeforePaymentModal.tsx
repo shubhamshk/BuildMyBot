@@ -41,24 +41,24 @@ export function EmailBeforePaymentModal({ isOpen, onClose, item }: EmailBeforePa
         setStatus("processing");
 
         try {
-            const response = await fetch("/api/paypal/create-order", {
+            // create-pack-subscription creates a real PayPal recurring billing subscription
+            const response = await fetch("/api/paypal/create-pack-subscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    itemId: item.id,
+                    packId: item.id,
                     email: email,
-                    description: `Purchase of ${item.title}`
                 }),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Failed to create order");
+                throw new Error(data.error || "Failed to create subscription");
             }
 
             if (data.approvalUrl) {
-                // Redirect to PayPal — on return PayPal adds ?token=ORDER_ID
+                // Redirect to PayPal — on return PayPal adds ?subscription_id=I-XXXXX
                 window.location.href = data.approvalUrl;
             } else {
                 throw new Error("No approval URL received");

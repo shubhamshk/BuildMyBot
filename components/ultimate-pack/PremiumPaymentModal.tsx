@@ -26,22 +26,18 @@ export function PremiumPaymentModal({ isOpen, onClose }: { isOpen: boolean, onCl
         setError("");
 
         try {
-            const response = await fetch("/api/paypal/create-subscription", {
+            const response = await fetch("/api/paypal/create-pack-subscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    planType: "world-pack", // Specific ID for Ultimate Pack
-                    customAmount: price
+                    packId: "world-pack",
+                    description: `Ultimate Collection Pack${promoApplied ? " (Promo Applied)" : ""}`,
                 }),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    window.location.href = `/auth/signin?redirect=${encodeURIComponent(window.location.pathname)}`;
-                    return;
-                }
                 throw new Error(data.error || "Failed to create subscription");
             }
 

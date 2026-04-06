@@ -20,26 +20,26 @@ function VoiceContent() {
 
     const [verifying, setVerifying] = useState(false);
 
-    const captureOrder = useCallback(async (orderId: string) => {
+    const verifyPackSubscription = useCallback(async (subscriptionId: string) => {
         if (verifying) return;
         setVerifying(true);
         try {
-            console.log("Capturing voice extension order:", orderId);
-            const res = await fetch("/api/paypal/capture-order", {
+            console.log("Verifying voice extension subscription:", subscriptionId);
+            const res = await fetch("/api/paypal/verify-pack-subscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ orderId, itemId: "voice-extension-v1" }),
+                body: JSON.stringify({ subscriptionId }),
             });
 
             const data = await res.json();
-            if (data.status === "COMPLETED" || data.captureId) {
-                console.log("✅ Voice extension captured & saved to DB:", data);
+            if (data.success) {
+                console.log("✅ Voice extension subscription active:", data);
                 router.refresh();
             } else {
-                console.warn("⚠️ Capture returned unexpected status:", data);
+                console.warn("⚠️ Subscription not yet active:", data.status);
             }
         } catch (error) {
-            console.error("❌ Capture error:", error);
+            console.error("❌ Verification error:", error);
         } finally {
             setVerifying(false);
         }
@@ -48,12 +48,20 @@ function VoiceContent() {
     useEffect(() => {
         const success = searchParams.get("success");
         const canceled = searchParams.get("canceled");
-        const token = searchParams.get("token"); // PayPal order ID
+        const subscriptionId = searchParams.get("subscription_id"); // PayPal billing redirect
+        const token = searchParams.get("token"); // Legacy one-time order
 
         if (success === "true") {
             setPaymentModalState({ open: true, status: "success" });
-            if (token) {
-                captureOrder(token);
+            if (subscriptionId) {
+                verifyPackSubscription(subscriptionId);
+            } else if (token) {
+                // Legacy fallback: capture one-time order
+                fetch("/api/paypal/capture-order", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ orderId: token, itemId: "voice-extension-v1" }),
+                }).catch(console.error);
             }
         } else if (canceled === "true") {
             setPaymentModalState({ open: true, status: "canceled" });

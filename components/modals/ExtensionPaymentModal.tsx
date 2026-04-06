@@ -40,20 +40,19 @@ export function ExtensionPaymentModal({ isOpen, onClose }: ExtensionPaymentModal
         setStatus("processing");
 
         try {
-            const response = await fetch("/api/paypal/create-order", {
+            const response = await fetch("/api/paypal/create-pack-subscription", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    itemId: "voice-extension-v1",
+                    packId: "voice-extension-v1",
                     email: email,
-                    description: ITEM_TITLE,
                 }),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || "Failed to create order");
+                throw new Error(data.error || "Failed to create subscription");
             }
 
             if (data.approvalUrl) {
