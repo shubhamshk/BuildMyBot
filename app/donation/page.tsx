@@ -306,7 +306,27 @@ export default function DonationPage() {
   useEffect(() => {
     if (typeof window !== "undefined") {
       const params = new URLSearchParams(window.location.search);
+      const token = params.get("token"); // PayPal order ID returned in redirect
       if (params.get("success") === "true") {
+        // If PayPal returned an order token, capture the payment now
+        if (token) {
+          fetch("/api/paypal/capture-donation", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ orderId: token }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.status === "COMPLETED" || data.captureId) {
+                console.log("✅ Donation captured successfully:", data);
+              } else {
+                console.warn("⚠️ Donation capture returned unexpected status:", data);
+              }
+            })
+            .catch((err) => {
+              console.error("❌ Failed to capture donation:", err);
+            });
+        }
         setShowSuccessModal(true);
       }
     }

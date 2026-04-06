@@ -40,24 +40,20 @@ export function ExtensionPaymentModal({ isOpen, onClose }: ExtensionPaymentModal
         setStatus("processing");
 
         try {
-            // Reusing the existing API endpoint logic
-            const response = await fetch("/api/paypal/create-subscription", {
+            const response = await fetch("/api/paypal/create-order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    planType: "voice-extension-v1"
+                    itemId: "voice-extension-v1",
+                    email: email,
+                    description: ITEM_TITLE,
                 }),
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    // Redirect to login if unauthorized
-                    window.location.href = `/auth/signin?redirect=${encodeURIComponent(window.location.pathname)}`;
-                    return;
-                }
-                throw new Error(data.error || "Failed to create subscription");
+                throw new Error(data.error || "Failed to create order");
             }
 
             if (data.approvalUrl) {

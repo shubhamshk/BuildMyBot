@@ -41,11 +41,11 @@ export function EmailBeforePaymentModal({ isOpen, onClose, item }: EmailBeforePa
         setStatus("processing");
 
         try {
-            const response = await fetch("/api/paypal/create-subscription", {
+            const response = await fetch("/api/paypal/create-order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    planType: item.id,
+                    itemId: item.id,
                     email: email,
                     description: `Purchase of ${item.title}`
                 }),
@@ -54,16 +54,11 @@ export function EmailBeforePaymentModal({ isOpen, onClose, item }: EmailBeforePa
             const data = await response.json();
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    // Redirect to login if unauthorized
-                    window.location.href = `/auth/signin?redirect=${encodeURIComponent(window.location.pathname)}`;
-                    return;
-                }
-                throw new Error(data.error || "Failed to create subscription");
+                throw new Error(data.error || "Failed to create order");
             }
 
             if (data.approvalUrl) {
-                // Redirect to PayPal
+                // Redirect to PayPal — on return PayPal adds ?token=ORDER_ID
                 window.location.href = data.approvalUrl;
             } else {
                 throw new Error("No approval URL received");

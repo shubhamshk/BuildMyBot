@@ -20,33 +20,26 @@ function VoiceContent() {
 
     const [verifying, setVerifying] = useState(false);
 
-    const verifyPurchase = useCallback(async () => {
+    const captureOrder = useCallback(async (orderId: string) => {
         if (verifying) return;
         setVerifying(true);
         try {
-            console.log("Starting purchase verification...");
-            // Poll for verification success - 5 attempts
-            for (let i = 0; i < 5; i++) {
-                const res = await fetch("/api/paypal/verify-subscription", {
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/json' }
-                });
+            console.log("Capturing voice extension order:", orderId);
+            const res = await fetch("/api/paypal/capture-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId, itemId: "voice-extension-v1" }),
+            });
 
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.success) {
-                        console.log("Purchase verified successfully:", data);
-                        // Refresh router to update any server components if needed
-                        router.refresh();
-                        return; // Exit on success
-                    }
-                }
-                // Wait 2 seconds before retry
-                await new Promise(r => setTimeout(r, 2000));
+            const data = await res.json();
+            if (data.status === "COMPLETED" || data.captureId) {
+                console.log("✅ Voice extension captured & saved to DB:", data);
+                router.refresh();
+            } else {
+                console.warn("⚠️ Capture returned unexpected status:", data);
             }
-            console.log("Verification polling finished without confirmation (could be pending).");
         } catch (error) {
-            console.error("Verification error:", error);
+            console.error("❌ Capture error:", error);
         } finally {
             setVerifying(false);
         }
@@ -55,14 +48,17 @@ function VoiceContent() {
     useEffect(() => {
         const success = searchParams.get("success");
         const canceled = searchParams.get("canceled");
+        const token = searchParams.get("token"); // PayPal order ID
 
         if (success === "true") {
             setPaymentModalState({ open: true, status: "success" });
-            verifyPurchase();
+            if (token) {
+                captureOrder(token);
+            }
         } else if (canceled === "true") {
             setPaymentModalState({ open: true, status: "canceled" });
         }
-    }, [searchParams, verifyPurchase]);
+    }, [searchParams]);
 
     const handlePaymentClose = () => {
         setPaymentModalState(prev => ({ ...prev, open: false }));

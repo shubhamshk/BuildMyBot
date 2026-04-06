@@ -1,100 +1,61 @@
-You are a senior frontend + full-stack engineer.
+-- Migration 003: Fix subscription trigger and plan_type constraint
+-- This migration is idempotent (safe to run multiple times)
 
-TASK:
-Fix and improve the subscription visibility and upgrade flow in the EXISTING website.
+-- ① Ensure plan_type includes ULTIMATE_CREATOR (in case migration 002 was applied before)
+DO $$
+BEGIN
+  -- Drop old constraint if it exists (doesn't include ULTIMATE_CREATOR)
+  IF EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE table_name = 'subscriptions'
+    AND constraint_name = 'subscriptions_plan_type_check'
+  ) THEN
+    ALTER TABLE public.subscriptions DROP CONSTRAINT subscriptions_plan_type_check;
+  END IF;
 
-IMPORTANT CONSTRAINTS (NON-NEGOTIABLE):
-- Do NOT delete any existing files
-- Do NOT refactor unrelated logic
-- Do NOT break authentication, AI generation, or payments
-- ONLY add or extend code where necessary
-- Existing subscription logic must remain intact
+  -- Add updated constraint with all plan types
+  IF NOT EXISTS (
+    SELECT 1 FROM information_schema.table_constraints
+    WHERE table_name = 'subscriptions'
+    AND constraint_name = 'subscriptions_plan_type_check'
+  ) THEN
+    ALTER TABLE public.subscriptions
+      ADD CONSTRAINT subscriptions_plan_type_check
+      CHECK (plan_type IN ('FREE', 'PRO_MONTHLY', 'PRO_YEARLY', 'ULTIMATE_CREATOR'));
+  END IF;
+END $$;
 
-----------------------------------------
-PROBLEM TO FIX
-----------------------------------------
+-- ② Recreate the user signup trigger function more robustly
+CREATE OR REPLACE FUNCTION create_user_subscription()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.subscriptions (user_id, plan_type, subscription_status)
+  VALUES (NEW.id, 'FREE', 'ACTIVE')
+  ON CONFLICT (user_id) DO NOTHING;
 
-- The current subscription status is NOT visible to users
-- Users cannot clearly see whether they are on FREE or PRO
-- There is no clear upgrade entry point on the homepage
+  INSERT INTO public.usage_tracking (user_id, daily_creation_count, last_reset_at)
+  VALUES (NEW.id, 0, NOW())
+  ON CONFLICT (user_id) DO NOTHING;
 
-----------------------------------------
-REQUIRED CHANGES
-----------------------------------------
+  RETURN NEW;
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE WARNING 'Error creating records for user %: %', NEW.id, SQLERRM;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
-1) HOMEPAGE SUBSCRIPTION STATUS (MANDATORY)
+-- ③ Ensure the trigger exists
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION create_user_subscription();
 
-Add a subscription status section to the HOMEPAGE only.
+-- ④ Service role policies for subscriptions (needed for webhook/admin updates)
+DROP POLICY IF EXISTS "Service role full access to subscriptions" ON public.subscriptions;
+CREATE POLICY "Service role full access to subscriptions" ON public.subscriptions
+  FOR ALL USING (auth.role() = 'service_role');
 
-This section must:
-- Be clearly visible but not intrusive
-- Show current plan:
-  - "Free Plan – 2 creations/day"
-  - OR "Pro Plan – 10 creations/day"
-- Optionally show remaining creations for today
-- Update automatically based on user data
-
-UI REQUIREMENTS:
-- Modern, clean, professional UI
-- Rounded card or glass-style container
-- Clear typography
-- Use badges or subtle highlights for PRO users
-
-----------------------------------------
-2) UPGRADE BUTTON (MANDATORY)
-
-If user is on FREE plan:
-- Show a prominent “Upgrade to Pro” button
-
-Button behavior:
-- On click → redirect user to the PayPal payment / pricing page
-- Button should look premium and inviting
-- Use hover / subtle animation (non-distracting)
-
-If user is already PRO:
-- Replace button with:
-  - “Manage Subscription”
-  - Or “Pro Active” (non-clickable badge)
-
-----------------------------------------
-3) PAYMENT REDIRECTION
-
-- Clicking “Upgrade to Pro” must:
-  - Redirect to the existing PayPal subscription flow
-  - OR pricing page that leads to PayPal
-- Do NOT re-implement PayPal logic
-- Only connect the button to the existing payment route
-
-----------------------------------------
-4) UI/UX REQUIREMENTS
-
-- The subscription card should:
-  - Match the existing site theme
-  - Work on desktop and mobile
-  - Not block main content
-- Use friendly, human copy (not salesy)
-
-Example copy:
-“You’re currently on the Free plan. Upgrade to Pro to unlock more daily creations.”
-
-----------------------------------------
-5) TECHNICAL REQUIREMENTS
-
-- Subscription status must be fetched from backend / user state
-- Do NOT hardcode plan status
-- Handle loading and error states gracefully
-- Do NOT show upgrade button to logged-out users
-
-----------------------------------------
-EXPECTED RESULT
-----------------------------------------
-
-After implementation:
-- Users can immediately see their current plan on the homepage
-- Free users see a clear, attractive upgrade option
-- Clicking upgrade reliably redirects to PayPal flow
-- Pro users see their active status clearly
-- No existing functionality is broken
-
-Proceed carefully.
-This is a UI + wiring fix, not a system rewrite.
+DROP POLICY IF EXISTS "Service role full access to usage_tracking" ON public.usage_tracking;
+CREATE POLICY "Service role full access to usage_tracking" ON public.usage_tracking
+  FOR ALL USING (auth.role() = 'service_role');

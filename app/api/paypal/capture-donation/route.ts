@@ -39,7 +39,7 @@ async function getPayPalAccessToken(): Promise<string> {
 
 export async function POST(request: NextRequest) {
     try {
-        const { orderId, email, itemId } = await request.json();
+        const { orderId, email, amount, planName, isCustom } = await request.json();
 
         if (!orderId) {
             return NextResponse.json(
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 
         const accessToken = await getPayPalAccessToken();
 
-        // ── Capture the order with PayPal ──────────────────────────────────
+        // ── Capture the donation order with PayPal ─────────────────────────
         const captureResponse = await fetch(
             `${PAYPAL_BASE_URL}/v2/checkout/orders/${orderId}/capture`,
             {
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
 
         if (!captureResponse.ok) {
             const errorText = await captureResponse.text();
-            console.error("PayPal capture error:", errorText);
+            console.error("PayPal donation capture error:", errorText);
 
             // If already captured, treat as success
             if (
@@ -73,11 +73,11 @@ export async function POST(request: NextRequest) {
             ) {
                 return NextResponse.json({
                     status: "COMPLETED",
-                    message: "Order already captured",
+                    message: "Donation already captured",
                 });
             }
 
-            let errorMessage = "Failed to capture PayPal order";
+            let errorMessage = "Failed to capture PayPal donation";
             try {
                 const errorJson = JSON.parse(errorText);
                 errorMessage =
@@ -93,38 +93,40 @@ export async function POST(request: NextRequest) {
         }
 
         const captureData = await captureResponse.json();
-        console.log("✅ PayPal capture SUCCESS:", JSON.stringify(captureData, null, 2));
+        console.log("✅ PayPal donation capture SUCCESS:", JSON.stringify(captureData, null, 2));
 
-        // ── Extract purchase details from PayPal response ──────────────────
+        // ── Extract donation details from PayPal response ──────────────────
         const purchaseUnit = captureData.purchase_units?.[0];
         const capture = purchaseUnit?.payments?.captures?.[0];
         const captureId = capture?.id;
         const captureStatus = captureData.status; // "COMPLETED"
         const payerEmail = captureData.payer?.email_address || email || "";
         const payerId = captureData.payer?.payer_id || "";
-        const amountValue = parseFloat(capture?.amount?.value || "0");
+        const capturedAmount = parseFloat(capture?.amount?.value || amount?.toString() || "0");
 
-        // Try to extract custom_id metadata (set when creating the order)
-        let resolvedEmail = payerEmail;
-        let resolvedItemId = itemId || "";
+        // Try to extract custom_id metadata (set when creating the donation order)
+        let resolvedEmail = payerEmail || email;
+        let resolvedPlanName = planName || "";
+        let resolvedIsCustom = isCustom || false;
         try {
             const customId = purchaseUnit?.custom_id;
             if (customId) {
                 const meta = JSON.parse(customId);
                 resolvedEmail = resolvedEmail || meta.email || "";
-                resolvedItemId = resolvedItemId || meta.itemId || "";
+                resolvedPlanName = resolvedPlanName || meta.planName || "";
+                resolvedIsCustom = meta.type === "custom" || resolvedIsCustom;
             }
         } catch { /* custom_id may not be JSON */ }
 
-        // ── Write to Supabase `purchases` table ────────────────────────────
+        // ── Write to Supabase `donations` table ────────────────────────────
         const supabase = createAdminClient();
 
-        const { error: dbError } = await supabase.from("purchases").insert({
-            email: resolvedEmail,
-            item_id: resolvedItemId || "unknown",
-            item_name: purchaseUnit?.description || resolvedItemId || "Purchase",
-            amount: amountValue,
+        const { error: dbError } = await supabase.from("donations").insert({
+            email: resolvedEmail || "unknown@donor.com",
+            amount: capturedAmount,
             currency: capture?.amount?.currency_code || "USD",
+            plan_name: resolvedPlanName || null,
+            is_custom: resolvedIsCustom,
             paypal_order_id: orderId,
             paypal_capture_id: captureId || null,
             paypal_payer_id: payerId || null,
@@ -134,20 +136,20 @@ export async function POST(request: NextRequest) {
 
         if (dbError) {
             // Don't fail the response — payment already went through.
-            // Log but return success to the user.
-            console.error("⚠️ DB write failed after PayPal capture:", dbError.message);
+            console.error("⚠️ DB write failed after donation capture:", dbError.message);
         } else {
-            console.log(`✅ Purchase recorded in DB for order ${orderId}`);
+            console.log(`✅ Donation recorded in DB: $${capturedAmount} from ${resolvedEmail}, order ${orderId}`);
         }
 
         return NextResponse.json({
             status: captureData.status,
             id: captureData.id,
             captureId,
+            amount: capturedAmount,
             payer: captureData.payer,
         });
     } catch (error: any) {
-        console.error("PayPal Capture Error:", error);
+        console.error("PayPal Donation Capture Error:", error);
         return NextResponse.json(
             { error: error.message || "Internal Server Error" },
             { status: 500 }

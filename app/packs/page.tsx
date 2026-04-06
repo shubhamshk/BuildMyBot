@@ -18,33 +18,31 @@ function PacksContent() {
     const [itemName, setItemName] = useState("");
     const [verifying, setVerifying] = useState(false);
 
-    const verifyPurchase = useCallback(async () => {
+    /**
+     * Capture a one-time PayPal order after redirect.
+     * PayPal appends ?token=ORDER_ID&PayerID=XXX to the return URL.
+     * We must call /api/paypal/capture-order to actually debit the buyer.
+     */
+    const captureOrder = useCallback(async (orderId: string, plan: string) => {
         if (verifying) return;
         setVerifying(true);
         try {
-            console.log("Starting purchase verification...");
-            // Poll for verification success - 5 attempts
-            for (let i = 0; i < 5; i++) {
-                const res = await fetch("/api/paypal/verify-subscription", {
-                    method: "POST",
-                    headers: { 'Content-Type': 'application/json' }
-                });
+            console.log("Capturing PayPal order:", orderId);
+            const res = await fetch("/api/paypal/capture-order", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId, itemId: plan }),
+            });
 
-                if (res.ok) {
-                    const data = await res.json();
-                    if (data.success) {
-                        console.log("Purchase verified successfully:", data);
-                        // Refresh router to update any server components if needed
-                        router.refresh();
-                        return; // Exit on success
-                    }
-                }
-                // Wait 2 seconds before retry
-                await new Promise(r => setTimeout(r, 2000));
+            const data = await res.json();
+            if (data.status === "COMPLETED" || data.captureId) {
+                console.log("✅ Pack purchase captured & saved to DB:", data);
+                router.refresh();
+            } else {
+                console.warn("⚠️ Capture returned unexpected status:", data);
             }
-            console.log("Verification polling finished without confirmation (could be pending).");
         } catch (error) {
-            console.error("Verification error:", error);
+            console.error("❌ Capture error:", error);
         } finally {
             setVerifying(false);
         }
@@ -53,38 +51,38 @@ function PacksContent() {
     useEffect(() => {
         const success = searchParams.get("success");
         const canceled = searchParams.get("canceled");
-        const plan = searchParams.get("plan");
+        const plan = searchParams.get("plan") || "";
+        // PayPal appends token (order ID) and PayerID on redirect
+        const token = searchParams.get("token");
 
         if (plan) {
-            // Optional: Map common IDs to readability if needed, or just format
-            const formattedName = plan.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            const formattedName = plan.replace(/-/g, " ").replace(/\b\w/g, l => l.toUpperCase());
             setItemName(formattedName);
         }
 
         if (success === "true") {
             setModalState({ open: true, status: "success" });
-            // Verify the purchase in the background to ensure DB status is updated
-            verifyPurchase();
+            // Capture the order to actually debit the buyer and record in DB
+            if (token) {
+                captureOrder(token, plan);
+            }
         } else if (canceled === "true") {
             setModalState({ open: true, status: "canceled" });
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [searchParams, verifyPurchase]);
+    }, [searchParams]);
 
     const handleClose = () => {
         setModalState(prev => ({ ...prev, open: false }));
-        // Clean up URL
         router.replace("/packs", { scroll: false });
     };
 
     return (
         <>
             <div className="pt-24">
-                {/* Reuse Packs Section to keep content available */}
                 <PacksSection />
             </div>
 
-            {/* Status Modal */}
             <PaymentStatusModal
                 isOpen={modalState.open}
                 status={modalState.status}
@@ -98,7 +96,6 @@ function PacksContent() {
 export default function PacksPage() {
     return (
         <main className="min-h-screen bg-black text-white selection:bg-amber-500/30">
-            {/* Reuse Navbar */}
             <ResponsiveNavbar />
 
             <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-amber-500" /></div>}>
