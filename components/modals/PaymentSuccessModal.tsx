@@ -9,9 +9,10 @@ interface PaymentStatusModalProps {
     onClose: () => void;
     status: "success" | "canceled";
     itemName?: string;
+    successMessage?: string;
 }
 
-export function PaymentStatusModal({ isOpen, onClose, status, itemName }: PaymentStatusModalProps) {
+export function PaymentStatusModal({ isOpen, onClose, status, itemName, successMessage }: PaymentStatusModalProps) {
     const router = useRouter();
 
     if (!isOpen) return null;
@@ -75,7 +76,7 @@ export function PaymentStatusModal({ isOpen, onClose, status, itemName }: Paymen
                                             <>
                                                 Thanks for purchasing <span className="text-white font-bold">{itemName || "your pack"}</span>!
                                                 <div className="mt-4 text-sm text-neutral-400">
-                                                    The pack will be delivered to your email address within a few hours.
+                                                    {successMessage ? successMessage : "The pack will be delivered to your email address within a few hours."}
                                                 </div>
                                             </>
                                         )
@@ -117,7 +118,7 @@ export function PaymentStatusModal({ isOpen, onClose, status, itemName }: Paymen
                                     transition={{ delay: 0.5 }}
                                     onClick={() => {
                                         onClose();
-                                        router.replace("/packs"); // Clear params by replacing
+                                        router.replace(window.location.pathname); // Clear params by replacing without hardcoding /packs
                                     }}
                                     className={`w-full py-4 rounded-xl bg-gradient-to-r ${isSuccess ? 'from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500' : 'from-neutral-700 to-neutral-800 hover:from-neutral-600 hover:to-neutral-700'} text-white font-bold text-lg shadow-lg shadow-black/20 transition-all transform hover:scale-[1.02] flex items-center justify-center gap-2`}
                                 >

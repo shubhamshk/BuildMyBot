@@ -47,6 +47,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 }
 
 
+// Validate ../../app/DiscordVault/page.tsx
+{
+  type __IsExpected<Specific extends AppPageConfig<"/DiscordVault">> = Specific
+  const handler = {} as typeof import("../../app/DiscordVault/page.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
 // Validate ../../app/api-keys/page.tsx
 {
   type __IsExpected<Specific extends AppPageConfig<"/api-keys">> = Specific
@@ -357,6 +366,15 @@ type RouteHandlerConfig<Route extends AppRouteHandlerRoutes = AppRouteHandlerRou
 {
   type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/create-subscription">> = Specific
   const handler = {} as typeof import("../../app/api/paypal/create-subscription/route.js")
+  type __Check = __IsExpected<typeof handler>
+  // @ts-ignore
+  type __Unused = __Check
+}
+
+// Validate ../../app/api/paypal/create-vault-subscription/route.ts
+{
+  type __IsExpected<Specific extends RouteHandlerConfig<"/api/paypal/create-vault-subscription">> = Specific
+  const handler = {} as typeof import("../../app/api/paypal/create-vault-subscription/route.js")
   type __Check = __IsExpected<typeof handler>
   // @ts-ignore
   type __Unused = __Check

@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { AuthButton } from "@/components/auth-button";
 import { APIKeyIndicator } from "@/components/api-key-indicator";
-import { Sparkles, ShoppingBag, LayoutGrid, GraduationCap, Crown, Zap, Mic } from "lucide-react";
+import { Sparkles, ShoppingBag, LayoutGrid, GraduationCap, Crown, Zap, Mic, MessageSquare } from "lucide-react";
 
 export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -57,14 +57,14 @@ export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
             Sample Bots
           </Link> */}
           <Link
-            href="/voice"
-            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isActive('/voice')
-              ? "text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-900/10"
+            href="/DiscordVault"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isActive('/DiscordVault')
+              ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-900/10"
               : "text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60"
               }`}
           >
-            <Mic className="w-4 h-4 text-rose-500" />
-            Janitor Voice
+            <MessageSquare className="w-4 h-4 text-indigo-500" />
+            Discord Vault
           </Link>
 
           <Link
@@ -124,12 +124,12 @@ export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
             Sample Bots
           </Link> */}
           <Link
-            href="/voice"
+            href="/DiscordVault"
             className="px-3 py-2 rounded-lg text-base font-medium text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-colors flex items-center gap-2"
             onClick={() => setMenuOpen(false)}
           >
-            <Mic className="w-4 h-4 text-rose-500" />
-            Janitor Voice
+            <MessageSquare className="w-4 h-4 text-indigo-500" />
+            Discord Vault
           </Link>
           <Link
             href="/#custom-requests"
