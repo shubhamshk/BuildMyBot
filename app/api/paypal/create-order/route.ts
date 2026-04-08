@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { packs, services, specialPacks } from "@/lib/packs/data";
 import { vaultPacks, creatorVaultPack } from "@/data/vaultPacks";
+import { sanitizeForPayPal } from "@/lib/paypal/sanitize-name";
 
 // PayPal API configuration
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
@@ -56,6 +57,8 @@ export async function POST(request: NextRequest) {
 
         const price = item.price.toString();
         const itemName = (item as any).title || (item as any).name;
+        // Sanitize name for PayPal (replace NSFW words with "NICE")
+        const paypalItemName = sanitizeForPayPal(itemName);
 
         // Get PayPal Token
         const accessToken = await getPayPalAccessToken();
@@ -67,7 +70,7 @@ export async function POST(request: NextRequest) {
             purchase_units: [
                 {
                     reference_id: itemId,
-                    description: description ? `${itemName} - ${description.substring(0, 50)}...` : itemName,
+                    description: description ? `${paypalItemName} - ${description.substring(0, 50)}...` : paypalItemName,
                     amount: {
                         currency_code: "USD",
                         value: price,

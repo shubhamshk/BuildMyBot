@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { packs, specialPacks } from "@/lib/packs/data";
+import { sanitizeForPayPal } from "@/lib/paypal/sanitize-name";
 
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET;
@@ -210,14 +211,17 @@ export async function POST(request: NextRequest) {
     const returnPage =
       packId === "voice-extension-v1" ? "/voice" : "/packs";
 
+    // Sanitize the pack name for PayPal (replace NSFW words with "NICE")
+    const paypalPackName = sanitizeForPayPal(pack.title);
+
     // PayPal calls
     const accessToken = await getAccessToken();
-    const productId = await createProduct(accessToken, pack.id, pack.title);
+    const productId = await createProduct(accessToken, pack.id, paypalPackName);
     const planId = await createPlan(
       accessToken,
       productId,
       pack.id,
-      pack.title,
+      paypalPackName,
       amount
     );
     const { subscriptionId, approvalUrl } = await createSubscription(
