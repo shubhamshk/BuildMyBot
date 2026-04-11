@@ -41,6 +41,7 @@ const packCategories: PackCategory[] = [
                 price: 5,
                 features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"],
                 images: [
+                    "https://i.ibb.co/Rk3HyDHc/t-7ps-ESqi2ipg-H5jwx.webp",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611117/TA-2026-01-26-19-52-26-masterpiec-3063664377_gopkx6.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp"
@@ -53,6 +54,7 @@ const packCategories: PackCategory[] = [
                 price: 5,
                 features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"],
                 images: [
+                    "https://i.ibb.co/S7c33njw/t-e-Ubz-Wr7-C349v92sr.webp",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610899/TA-2026-01-24-13-36-38-1womenhots-406331419_ckqv1l.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png"
@@ -67,6 +69,7 @@ const packCategories: PackCategory[] = [
                 tag: "Best Selling",
                 highlight: true,
                 images: [
+                    "https://i.ibb.co/JVf4Z8y/t-XWu-BYz-Ky-GT9k-Dy3-D.webp",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
@@ -83,6 +86,7 @@ const packCategories: PackCategory[] = [
                 tag: "Best Value",
                 highlight: true,
                 images: [
+                    "https://i.ibb.co/XkG5Q2Cw/z3-Gpw1-CT-o.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
@@ -104,6 +108,8 @@ const packCategories: PackCategory[] = [
                 tag: "Today's Special Pack",
                 highlight: true,
                 images: [
+                    "https://i.ibb.co/bjsf8ybV/TA-2026-01-14-00-53-22-artist-ma-1505876510-upscayl-4x-upscayl-standard-4x.png",
+                    "https://i.ibb.co/39HX29Dk/5c4b1a3a-5fd5-407a-a3ed-168478e60e7e.webp",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1772128439/TA-2026-02-26-19-56-55-Intimatepa-1328197427_asi3q7.png"
                 ]
             },
@@ -114,6 +120,8 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["best Images collection", "High Resolution", "Variety of Poses", "No Explicit Content"],
                 images: [
+                    "https://i.ibb.co/V0ndmtbJ/TA-2026-03-26-19-36-22-Sexymature-4066919799.png",
+                    "https://i.ibb.co/xwk1tvG/Fyz1-MNmg-o.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611117/TA-2026-01-26-19-52-26-masterpiec-3063664377_gopkx6.png"
                 ]
@@ -125,6 +133,8 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["best Images collection", "High Resolution", "Anime & Realistic", "No Explicit Content"],
                 images: [
+                    "https://i.ibb.co/wbgL8cF/TA-2026-03-20-20-46-55-fullbodysi-3436322737-upscayl-2x-upscayl-standard-4x.png",
+                    "https://i.ibb.co/Jwr97LT9/lmv-Ip-Xgs-o.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610899/TA-2026-01-24-13-36-38-1womenhots-406331419_ckqv1l.png"
                 ]
@@ -137,6 +147,7 @@ const packCategories: PackCategory[] = [
                 price: 9,
                 features: ["Tasteful Prompts", "Mature Themes (Safe)", "Artistic Guidance", "Avoid Filters"],
                 images: [
+                    "https://i.ibb.co/xSDLfxZ8/grace.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611117/TA-2026-01-26-19-52-26-masterpiec-3063664377_gopkx6.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png"
@@ -636,8 +647,8 @@ function PackCard({ pack, index, onBuy, isCompact }: { pack: PackItem; index: nu
                             alt={pack.title}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                         />
-                        <div className="absolute inset-0 bg-[#0a0a0a]/80 backdrop-blur-[2px] group-hover:bg-[#0a0a0a]/60 transition-colors duration-500" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent opacity-90" />
+                        <div className="absolute inset-0 bg-[#0a0a0a]/65 backdrop-blur-[1px] group-hover:bg-[#0a0a0a]/45 group-hover:backdrop-blur-none transition-all duration-500" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/80 to-transparent opacity-90" />
                     </div>
                 ) : (
                     <div className="absolute inset-0 bg-[#0a0a0a]/90 backdrop-blur-xl z-0" />

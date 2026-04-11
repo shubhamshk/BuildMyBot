@@ -65,16 +65,16 @@
 /* Hero Animated Background Slideshow */
 @keyframes slideLeft {
   0% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 .hero-slideshow-track {
-  animation: slideLeft 30s linear infinite;
+  animation: slideLeft 120s linear infinite;
   will-change: transform;
 }
 
@@ -88,6 +88,6 @@
 /* Mobile optimization: slower animation */
 @media (max-width: 768px) {
   .hero-slideshow-track {
-    animation-duration: 70s;
+    animation-duration: 180s;
   }
 }

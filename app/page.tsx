@@ -71,22 +71,33 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative min-h-[50vh] md:min-h-[90vh] flex items-center justify-center px-4 md:px-6 pt-24 md:pt-32 pb-12 md:pb-16 overflow-hidden">
         {/* Animated Background Slideshow */}
-        <div className="absolute left-0 right-0 top-16 bottom-0 z-0 overflow-hidden opacity-80 mask-image-gradient">
+        <div className="absolute left-0 right-0 top-16 bottom-0 z-0 overflow-hidden opacity-90 mask-image-gradient">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/60 to-background z-10" />
-          <div className="hero-slideshow-track flex h-full items-start w-[400%] sm:w-[300%] lg:w-[200%]">
+          <div className="hero-slideshow-track flex h-full items-start w-[700%] sm:w-[500%] lg:w-[350%]">
             {(() => {
               const images = [
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340551/TA-2026-01-13-03-07-26-_artist_ma-307256307_lcqyy6.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340550/TA-2026-01-13-11-54-14-_artist_ma-3018215985_xd3p7k.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340545/TA-2026-01-13-02-59-04-_artist_ma-526226082_gmmhye.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340549/TA-2026-01-13-15-07-52-_artist_ma-2968179715_imyzm1.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340548/TA-2026-01-13-14-53-32-_artist_ma-132961706_o7j9dq.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340549/TA-2026-01-13-02-57-58-_artist_ma-1970745954_onbuu1.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340546/TA-2026-01-13-14-46-25-_artist_ma-735908093_n32wlf.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340548/TA-2026-01-13-14-58-30-_artist_ma-271327577_v7ucn8.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340547/TA-2026-01-13-14-50-21-_artist_ma-3351602457_1_z19wh5.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
-                "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340545/TA-2026-01-13-02-48-24-_artist_ma-3268805038_nwnjwv.png",
+                "https://i.ibb.co/Pzcs7m68/TA-2026-01-13-02-38-38-artist-ma-3962069391.png",
+                "https://i.ibb.co/qtYrjT8/TA-2026-01-13-02-48-24-artist-ma-3268805038.png",
+                "https://i.ibb.co/jZ9wbTSD/TA-2026-01-13-02-57-58-artist-ma-1970745954.png",
+                "https://i.ibb.co/DPYQQ5m6/TA-2026-01-13-02-59-04-artist-ma-526226082.png",
+                "https://i.ibb.co/6RYJF9Jh/TA-2026-01-13-03-07-26-artist-ma-307256307.png",
+                "https://i.ibb.co/dwVqbjGv/TA-2026-01-13-11-54-14-artist-ma-3018215985.png",
+                "https://i.ibb.co/mL1WD4z/TA-2026-01-13-11-55-06-artist-ma-1864865991.png",
+                "https://i.ibb.co/QF8pW9cd/TA-2026-01-13-11-55-33-artist-ma-2610045890.png",
+                "https://i.ibb.co/Rp8wnzrJ/TA-2026-01-13-11-58-10-artist-ma-1420471242.png",
+                "https://i.ibb.co/3yfCQ5d2/TA-2026-01-13-12-05-07-artist-ma-1444115690.png",
+                "https://i.ibb.co/DgvDskJg/TA-2026-01-13-12-54-27-artist-ma-1728647033.png",
+                "https://i.ibb.co/tPQyKJmP/TA-2026-01-13-13-00-15-beautiful2-1192260710.png",
+                "https://i.ibb.co/Dftzg9DG/TA-2026-01-13-14-35-50-artist-ma-2060442952.png",
+                "https://i.ibb.co/HfCPxTkR/TA-2026-01-13-14-40-54-artist-ma-2265619227.png",
+                "https://i.ibb.co/PGYRmydc/TA-2026-01-13-14-42-27-artist-ma-1635821493.png",
+                "https://i.ibb.co/1tt383KZ/TA-2026-01-13-14-43-32-artist-ma-2822207232.png",
+                "https://i.ibb.co/fcCZx1w/TA-2026-01-13-14-46-25-artist-ma-735908093.png",
+                "https://i.ibb.co/GQNf9Mz9/TA-2026-01-13-14-50-21-artist-ma-3351602457-1.png",
+                "https://i.ibb.co/b5kGmYZf/TA-2026-01-13-14-53-32-artist-ma-132961706.png",
+                "https://i.ibb.co/Qv6bxD4B/TA-2026-01-13-14-54-16-artist-ma-4111183455.png",
+                "https://i.ibb.co/rK7dDXWX/TA-2026-01-13-14-58-30-artist-ma-271327577.png",
+                "https://i.ibb.co/0VsC6dCy/TA-2026-01-13-15-07-52-artist-ma-2968179715.png",
               ];
               const allImages = [...images, ...images];
               return (
@@ -97,15 +108,15 @@ export default function Home() {
                       className="flex-shrink-0 h-full px-1 md:px-2"
                       style={{ width: `${100 / images.length}%` }}
                     >
-                      <img
-                        src={url}
-                        alt="Slideshow"
-                        className="w-full h-full object-cover rounded-2xl"
-                        style={{
-                          filter: 'grayscale(20%) brightness(0.8)',
-                        }}
-                        loading="lazy"
-                      />
+                      <div className="relative w-full h-full rounded-2xl overflow-hidden glass shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                        <img
+                          src={url}
+                          alt="Slideshow"
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-white/5 pointer-events-none" />
+                      </div>
                     </div>
                   ))}
                 </div>
