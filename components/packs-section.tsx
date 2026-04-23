@@ -37,9 +37,9 @@ const packCategories: PackCategory[] = [
             {
                 id: "mom/milf-pack",
                 title: "Mom Bot Pack + Images",
-                description: "5 caring, strict, and loving mother figures.",
+                description: "caring, strict, and loving mother Arts + Images",
                 price: 5,
-                features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"],
+                features: ["Limited Image Collection", "Anime & Realistic Styles"],
                 images: [
                     "https://i.ibb.co/Rk3HyDHc/t-7ps-ESqi2ipg-H5jwx.webp",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png",
@@ -50,9 +50,9 @@ const packCategories: PackCategory[] = [
             {
                 id: "sister-pack",
                 title: "Sister Bot Pack + Images",
-                description: "5 dynamic sister archetypes for roleplay.",
+                description: "caring, strict, and loving sister Arts + Images .",
                 price: 5,
-                features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"],
+                features: ["Limited Image Collection", "Anime & Realistic Styles"],
                 images: [
                     "https://i.ibb.co/S7c33njw/t-e-Ubz-Wr7-C349v92sr.webp",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp",
@@ -63,14 +63,14 @@ const packCategories: PackCategory[] = [
             {
                 id: "family-roleplay",
                 title: "Family Roleplay Bot Pack + Images",
-                description: "Complete household dynamic with 10 bots.",
+                description: "Premium 8k images block with nice images and with bot setups",
                 price: 10,
-                features: ["10 Interactive Bots", "Interconnected Lore", "Image Collection", "Exclusive Images"],
+                features: ["Full Image Collection", "Limited Access", "Private Discord Server Access", "1 Interactive Bot with Exclusive Images"],
                 tag: "Best Selling",
                 highlight: true,
                 images: [
+                    "https://i.ibb.co/3YkwjhZ3/TA-2026-02-03-23-54-55-first-pers-1393994759.png",
                     "https://i.ibb.co/JVf4Z8y/t-XWu-BYz-Ky-GT9k-Dy3-D.webp",
-                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
                 ]
@@ -78,16 +78,16 @@ const packCategories: PackCategory[] = [
             {
                 id: "premium-family-roleplay-discount",
                 title: "Family Roleplay Bot Pack + Images Premium Edition",
-                description: "Premium 8k images block with nice images and complete bot setups.",
+                description: "Premium unlimited 8k images block with nice images and with bot setups",
                 price: 39,
                 originalPrice: 59,
                 discountTimer: true,
-                features: ["Premium 8k Images (150+ images)", "Nice images", "10 Premium bots with images + personality", "Demand 1 bot creation"],
+                features: ["Unlimited HQ Images", "Private Premium Discord Server Access", "10 Premium bots with images + personality", "Weekly Updates", "Images On-Demand Available", "Complete Premium Access"],
                 tag: "Best Value",
                 highlight: true,
                 images: [
+                    "https://i.ibb.co/3YkwjhZ3/TA-2026-02-03-23-54-55-first-pers-1393994759.png",
                     "https://i.ibb.co/XkG5Q2Cw/z3-Gpw1-CT-o.png",
-                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
                 ]
@@ -104,10 +104,11 @@ const packCategories: PackCategory[] = [
                 price: 15,
                 originalPrice: 25,
                 discountTimer: true,
-                features: ["NSFW-Safe Images", "High-Quality Images", "Access to full Private Discord Server", "priority Access to new Updates"],
+                features: ["NSFW-Safe Images", "High-Quality Images", "Access to full Private Discord Vault", "latest bots full images", "priority Access to new Updates"],
                 tag: "Today's Special Pack",
                 highlight: true,
                 images: [
+                    "https://i.ibb.co/PGYRmydc/TA-2026-01-13-14-42-27-artist-ma-1635821493.png",
                     "https://i.ibb.co/bjsf8ybV/TA-2026-01-14-00-53-22-artist-ma-1505876510-upscayl-4x-upscayl-standard-4x.png",
                     "https://i.ibb.co/39HX29Dk/5c4b1a3a-5fd5-407a-a3ed-168478e60e7e.webp",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1772128439/TA-2026-02-26-19-56-55-Intimatepa-1328197427_asi3q7.png"
@@ -118,7 +119,7 @@ const packCategories: PackCategory[] = [
                 title: "Mom NSFW Free Images",
                 description: "High-quality, safe-for-work images of Mom characters.",
                 price: 9,
-                features: ["best Images collection", "High Resolution", "Variety of Poses", "No Explicit Content"],
+                features: ["best Images collection", "High Resolution", "Variety of Poses", "Discord Vault Access"],
                 images: [
                     "https://i.ibb.co/V0ndmtbJ/TA-2026-03-26-19-36-22-Sexymature-4066919799.png",
                     "https://i.ibb.co/xwk1tvG/Fyz1-MNmg-o.png",
@@ -131,7 +132,7 @@ const packCategories: PackCategory[] = [
                 title: "Sister NSFW Free Images",
                 description: "High-quality, safe-for-work images of Sister characters.",
                 price: 9,
-                features: ["best Images collection", "High Resolution", "Anime & Realistic", "No Explicit Content"],
+                features: ["best Images collection", "High Resolution", "Anime & Realistic", "Discord Vault Access"],
                 images: [
                     "https://i.ibb.co/wbgL8cF/TA-2026-03-20-20-46-55-fullbodysi-3436322737-upscayl-2x-upscayl-standard-4x.png",
                     "https://i.ibb.co/Jwr97LT9/lmv-Ip-Xgs-o.png",
@@ -145,7 +146,7 @@ const packCategories: PackCategory[] = [
                 title: "NSFW-Safe Image + Prompt Pack",
                 description: "Tasteful and safe prompts designed for more mature themes without crossing boundaries.",
                 price: 9,
-                features: ["Tasteful Prompts", "Mature Themes (Safe)", "Artistic Guidance", "Avoid Filters"],
+                features: ["Tasteful Prompts", "Mature Themes (Safe)", "Artistic Guidance", "Discord Vault Access"],
                 images: [
                     "https://i.ibb.co/xSDLfxZ8/grace.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611117/TA-2026-01-26-19-52-26-masterpiec-3063664377_gopkx6.png",

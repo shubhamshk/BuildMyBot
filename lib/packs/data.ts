@@ -62,9 +62,9 @@ export const packs: Pack[] = [
     {
         id: "mom/milf-pack",
         title: "Mom Bot Pack + Images",
-        description: "5 caring, strict, and loving mother figures.",
+        description: "A tasteful selection of caring mother figures featuring a limited, curated collection of high-quality artwork in both anime and realistic styles.",
         price: 5,
-        features: ["5 Unique Personalities", "Full Backstories", "Image Collection", "Voice Clone Ready"],
+        features: ["Limited Image Collection", "Anime & Realistic Styles"],
         images: [
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png",
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611117/TA-2026-01-26-19-52-26-masterpiec-3063664377_gopkx6.png"
@@ -73,9 +73,9 @@ export const packs: Pack[] = [
     {
         id: "sister-pack",
         title: "Sister Bot Pack + Images",
-        description: "5 dynamic sister archetypes for roleplay.",
+        description: "A dynamic collection of youthful archetypes, complete with a limited, highly-curated image gallery available in versatile anime and realistic art styles.",
         price: 5,
-        features: ["5 Character Variations", "Anime & Realistic Styles", "Image Collection", "Voice Cloning Data"],
+        features: ["Limited Image Collection", "Anime & Realistic Styles"],
         images: [
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp",
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610899/TA-2026-01-24-13-36-38-1womenhots-406331419_ckqv1l.png"
@@ -84,13 +84,13 @@ export const packs: Pack[] = [
     {
         id: "family-roleplay",
         title: "Family Roleplay Bot Pack + Images",
-        description: "Complete household dynamic with 10 bots.",
+        description: "A complete interactive family dynamic. Includes a curated collection of high-resolution images, an interactive bot, and exclusive private Discord server access.",
         price: 10,
-        features: ["10 Interactive Bots", "Interconnected Lore", "Image Collection", "Exclusive Images"],
+        features: ["Full Image Collection", "Limited Access", "Private Discord Server Access", "1 Interactive Bot with Exclusive Images"],
         tag: "Best Selling",
         highlight: true,
         images: [
-            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
+            "https://i.ibb.co/3YkwjhZ3/TA-2026-02-03-23-54-55-first-pers-1393994759.png",
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png"
         ]
     },
@@ -99,15 +99,15 @@ export const packs: Pack[] = [
     {
         id: "premium-family-roleplay-discount",
         title: "Family Roleplay Bot Pack + Images Premium Edition",
-        description: "Premium 8k images block with nice images and complete bot setups.",
+        description: "The ultimate premium experience featuring unlimited high-resolution 8K images with daily updates, exclusive on-demand image requests, and fully customized setups.",
         price: 39,
         originalPrice: 59,
         discountTimer: true,
-        features: ["Premium 8k Images (150+ images)", "Nice images", "10 Premium bots with images + personality", "Demand 1 bot creation"],
+        features: ["Unlimited 8K Images", "Daily Content Updates", "Images On-Demand Available", "Complete Premium Access"],
         tag: "Best Value",
         highlight: true,
         images: [
-            "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
+            "https://i.ibb.co/3YkwjhZ3/TA-2026-02-03-23-54-55-first-pers-1393994759.png",
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771340544/TA-2026-01-13-14-42-27-_artist_ma-1635821493_dx8vyz.png",
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
         ]
@@ -147,6 +147,7 @@ export const packs: Pack[] = [
         tag: "Today's Special Pack",
         highlight: true,
         images: [
+            "https://i.ibb.co/PGYRmydc/TA-2026-01-13-14-42-27-artist-ma-1635821493.png",
             "https://res.cloudinary.com/drdd0gfrc/image/upload/v1772128439/TA-2026-02-26-19-56-55-Intimatepa-1328197427_asi3q7.png"
         ]
     },
@@ -246,7 +247,7 @@ export const services: Service[] = [
         description: "A set of characters with intertwined backstories and a world setting. Includes custom images for each character and designed interactions.",
         price: 25,
         deliveryTime: "3-5 days",
-        image: "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
+        image: "https://i.ibb.co/3YkwjhZ3/TA-2026-02-03-23-54-55-first-pers-1393994759.png",
     },
     {
         id: "advanced-niche-request",

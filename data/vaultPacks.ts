@@ -69,7 +69,7 @@ export const vaultPacks: VaultPack[] = [
         id: "pack-5",
         name: "Any other pack you want",
         originalBotName: "Any other pack you want",
-        previewImage: "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610828/TA-2026-02-03-23-54-55-first-pers-1393994759_tnuc8j.png",
+        previewImage: "https://i.ibb.co/3YkwjhZ3/TA-2026-02-03-23-54-55-first-pers-1393994759.png",
         features: [
             "Expanded personality",
             "New scenario route",
