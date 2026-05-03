@@ -14,7 +14,7 @@ const PAYPAL_BASE_URL = process.env.PAYPAL_MODE === "live"
 // Plan pricing
 const PLAN_PRICING: Record<string, { amount: string, currency: string }> = {
   MONTHLY: { amount: "9.00", currency: "USD" },
-  YEARLY: { amount: "39.00", currency: "USD" },
+  YEARLY: { amount: "59.00", currency: "USD" },
   ULTIMATE: { amount: "399.00", currency: "USD" },
 };
 

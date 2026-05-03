@@ -68,6 +68,17 @@ export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
           </Link>
 
           <Link
+            href="/labs"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isActive('/labs')
+              ? "text-fuchsia-600 dark:text-fuchsia-400 bg-fuchsia-50 dark:bg-fuchsia-900/10"
+              : "text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60"
+              }`}
+          >
+            <GraduationCap className="w-4 h-4 text-fuchsia-500" />
+            Characteria Labs
+          </Link>
+
+          <Link
             href="/#custom-requests"
             className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isActive('/#custom-requests')
               ? "text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/10"
@@ -130,6 +141,14 @@ export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
           >
             <MessageSquare className="w-4 h-4 text-indigo-500" />
             Discord Vault
+          </Link>
+          <Link
+            href="/labs"
+            className="px-3 py-2 rounded-lg text-base font-medium text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-colors flex items-center gap-2"
+            onClick={() => setMenuOpen(false)}
+          >
+            <GraduationCap className="w-4 h-4 text-fuchsia-500" />
+            Labs
           </Link>
           <Link
             href="/#custom-requests"
