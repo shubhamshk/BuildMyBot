@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { 
-  CheckCircle2, Video, Download, Users, 
-  Star, PlayCircle, Lock, Shield, Terminal, 
-  ChevronDown, Sparkles, Package, TrendingUp 
+import {
+  CheckCircle2, Video, Download, Users,
+  Star, PlayCircle, Lock, Shield, Terminal,
+  ChevronDown, Sparkles, Package, TrendingUp, Loader2, ArrowLeft
 } from "lucide-react";
 import { Canvas } from "@react-three/fiber";
 import { Sphere, MeshDistortMaterial, Stars, Float } from "@react-three/drei";
+import { ResponsiveNavbar } from "@/components/responsive-navbar";
 
 function AnimatedBackground() {
   return (
@@ -18,7 +20,7 @@ function AnimatedBackground() {
         <directionalLight position={[10, 10, 5]} intensity={1} color="#d4af37" /> {/* Gold */}
         <directionalLight position={[-10, -10, -5]} intensity={0.5} color="#4c1d95" /> {/* Deep Janitor Purple */}
         <Stars radius={100} depth={50} count={1500} factor={3} saturation={0} fade speed={0.5} />
-        
+
         <Float speed={1.5} rotationIntensity={0.3} floatIntensity={0.8}>
           <Sphere visible args={[1, 100, 100]} scale={1.8} position={[3, 1, -2]}>
             <MeshDistortMaterial color="#1e1b4b" attach="material" distort={0.3} speed={1} roughness={0.4} metalness={0.7} opacity={0.8} transparent />
@@ -37,9 +39,38 @@ function AnimatedBackground() {
 
 export default function CharacteriaLabsPage() {
   const [activeModule, setActiveModule] = useState<number | null>(0);
+  const [processing, setProcessing] = useState(false);
 
   const toggleModule = (index: number) => {
     setActiveModule(activeModule === index ? null : index);
+  };
+
+  const handleSubscribe = async () => {
+    setProcessing(true);
+    try {
+      const response = await fetch("/api/paypal/create-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planType: "LABS_MONTHLY" }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to create subscription");
+      }
+
+      const data = await response.json();
+
+      // Redirect to PayPal approval URL
+      if (data.approvalUrl) {
+        window.location.href = data.approvalUrl;
+      } else {
+        throw new Error("No approval URL received");
+      }
+    } catch (error: any) {
+      alert(error.message || "Failed to start subscription process. Please ensure you are logged in.");
+      setProcessing(false);
+    }
   };
 
   const curriculum = [
@@ -52,12 +83,23 @@ export default function CharacteriaLabsPage() {
 
   return (
     <div className="min-h-screen bg-[#0A0B10] text-[#E4E4E7] selection:bg-amber-500/30 font-sans pb-24 text-sm md:text-base relative overflow-hidden">
+      <ResponsiveNavbar scrolled={true} />
       <AnimatedBackground />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 lg:pt-24">
-        
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 lg:pt-32">
+
+        {/* Back Button */}
+        <div className="mb-6">
+          <Link href="/" className="inline-flex items-center gap-2 text-neutral-400 hover:text-white transition-colors group">
+            <div className="p-2 rounded-full bg-white/5 group-hover:bg-white/10 transition-colors">
+              <ArrowLeft className="w-4 h-4" />
+            </div>
+            <span className="font-medium text-sm">Back to Home</span>
+          </Link>
+        </div>
+
         {/* Main Selling Point Alert - Top */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
@@ -80,7 +122,7 @@ export default function CharacteriaLabsPage() {
         <div className="flex flex-col lg:flex-row gap-10 relative">
           {/* Left Content Area */}
           <div className="flex-1 lg:max-w-[60%] space-y-8">
-            
+
             {/* 1. Hero Section */}
             <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6, delay: 0.1 }} className="space-y-4">
               <div className="flex flex-wrap items-center gap-2 mb-2">
@@ -99,15 +141,15 @@ export default function CharacteriaLabsPage() {
                   5 early adopters
                 </span>
               </div>
-              
+
               <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-white leading-[1.1] tracking-tighter">
                 Master Custom <span className="font-serif italic font-normal text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-amber-500">AI Imagery</span> & Unrestricted Bots
               </h1>
-              
+
               <p className="text-sm md:text-base text-[#A1A1AA] leading-relaxed max-w-2xl font-light">
                 A highly focused, step-by-step masterclass on generating stunning custom artwork and building unrestricted AI pipelines. Take full control of your creations today.
               </p>
-              
+
               <div className="flex flex-wrap gap-4 pt-2">
                 <div className="flex items-center gap-1.5 text-xs text-[#D4D4D8] font-medium bg-white/[0.02] px-3 py-1.5 rounded-lg border border-white/[0.05] backdrop-blur-sm">
                   <Shield className="w-4 h-4 text-amber-400" /> Beginner Friendly
@@ -151,7 +193,7 @@ export default function CharacteriaLabsPage() {
               <div className="space-y-3">
                 {curriculum.map((module, i) => (
                   <div key={i} className="bg-[#12141A]/50 backdrop-blur-md rounded-xl overflow-hidden transition-all border border-white/[0.05] hover:border-amber-500/30">
-                    <button 
+                    <button
                       onClick={() => toggleModule(i)}
                       className="w-full px-6 py-4 flex items-center justify-between text-left focus:outline-none group"
                     >
@@ -164,7 +206,7 @@ export default function CharacteriaLabsPage() {
                     </button>
                     <AnimatePresence>
                       {activeModule === i && (
-                        <motion.div 
+                        <motion.div
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}
@@ -190,9 +232,9 @@ export default function CharacteriaLabsPage() {
           {/* Right Content Area (Sticky Card) */}
           <div className="lg:w-[40%] relative">
             <div className="sticky top-24 relative z-20">
-              
+
               {/* Floating 3D Tag */}
-              <motion.div 
+              <motion.div
                 animate={{ y: [0, -6, 0], rotate: [2, 4, 2] }}
                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                 className="absolute -top-5 -right-3 z-30"
@@ -205,7 +247,7 @@ export default function CharacteriaLabsPage() {
                 </div>
               </motion.div>
 
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -213,15 +255,15 @@ export default function CharacteriaLabsPage() {
               >
                 {/* Highlight Glow */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-600 via-yellow-400 to-amber-600 opacity-80" />
-                
+
                 {/* Card Image Area */}
                 <div className="h-52 bg-[#0A0B10] relative overflow-hidden flex items-center justify-center group cursor-pointer border-b border-white/[0.02]">
                   <div className="absolute inset-0 opacity-40 mix-blend-screen transition-transform duration-1000 group-hover:scale-110" style={{
                     backgroundImage: `radial-gradient(circle at 50% 50%, rgba(217, 119, 6, 0.3) 0%, transparent 60%), radial-gradient(circle at 80% 20%, rgba(76, 29, 149, 0.2) 0%, transparent 50%)`
                   }} />
-                  
+
                   <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgc3Ryb2tlPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIiBzdHJva2Utd2lkdGg9IjEiIGZpbGw9Im5vbmUiPjxwb2x5Z29uIHBvaW50cz0iMCwwIDQwLDAgNDAsNDAgMCw0MCIvPjwvZz48L3N2Zz4=')] opacity-10" />
-                  
+
                   <div className="relative z-10 w-20 h-20 bg-[#18181B]/80 backdrop-blur-xl rounded-full border border-white/[0.05] flex items-center justify-center group-hover:scale-110 transition-all duration-500 shadow-[0_0_20px_rgba(217,119,6,0.2)] group-hover:shadow-[0_0_30px_rgba(217,119,6,0.3)]">
                     <PlayCircle className="w-10 h-10 text-amber-200 translate-x-0.5" />
                   </div>
@@ -239,8 +281,19 @@ export default function CharacteriaLabsPage() {
                     </div>
                   </div>
 
-                  <button className="w-full py-4 bg-[#E4E4E7] hover:bg-white text-[#0A0B10] font-semibold rounded-xl text-sm transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.1)] active:scale-[0.98] mb-4 relative overflow-hidden group">
-                    <span className="relative z-10">Subscribe Now</span>
+                  <button
+                    onClick={handleSubscribe}
+                    disabled={processing}
+                    className="w-full py-4 bg-[#E4E4E7] hover:bg-white text-[#0A0B10] font-semibold rounded-xl text-sm transition-all duration-300 shadow-[0_0_15px_rgba(255,255,255,0.1)] active:scale-[0.98] mb-4 relative overflow-hidden group disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {processing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Redirecting to PayPal...
+                      </>
+                    ) : (
+                      <span className="relative z-10">Subscribe Now</span>
+                    )}
                   </button>
 
                   <p className="text-center text-xs text-[#71717A] mb-6 flex items-center justify-center gap-1.5 font-light">

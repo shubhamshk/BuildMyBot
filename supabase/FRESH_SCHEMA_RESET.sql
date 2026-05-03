@@ -80,7 +80,7 @@ CREATE TABLE public.subscriptions (
 
   -- Plan details — includes ALL plan types used in code
   plan_type TEXT NOT NULL DEFAULT 'FREE'
-    CHECK (plan_type IN ('FREE', 'PRO_MONTHLY', 'PRO_YEARLY', 'ULTIMATE_CREATOR')),
+    CHECK (plan_type IN ('FREE', 'PRO_MONTHLY', 'PRO_YEARLY', 'ULTIMATE_CREATOR', 'LABS_MONTHLY')),
   subscription_status TEXT NOT NULL DEFAULT 'ACTIVE'
     CHECK (subscription_status IN ('ACTIVE', 'INACTIVE', 'CANCELLED', 'EXPIRED')),
 

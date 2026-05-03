@@ -16,6 +16,7 @@ const PLAN_PRICING: Record<string, { amount: string, currency: string }> = {
   MONTHLY: { amount: "9.00", currency: "USD" },
   YEARLY: { amount: "59.00", currency: "USD" },
   ULTIMATE: { amount: "399.00", currency: "USD" },
+  LABS_MONTHLY: { amount: "59.00", currency: "USD" },
 };
 
 /**
@@ -171,6 +172,11 @@ export async function POST(request: NextRequest) {
       amount = PLAN_PRICING.ULTIMATE.amount;
       name = "Ultimate Creator";
       description = "Ultimate Creator Access";
+    } else if (planType === "LABS_MONTHLY") {
+      amount = PLAN_PRICING.LABS_MONTHLY.amount;
+      name = "Characteria Labs";
+      description = "Monthly subscription for Characteria Labs";
+      interval = "MONTH";
     } else {
       // Check if it's a Pack
       const pack = packs.find(p => p.id === planType) || specialPacks.find(p => p.id === planType);
@@ -306,15 +312,19 @@ export async function POST(request: NextRequest) {
           },
           return_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://characteria.me"}${planType.startsWith("PRO_")
             ? "/pricing"
-            : planType === "voice-extension-v1"
-              ? "/voice"
-              : "/packs"
+            : planType === "LABS_MONTHLY"
+              ? "/labs"
+              : planType === "voice-extension-v1"
+                ? "/voice"
+                : "/packs"
             }?success=true&plan=${planType}`,
           cancel_url: `${process.env.NEXT_PUBLIC_APP_URL || "https://characteria.me"}${planType.startsWith("PRO_")
             ? "/pricing"
-            : planType === "voice-extension-v1"
-              ? "/voice"
-              : "/packs"
+            : planType === "LABS_MONTHLY"
+              ? "/labs"
+              : planType === "voice-extension-v1"
+                ? "/voice"
+                : "/packs"
             }?canceled=true`,
         },
       }),
