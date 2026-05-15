@@ -4,16 +4,18 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle, Shield, CreditCard, Sparkles, Loader2 } from "lucide-react";
 
-export function PremiumPaymentModal({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
+export function PremiumPaymentModal({ isOpen, onClose, plan = "annual" }: { isOpen: boolean, onClose: () => void, plan?: string }) {
     const [promoCode, setPromoCode] = useState("");
-    const [price, setPrice] = useState(99);
+    const isAnnual = plan === "annual";
+    const basePrice = isAnnual ? 550 : 69;
+    const [price, setPrice] = useState(basePrice);
     const [promoApplied, setPromoApplied] = useState(false);
     const [status, setStatus] = useState<"input" | "processing" | "success">("input");
     const [error, setError] = useState("");
 
     const handleApplyPromo = () => {
         if (promoCode.toUpperCase() === "ERROR206") {
-            setPrice(89);
+            setPrice(basePrice - 10);
             setPromoApplied(true);
             setError("");
         } else {
@@ -32,6 +34,8 @@ export function PremiumPaymentModal({ isOpen, onClose }: { isOpen: boolean, onCl
                 body: JSON.stringify({
                     packId: "world-pack",
                     description: `Ultimate Collection Pack${promoApplied ? " (Promo Applied)" : ""}`,
+                    plan,
+                    promoAmount: promoApplied ? 10 : 0,
                 }),
             });
 
@@ -120,7 +124,7 @@ export function PremiumPaymentModal({ isOpen, onClose }: { isOpen: boolean, onCl
                                         <span className="text-3xl font-black text-white flex items-center">
                                             ${price}
                                             {promoApplied && (
-                                                <span className="text-xs text-neutral-500 line-through ml-2 font-normal">$99</span>
+                                                <span className="text-xs text-neutral-500 line-through ml-2 font-normal">${basePrice}</span>
                                             )}
                                         </span>
                                     </div>

@@ -68,13 +68,14 @@ async function createProduct(
   return data.id as string;
 }
 
-/** Create a monthly billing plan for this pack */
+/** Create a billing plan for this pack */
 async function createPlan(
   accessToken: string,
   productId: string,
   packId: string,
   packName: string,
-  amount: string
+  amount: string,
+  intervalUnit: string = "MONTH"
 ): Promise<string> {
   const res = await fetch(`${PAYPAL_BASE_URL}/v1/billing/plans`, {
     method: "POST",
@@ -82,15 +83,15 @@ async function createPlan(
       Authorization: `Bearer ${accessToken}`,
       "Content-Type": "application/json",
       Prefer: "return=representation",
-      "PayPal-Request-Id": `plan-${packId}-${Date.now()}`,
+      "PayPal-Request-Id": `plan-${packId}-${intervalUnit}-${Date.now()}`,
     },
     body: JSON.stringify({
       product_id: productId,
-      name: `${packName} – Monthly`,
-      description: `Recurring monthly access to ${packName}`,
+      name: `${packName} – ${intervalUnit === "YEAR" ? "Annual" : "Monthly"}`,
+      description: `Recurring ${intervalUnit === "YEAR" ? "annual" : "monthly"} access to ${packName}`,
       billing_cycles: [
         {
-          frequency: { interval_unit: "MONTH", interval_count: 1 },
+          frequency: { interval_unit: intervalUnit, interval_count: 1 },
           tenure_type: "REGULAR",
           sequence: 1,
           total_cycles: 0, // 0 = infinite
@@ -171,7 +172,7 @@ async function createSubscription(
 
 export async function POST(request: NextRequest) {
   try {
-    const { packId, email: emailOverride } = await request.json();
+    const { packId, email: emailOverride, plan, promoAmount = 0 } = await request.json();
 
     if (!packId) {
       return NextResponse.json({ error: "packId is required" }, { status: 400 });
@@ -202,8 +203,18 @@ export async function POST(request: NextRequest) {
 
     const email = emailOverride || user.email || "";
 
+    let finalPrice = pack.price;
+    let intervalUnit = "MONTH";
+
+    if (packId === "world-pack" && plan === "annual") {
+        finalPrice = 550;
+        intervalUnit = "YEAR";
+    }
+
+    finalPrice = Math.max(0, finalPrice - promoAmount);
+
     // Format amount to 2 decimal places
-    let amount = pack.price.toString();
+    let amount = finalPrice.toString();
     if (!amount.includes(".")) amount += ".00";
     else if (amount.split(".")[1].length === 1) amount += "0";
 
@@ -222,7 +233,8 @@ export async function POST(request: NextRequest) {
       productId,
       pack.id,
       paypalPackName,
-      amount
+      amount,
+      intervalUnit
     );
     const { subscriptionId, approvalUrl } = await createSubscription(
       accessToken,

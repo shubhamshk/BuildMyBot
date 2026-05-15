@@ -157,7 +157,7 @@ export const packs: Pack[] = [
         id: "world-pack",
         title: "Ultimate Collection Pack",
         description: "The ultimate all-in-one mega bundle — get instant lifetime access to everything the platform has to offer. Includes 10,000+ high-resolution 8K images, all assets from every other pack combined, Janitor AI voice-enabled extension, private Discord channel access, custom image generation support, AI bot generation tools, and personal priority support. One pack. Everything. Forever.",
-        price: 99,
+        price: 69,
         originalPrice: 149,
         discountTimer: true,
         features: ["10K+ High-Resolution 8K Images", "All Pack Assets Combined in One Bundle", "Private Discord Channels Access", "Janitor AI Voice-Enabled Extension", "Personal Priority Support for Any Bots", "Custom Image Generation Support", "AI Bot Generation Tools Included", "Lifetime Access to All Resources"],

@@ -280,7 +280,7 @@ export function PacksSection() {
 
     const handleBuy = async (pack: PackItem) => {
         if (pack.id === "world-pack") {
-            router.push("/ultimate-pack");
+            router.push(`/ultimate-pack`);
             return;
         }
 
@@ -510,16 +510,16 @@ export function PacksSection() {
                                                     ))}
                                                 </div>
 
-                                                {/* Price + timer */}
+                                                {/* Price */}
                                                 <div className="flex flex-col items-center gap-3 mb-8">
                                                     <div className="flex items-baseline gap-3 justify-center">
-                                                        <span className="text-5xl md:text-6xl font-black text-white drop-shadow-[0_2px_12px_rgba(245,158,11,0.5)]">${pack.price}</span>
-                                                        {pack.originalPrice && (
-                                                            <span className="text-neutral-500 text-xl font-bold line-through">${pack.originalPrice}</span>
-                                                        )}
-                                                        <span className="text-neutral-400 text-sm">/ pack</span>
+                                                        <span className="text-5xl md:text-6xl font-black text-white drop-shadow-[0_2px_12px_rgba(245,158,11,0.5)]">
+                                                            $69
+                                                        </span>
+                                                        <span className="text-neutral-400 text-sm">
+                                                            / month
+                                                        </span>
                                                     </div>
-                                                    <DiscountTimer />
                                                 </div>
 
                                                 {/* CTA */}

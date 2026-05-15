@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, Shield, Sparkles, Crown, Image as ImageIcon, MessageSquare, Headphones, FileCode2 } from "lucide-react";
 import { ParticleBackground } from "@/components/ultimate-pack/ParticleBackground";
@@ -8,8 +9,12 @@ import { PremiumPaymentModal } from "@/components/ultimate-pack/PremiumPaymentMo
 import Link from "next/link";
 import { ResponsiveNavbar } from "@/components/responsive-navbar";
 
-export default function UltimatePackPage() {
+function UltimatePackContent() {
     const [isPaymentOpen, setIsPaymentOpen] = useState(false);
+    const [billingCycle, setBillingCycle] = useState<"monthly" | "annual">("monthly");
+    const isAnnual = billingCycle === "annual";
+    const price = isAnnual ? 550 : 69;
+    const period = isAnnual ? "year" : "month";
 
     const features = [
         { icon: <ImageIcon className="w-5 h-5 text-amber-500" />, text: "Full image collection (8000+ high-resolution 8K images)" },
@@ -75,9 +80,41 @@ export default function UltimatePackPage() {
                                 <h2 className="text-3xl md:text-5xl font-black text-white mb-2">Ultimate Edition</h2>
                                 <p className="text-amber-400 font-medium tracking-wide">Everything you need, in one place.</p>
                             </div>
-                            <div className="text-right flex-shrink-0 bg-white/5 border border-white/10 px-6 py-4 rounded-3xl backdrop-blur-md">
-                                <p className="text-sm text-neutral-400 font-bold uppercase tracking-wider mb-1">One-Time Payment</p>
-                                <p className="text-5xl font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">$99</p>
+                            <div className="flex flex-col items-end gap-4">
+                                <div className="flex items-center justify-center gap-3">
+                                    <span className={`text-sm font-semibold ${billingCycle === 'monthly' ? 'text-white drop-shadow-md' : 'text-neutral-400'}`}>Monthly</span>
+                                    <button
+                                        onClick={() => setBillingCycle(prev => prev === 'monthly' ? 'annual' : 'monthly')}
+                                        className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${billingCycle === 'monthly' ? 'bg-[#555866]' : 'bg-amber-500'}`}
+                                    >
+                                        <span
+                                            className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                                                billingCycle === 'monthly' ? 'translate-x-1' : 'translate-x-6'
+                                            }`}
+                                        />
+                                    </button>
+                                    <span className={`text-sm font-semibold ${billingCycle === 'annual' ? 'text-white drop-shadow-md' : 'text-neutral-400'}`}>Annual</span>
+                                    {billingCycle === 'annual' && (
+                                        <motion.span 
+                                            initial={{ scale: 0.8, opacity: 0 }}
+                                            animate={{ scale: 1, opacity: 1 }}
+                                            className="bg-gradient-to-r from-pink-500 to-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full ml-1 shadow-[0_0_10px_rgba(236,72,153,0.5)] border border-pink-400/30"
+                                        >
+                                            30% OFF
+                                        </motion.span>
+                                    )}
+                                </div>
+                                
+                                <div className="text-right flex-shrink-0 bg-white/5 border border-white/10 px-6 py-4 rounded-3xl backdrop-blur-md">
+                                    <p className="text-sm text-neutral-400 font-bold uppercase tracking-wider mb-1">{isAnnual ? "Annual Plan" : "Monthly Plan"}</p>
+                                    <div className="flex items-baseline justify-end gap-1">
+                                        <p className="text-5xl font-black text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">${price}</p>
+                                        <span className="text-neutral-400 font-medium">/{period}</span>
+                                    </div>
+                                    {isAnnual && (
+                                        <p className="text-pink-500/80 text-sm mt-1 line-through">$828/year</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
 
@@ -128,8 +165,16 @@ export default function UltimatePackPage() {
 
             {/* Payment Modal */}
             {isPaymentOpen && (
-                <PremiumPaymentModal isOpen={isPaymentOpen} onClose={() => setIsPaymentOpen(false)} />
+                <PremiumPaymentModal isOpen={isPaymentOpen} onClose={() => setIsPaymentOpen(false)} plan={billingCycle} />
             )}
         </main>
+    );
+}
+
+export default function UltimatePackPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-[#050505] flex items-center justify-center text-amber-500">Loading...</div>}>
+            <UltimatePackContent />
+        </Suspense>
     );
 }
