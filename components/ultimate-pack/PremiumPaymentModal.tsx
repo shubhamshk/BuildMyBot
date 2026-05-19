@@ -4,10 +4,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, CheckCircle, Shield, CreditCard, Sparkles, Loader2 } from "lucide-react";
 
-export function PremiumPaymentModal({ isOpen, onClose, plan = "annual" }: { isOpen: boolean, onClose: () => void, plan?: string }) {
+export function PremiumPaymentModal({ isOpen, onClose, plan = "monthly" }: { isOpen: boolean, onClose: () => void, plan?: string }) {
     const [promoCode, setPromoCode] = useState("");
-    const isAnnual = plan === "annual";
-    const basePrice = isAnnual ? 550 : 69;
+    const isLifetime = plan === "lifetime";
+    const basePrice = isLifetime ? 550 : 69;
     const [price, setPrice] = useState(basePrice);
     const [promoApplied, setPromoApplied] = useState(false);
     const [status, setStatus] = useState<"input" | "processing" | "success">("input");
@@ -28,15 +28,25 @@ export function PremiumPaymentModal({ isOpen, onClose, plan = "annual" }: { isOp
         setError("");
 
         try {
-            const response = await fetch("/api/paypal/create-pack-subscription", {
+            const endpoint = isLifetime ? "/api/paypal/create-order" : "/api/paypal/create-pack-subscription";
+            const payload = isLifetime 
+                ? {
+                    itemId: "world-pack",
+                    description: `Ultimate Collection Pack Lifetime Access${promoApplied ? " (Promo Applied)" : ""}`,
+                    email: "",
+                    promoAmount: promoApplied ? 10 : 0,
+                }
+                : {
+                    packId: "world-pack",
+                    description: `Ultimate Collection Pack Monthly${promoApplied ? " (Promo Applied)" : ""}`,
+                    plan: "monthly",
+                    promoAmount: promoApplied ? 10 : 0,
+                };
+
+            const response = await fetch(endpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    packId: "world-pack",
-                    description: `Ultimate Collection Pack${promoApplied ? " (Promo Applied)" : ""}`,
-                    plan,
-                    promoAmount: promoApplied ? 10 : 0,
-                }),
+                body: JSON.stringify(payload),
             });
 
             const data = await response.json();

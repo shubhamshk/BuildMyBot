@@ -43,7 +43,7 @@ async function getPayPalAccessToken(): Promise<string> {
 export async function POST(request: NextRequest) {
     try {
         const requestData = await request.json();
-        const { itemId, email, description } = requestData;
+        const { itemId, email, description, promoAmount } = requestData;
 
         // Find the item in packs or services
         const item = [...packs, ...services, ...specialPacks, ...vaultPacks, creatorVaultPack].find((p) => p.id === itemId);
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const price = item.price.toString();
+        const price = Math.max(0, item.price - (promoAmount || 0)).toString();
         const itemName = (item as any).title || (item as any).name;
         // Sanitize name for PayPal (replace NSFW words with "NICE")
         const paypalItemName = sanitizeForPayPal(itemName);

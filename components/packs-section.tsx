@@ -101,12 +101,12 @@ const packCategories: PackCategory[] = [
                 id: "world-pack",
                 title: "Ultimate Collection Pack",
                 description: "The ultimate all-in-one mega bundle — get instant lifetime access to everything the platform has to offer. Includes 10,000+ high-resolution 8K images, all assets from every other pack combined, Janitor AI voice-enabled extension, private Discord channel access, custom image generation support, AI bot generation tools, and personal priority support. One pack. Everything. Forever.",
-                price: 99,
-                originalPrice: 149,
+                price: 550,
+                originalPrice: 828,
                 discountTimer: true,
                 features: ["10K+ High-Resolution 8K Images", "All Pack Assets Combined in One Bundle", "Private Discord Channels Access", "Janitor AI Voice-Enabled Extension", "Personal Priority Support for Any Bots", "Custom Image Generation Support", "AI Bot Generation Tools Included", "Lifetime Access to All Resources"],
                 highlight: true,
-                tag: "🔥 Limited Offer",
+                tag: "🔥 Lifetime Access",
                 images: [
                     "https://i.ibb.co/3YkwjhZ3/TA-2026-02-03-23-54-55-first-pers-1393994759.png",
                     "https://res.cloudinary.com/drdd0gfrc/image/upload/v1772128439/TA-2026-02-26-19-56-55-Intimatepa-1328197427_asi3q7.png"
