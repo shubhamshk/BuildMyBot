@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     question: "Where do I access my bots?",
-    answer: "You will receive a private access ID for CharVault: https://www.charvault.online/\nThere you can access: Your respective packs."
+    answer: "You will receive a private access ID\nThen you can access: Your respective packs."
   },
   {
     question: "How many bots do I get?",
@@ -23,7 +23,7 @@ const faqs = [
   },
   {
     question: "What happens if I cancel my subscription?",
-    answer: "Once your subscription is canceled or expires:\n• Your premium access will be fully removed\n• Vault access will stop working\n• Premium bot updates and content will no longer be available"
+    answer: "Once your subscription is canceled or expires:\n• Your premium access will be fully removed\n• Characteria access will stop working\n• Premium bot updates and content will no longer be available"
   },
   {
     question: "What is the Ultimate Collection Pack?",
