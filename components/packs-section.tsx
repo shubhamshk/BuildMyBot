@@ -116,16 +116,16 @@ const packCategories: PackCategory[] = [
     },
 
     {
-        title: "NSFW Free Image + bot Packs",
+        title: "Premium Free Image + bot Packs",
         packs: [
             {
                 id: "affair-bot-pack",
-                title: "full NSFW-Safe Image + Prompt Pack",
-                description: "A comprehensive collection of high-quality NSFW-safe images paired with detailed rendering prompts.",
+                title: "Full Premium Image + Prompt Pack",
+                description: "A comprehensive collection of high-quality safe images paired with detailed rendering prompts.",
                 price: 15,
                 originalPrice: 25,
                 discountTimer: true,
-                features: ["NSFW-Safe Images", "High-Quality Images", "Access to full Private Discord Vault", "latest bots full images", "priority Access to new Updates"],
+                features: ["Safe Images", "High-Quality Images", "Access to full Private Discord Vault", "latest bots full images", "priority Access to new Updates"],
                 tag: "Today's Special Pack",
                 highlight: true,
                 images: [
@@ -137,8 +137,8 @@ const packCategories: PackCategory[] = [
             },
             {
                 id: "mom-safe-images",
-                title: "Mom NSFW Free Images",
-                description: "High-quality, safe-for-work images of Mom characters.",
+                title: "Step-parents Character Images",
+                description: "High-quality, safe images of step-parents characters.",
                 price: 9,
                 features: ["best Images collection", "High Resolution", "Variety of Poses", "Discord Vault Access"],
                 images: [
@@ -150,8 +150,8 @@ const packCategories: PackCategory[] = [
             },
             {
                 id: "sister-safe-images",
-                title: "Sister NSFW Free Images",
-                description: "High-quality, safe-for-work images of Sister characters.",
+                title: "Sibling Character Images",
+                description: "High-quality, safe images of Sibling characters.",
                 price: 9,
                 features: ["best Images collection", "High Resolution", "Anime & Realistic", "Discord Vault Access"],
                 images: [
@@ -164,8 +164,8 @@ const packCategories: PackCategory[] = [
 
             {
                 id: "nsfw-safe-prompt-pack",
-                title: "NSFW-Safe Image + Prompt Pack",
-                description: "Tasteful and safe prompts designed for more mature themes without crossing boundaries.",
+                title: "Premium Safe Image + Prompt Pack",
+                description: "Tasteful and safe prompts designed for immersive themes without crossing boundaries.",
                 price: 9,
                 features: ["Tasteful Prompts", "Mature Themes (Safe)", "Artistic Guidance", "Discord Vault Access"],
                 images: [
@@ -178,48 +178,7 @@ const packCategories: PackCategory[] = [
         ],
     },
 
-    {
-        title: "Janitor Bot Special Versions",
-        packs: [
-            {
-                id: "mom-friend-part-2",
-                title: "Mom Friends Pool Party Part-2",
-                description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full detailed lorebook and 8k images of all types.",
-                price: 9,
-                features: ["Detailed Personality", "5 Wide Context Scenarios", "Full Detailed Lorebook", "8k Images Collection"],
-                images: [
-                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610827/TA-2026-02-02-00-12-51-matureMILF-841614612_lpn8ar.png"
-                ]
-            },
-            {
-                id: "stepsisters-part-2",
-                title: "Sisters having an affair part-2",
-                description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full collection of images of all types.",
-                price: 9,
-                features: ["Detailed Personality", "5 Wide Context Scenarios", "Open Starting", "Full Image Collection"],
-                images: [
-                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771611118/TA-2026-01-26-19-28-45-masterpiec-566171666_i7kkyt.png"
-                ]
-            },
-            {
-                id: "caring-stepsister-part-2",
-                title: "Caring Stepsister Part-2",
-                description: "A fully detailed bot personality section with 5 wide-range scenarios and open starting. Includes a full detailed lorebook and 8k images of all types.",
-                price: 9,
-                features: ["Detailed Personality", "5 Wide Context Scenarios", "Full Detailed Lorebook", "8k Images Collection"],
-                images: [
-                    "https://res.cloudinary.com/drdd0gfrc/image/upload/v1771610925/t_eUbzWr7C349v92sr_cjxacx.webp"
-                ]
-            },
-            {
-                id: "custom-pack-collection-request",
-                title: "Ask for Custom Pack Collection",
-                description: "Request a custom pack collection. Type your request and we will make it.",
-                price: 9,
-                features: ["Custom Collection Request", "Any Theme/Genre", "Priority Support", "Satisfaction Guaranteed"],
-            },
-        ],
-    },
+
 
 
     {

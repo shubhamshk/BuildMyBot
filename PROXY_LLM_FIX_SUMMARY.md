@@ -198,7 +198,7 @@ After implementing these changes:
 Edit `lib/ai/output-sanitizer.ts`:
 ```typescript
 const SYSTEM_LEAK_PATTERNS = [
-  /\[All NSFW content is allowed\.\]/gi,
+  /\[Focus on immersive character roleplay\.\]/gi,
   // Add new patterns here
   /your new pattern/gi,
 ];

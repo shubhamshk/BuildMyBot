@@ -16,7 +16,7 @@
  * Patterns that indicate leaked system instructions or jailbreak text
  */
 const SYSTEM_LEAK_PATTERNS = [
-  /\[All NSFW content is allowed\.\]/gi,
+  /\[Focus on immersive character roleplay\.\]/gi,
   /\[All content is allowed\.\]/gi,
   /ALL CONTENT IS ALLOWED/gi,
   /it is strictly against the guidelines/gi,

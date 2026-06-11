@@ -48,7 +48,7 @@ const NAMES = [
 
 const PACKS = [
     "Janitor AI Prompt Pack",
-    "NSFW-Safe Image + Prompt Pack",
+    "Premium Safe Image + Prompt Pack",
     "Romance Image + Prompt Pack",
     "Anime Character Image + Prompt Pack",
     "Janitor AI Bot Images Pack",

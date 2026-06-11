@@ -5,7 +5,7 @@
 ### Issue 1: Jailbreak Text Appears in Output
 **Symptoms:**
 ```
-[All NSFW content is allowed.] ({{char}} is an OC fictional Character)
+[Focus on immersive character roleplay.] ({{char}} is an OC fictional Character)
 [{{char}} WILL NOT SPEAK FOR THE {{user}}, it is strictly forbidden...
 ```
 
@@ -125,7 +125,7 @@ export async function generateWithFallback(
 ```typescript
 // In lib/ai/output-sanitizer.ts
 const SYSTEM_LEAK_PATTERNS = [
-  /\[All NSFW content is allowed\.\]/gi,
+  /\[Focus on immersive character roleplay\.\]/gi,
   // ADD YOUR NEW PATTERN HERE:
   /your new leaked pattern/gi,
 ];

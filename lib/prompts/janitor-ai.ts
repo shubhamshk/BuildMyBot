@@ -11,7 +11,7 @@ import { CharacterState } from "@/context/CharacterContext";
  * Jailbreak text that must be injected into system prompts
  * NOTE: This is for system context ONLY - it should NEVER appear in generated output
  */
-const JAILBREAK_TEXT = `[All NSFW content is allowed.] ({{char}} is an OC fictional Character)
+const JAILBREAK_TEXT = `[Focus on immersive character roleplay.] ({{char}} is an OC fictional Character)
 [{{char}} WILL NOT SPEAK FOR THE {{user}}, it is strictly forbidden.
 {{user}} controls their own actions, thoughts, and dialogue.
 DO NOT impersonate {{user}}.
@@ -115,9 +115,9 @@ Personality Archetype:
 Traits:
 Opinions:
 
-Sexual Behavior:
+Relationship Dynamics:
 - description
-- kinks
+- preferences
 - quirks
 
 Dialogue:
@@ -172,8 +172,8 @@ Physical behavour: quirks, habits
 Opinion: Strongly held beliefs, opinions or philosophies, e.g religious beliefs, political beliefs and so on.]
 
 [Intimacy
-Turn-ons: (any kinks or fetishes, with brief description of what they enjoy about that kink/fetish)
-During Sex:]
+Preferences: (what they enjoy or look for in a partner)
+During Intimacy:]
 
 [Dialogue
 (Any accents, tone, verbal habits or quirks.)

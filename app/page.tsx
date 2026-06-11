@@ -7,6 +7,8 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { ResponsiveNavbar } from "@/components/responsive-navbar";
 import { SocialProof } from "@/components/social-proof";
 import { PacksSection } from "@/components/packs-section";
+import { FaqSection } from "@/components/faq-section";
+import { TocSection } from "@/components/toc-section";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -223,6 +225,12 @@ export default function Home() {
       {/* Packs Section - Replaces old features */}
       <PacksSection />
 
+      {/* FAQ Section */}
+      <FaqSection />
+
+      {/* TOC Section */}
+      <TocSection />
+
       {/* Final CTA Section */}
       <section className="py-32 px-6 relative overflow-hidden">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl bg-amber-500/5 blur-[100px] -z-10" />
@@ -270,10 +278,13 @@ export default function Home() {
               <Link href="/pricing" className="hover:text-white transition-colors">
                 Pricing
               </Link>
-              <Link href="/terms" className="hover:text-white transition-colors">
-                Terms
+              <Link href="/#faq" className="hover:text-white transition-colors">
+                FAQ
               </Link>
-              <Link href="/privacy" className="hover:text-white transition-colors">
+              <Link href="/#toc" className="hover:text-white transition-colors">
+                TOC / Terms
+              </Link>
+              <Link href="/#toc" className="hover:text-white transition-colors">
                 Privacy
               </Link>
               <ThemeToggle />

@@ -72,9 +72,9 @@ const PromptGenerator: React.FC = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="glass rounded-3xl p-6 space-y-4 border border-white/5">
-              <label className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">Safety Filter</label>
+              <label className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">Creative Mode</label>
               <div className="flex items-center justify-between">
-                <span className="font-bold text-sm">{settings.isSfw ? 'SFW' : 'NSFW'}</span>
+                <span className="font-bold text-sm">{settings.isSfw ? 'Standard' : 'Unrestricted'}</span>
                 <button
                   onClick={() => setSettings({ ...settings, isSfw: !settings.isSfw })}
                   className={`w-14 h-7 rounded-full relative transition-all shadow-inner ${settings.isSfw ? 'bg-primary' : 'bg-pink-600'}`}

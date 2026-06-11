@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
 
         const price = Math.max(0, item.price - (promoAmount || 0)).toString();
         const itemName = (item as any).title || (item as any).name;
-        // Sanitize name for PayPal (replace NSFW words with "NICE")
+        // Sanitize name for PayPal (replace RESTRICTED words with "NICE")
         const paypalItemName = sanitizeForPayPal(itemName);
 
         // Get PayPal Token

@@ -89,6 +89,26 @@ export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
             Custom Requests
           </Link>
 
+          <Link
+            href="/#faq"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isActive('/#faq')
+              ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/10"
+              : "text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60"
+              }`}
+          >
+            FAQ
+          </Link>
+
+          <Link
+            href="/#toc"
+            className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${isActive('/#toc')
+              ? "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/10"
+              : "text-neutral-700 dark:text-neutral-200 hover:bg-neutral-100/70 dark:hover:bg-neutral-800/60"
+              }`}
+          >
+            TOC
+          </Link>
+
           <div className="h-6 w-px bg-neutral-200 dark:bg-neutral-800 mx-2" />
 
           <ThemeToggle />
@@ -157,6 +177,22 @@ export function ResponsiveNavbar({ scrolled = false }: { scrolled?: boolean }) {
           >
             <Zap className="w-4 h-4 text-amber-500" />
             Custom Requests
+          </Link>
+
+          <Link
+            href="/#faq"
+            className="px-3 py-2 rounded-lg text-base font-medium text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-colors flex items-center gap-2"
+            onClick={() => setMenuOpen(false)}
+          >
+            FAQ
+          </Link>
+
+          <Link
+            href="/#toc"
+            className="px-3 py-2 rounded-lg text-base font-medium text-neutral-800 dark:text-neutral-100 hover:bg-neutral-100/80 dark:hover:bg-neutral-800/60 transition-colors flex items-center gap-2"
+            onClick={() => setMenuOpen(false)}
+          >
+            TOC
           </Link>
 
           <div className="h-px w-full bg-neutral-200 dark:bg-neutral-800 my-1" />

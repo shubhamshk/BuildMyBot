@@ -222,7 +222,7 @@ export async function POST(request: NextRequest) {
     const returnPage =
       packId === "voice-extension-v1" ? "/voice" : "/packs";
 
-    // Sanitize the pack name for PayPal (replace NSFW words with "NICE")
+    // Sanitize the pack name for PayPal (replace RESTRICTED words with "NICE")
     const paypalPackName = sanitizeForPayPal(pack.title);
 
     // PayPal calls

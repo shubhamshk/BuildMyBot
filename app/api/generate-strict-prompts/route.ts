@@ -31,7 +31,7 @@ No explanations.
 No unsafe content.
 No minors.
 No explicit anatomy.
-No sexual actions.
+Ensure content strictly adheres to safe, general-audience guidelines.
 Only visual descriptors.
 
 Output format:

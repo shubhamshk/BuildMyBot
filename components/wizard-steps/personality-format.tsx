@@ -50,9 +50,9 @@ Personality Archetype:
 Traits:
 Opinions:
 
-Sexual Behavior:
+Relationship Dynamics:
 - description
-- kinks
+- preferences
 - quirks
 
 Dialogue:
@@ -107,8 +107,8 @@ Physical behavour: quirks, habits
 Opinion: Strongly held beliefs, opinions or philosophies, e.g religious beliefs, political beliefs and so on.]
 
 [Intimacy
-Turn-ons: (any kinks or fetishes, with brief description of what they enjoy about that kink/fetish)
-During Sex:]
+Preferences: (what they enjoy or look for in a partner)
+During Intimacy:]
 
 [Dialogue
 (Any accents, tone, verbal habits or quirks.)
